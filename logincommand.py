@@ -5,7 +5,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 import json,bcrypt
 
 USERNAME, PASSWORD = range(2)
-USER_REPOSITORY = '/home/kangatang/git/filegator/private/users.json'
+USER_REPOSITORY = '/var/www/filegator/private/users.json'
 
 # Enable logging
 logging.basicConfig(
