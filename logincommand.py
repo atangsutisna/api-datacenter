@@ -1,11 +1,13 @@
-import logging
+import logging, os
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
-
+from dotenv import load_dotenv
 import json,bcrypt
 
+load_dotenv()
+
 USERNAME, PASSWORD = range(2)
-USER_REPOSITORY = '/var/www/filegator/private/users.json'
+USER_REPOSITORY_PATH = os.getenv('USER_REPOSITORY_PATH')
 
 # Enable logging
 logging.basicConfig(
@@ -16,21 +18,25 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
+def find_user(username: str):
+    with open(USER_REPOSITORY_PATH, 'r', encoding='utf-8') as file:
+        users = json.load(file)
+
+    user = None
+    for user_id, user_data in users.items():
+        if user_data["username"] == username:
+            user = user_data
+            break
+    return user
+
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('Halo, selamat datang di datacenter inisiatif. Bisa tolong sebutkan username anda?')
     return USERNAME
 
 async def get_username(update: Update, context: ContextTypes.DEFAULT_TYPE):
     username = update.message.text
-    with open(USER_REPOSITORY, 'r', encoding='utf-8') as file:
-        users = json.load(file)
+    found_user = find_user(username)
 
-    found_user = None
-    for user_id, user_data in users.items():
-        if user_data["username"] == username:
-            found_user = user_data
-            break
-    
     if not found_user:
         await update.message.reply_text('''
         Username tidak dikenali,\n silahkan ulangi atau /cancel untuk membatalkan
@@ -46,7 +52,7 @@ async def get_password(update: Update, context: ContextTypes.DEFAULT_TYPE):
     username = context.user_data['username']
     password = update.message.text
 
-    with open(USER_REPOSITORY, 'r', encoding='utf-8') as file:
+    with open(USER_REPOSITORY_PATH, 'r', encoding='utf-8') as file:
         users = json.load(file)
 
     # checking username
@@ -95,3 +101,9 @@ login_convhandler = ConversationHandler(
     },
     fallbacks=[CommandHandler("cancel", cancel_command), MessageHandler(filters.ALL, fallback_handler)]
 )
+
+# user = find_user("atang")
+# if not user:
+#     print("user not found")
+# else:
+#     print("user ditemukan")

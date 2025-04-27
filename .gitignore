@@ -1,3 +1,4 @@
 .rasa
 .venv
 .env
+__pychache__

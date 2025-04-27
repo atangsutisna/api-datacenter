@@ -126,7 +126,8 @@ async def remove_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 rep_path = path.split("/repository", 1)[1]
                 folder_path = os.path.dirname(rep_path)
                 filename_wpath = os.path.join(folder_path, filename)
-                await update.message.reply_text(f"Kami akan mengahpus file: {filename_wpath}")
+                os.remove(path)
+                await update.message.reply_text(f"File {filename_wpath} telah dihapus")
             else:
                 await update.message.reply_text(f"Ah, kamu ini bercanda!")
         else:

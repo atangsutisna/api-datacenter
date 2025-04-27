@@ -1,0 +1,3 @@
+python-telegram-bot
+
+sudo update-alternatives --config python3
