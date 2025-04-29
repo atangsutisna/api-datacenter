@@ -1,0 +1,58 @@
+import logging, os, re
+from telegram import Update
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
+from dotenv import load_dotenv
+
+load_dotenv()
+
+REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
+
+# Enable logging
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.DEBUG
+)
+# set higher logging level for httpx to avoid all GET and POST requests being logged
+logging.getLogger("httpx").setLevel(logging.WARNING)
+
+logger = logging.getLogger(__name__)
+
+WAITING_FOR_FILE = range(1)
+
+# fix me, do not hard code
+FOLDER_PATH = "/home/kangatang/git/filegator/repository/atang"
+
+async def start_upload_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text('Saya siap menerima file, silakan upload filenya')
+    return WAITING_FOR_FILE
+
+async def do_upload_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    logger.info('starting to process upload file')
+    document = update.message.document
+    if not document:
+        logger.info('The message is not document')
+        await update.message.reply_text("Tolong kirimkan filenya")
+        return WAITING_FOR_FILE
+    
+    file_id = document.file_id
+    logger.info('attempting to process file with id %s', file_id)
+    file = await context.bot.get_file(file_id)
+
+    # ensure folder path exists
+    os.makedirs(FOLDER_PATH, exist_ok=True)
+
+    file_path = os.path.join(FOLDER_PATH, document.file_name)
+    await file.download_to_drive(file_path)
+    await update.message.reply_text(f"File {document.file_name} telah disimpan")
+    return ConversationHandler.END
+
+async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text(f'Ok, terima kasih.')
+    return ConversationHandler.END
+
+upload_cmd_handler = ConversationHandler(
+    entry_points=[CommandHandler("upload", start_upload_cmd)],
+    states={
+        WAITING_FOR_FILE: [MessageHandler(filters.ALL, do_upload_file)],
+    },
+    fallbacks=[CommandHandler("batal", cancel_command)]
+)
