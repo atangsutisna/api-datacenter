@@ -4,7 +4,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 from dotenv import load_dotenv
 import requests, json, bcrypt, os, re, logging
 
-import logincommand, forgotpasscommand, findcommand
+import logincommand, forgotpasscommand, findcommand, uploadfilecommand
 
 BOT_USERNAME: Final = '@dcinisiatifdev_bot'
 REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
@@ -111,7 +111,7 @@ if __name__ == '__main__':
     # forgot password command
     app.add_handler(forgotpasscommand.forgotpass_convhandler)
     # upload command
-
+    app.add_handler(uploadfilecommand.upload_cmd_handler)
     # search command
     app.add_handler(findcommand.searching_handler)
     # summarize command
