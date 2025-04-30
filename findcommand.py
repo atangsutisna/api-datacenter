@@ -131,7 +131,35 @@ async def remove_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             else:
                 await update.message.reply_text(f"Ah, kamu ini bercanda!")
         else:
-            await update.message.reply_text("Silakan balas dengan angka 1 sampai 5.")
+            count_results = len(context.user_data['search_results'])
+            await update.message.reply_text("Silakan balas dengan angka 1 sampai {count_results}.")
+
+async def download_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # todo: check before searching the file
+    args = context.args
+    if not args:
+        await update.message.reply_text('Silakan balas dengan format /kirim-file nomor-file')
+    else:
+        file_no = args[0]
+        search_results = context.user_data['search_results']
+        if file_no.isdigit():
+            index = int(file_no) - 1
+            if 0 <= index < len(search_results):
+                path = search_results[index]
+                filename = os.path.basename(path)
+                # rep_path = path.split("/repository", 1)[1]
+                # folder_path = os.path.dirname(rep_path)
+                # filename_wpath = os.path.join(folder_path, filename)
+                logger.info('attempting to send file on %s', path)
+                try:
+                    await update.message.reply_document(document=open(path, 'rb'))
+                except FileNotFoundError:
+                    await update.message.reply_text("File tidak ditemukan.")
+            else:
+                await update.message.reply_text(f"Ah, yang bener dong! Tolong masukan angka.")
+        else:
+            count_results = len(context.user_data['search_results'])
+            await update.message.reply_text(f"Silakan balas dengan angka 1 sampai {count_results}.")
 
 async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f'Ok, terima kasih.')

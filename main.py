@@ -114,6 +114,8 @@ if __name__ == '__main__':
     app.add_handler(uploadfilecommand.upload_cmd_handler)
     # search command
     app.add_handler(findcommand.searching_handler)
+    # download command
+    app.add_handler(CommandHandler('kirim', findcommand.download_command))
     # summarize command
     app.add_handler(CommandHandler('info', findcommand.summarize_command))
     # remove command
