@@ -70,7 +70,7 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                 output = format_to_list(results)
                 await update.message.reply_text(output, parse_mode="HTML")
         else:
-            await update.message.reply_text('Maaf, saya tidak mengenali kamu. Silakan login terlebih dahulu.')
+            await update.message.reply_text('Maaf, saya tidak bisa melayani kamu. Ketik /start untuk mulai.')
         return ConversationHandler.END
 
 async def do_search(update: Update, context: ContextTypes.DEFAULT_TYPE):

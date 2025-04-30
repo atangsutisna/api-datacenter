@@ -19,12 +19,14 @@ logger = logging.getLogger(__name__)
 WAITING_FOR_FILE = range(1)
 
 # fix me, do not hard code
-FOLDER_PATH = "/home/kangatang/git/filegator/repository/atang"
-
+# FOLDER_PATH = "/home/kangatang/git/filegator/repository/atang"
 async def start_upload_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('Silakan kirim file satu per satu. Ketik /selesai jika sudah.')
-    context.user_data["uploaded_files"] = []
-    return WAITING_FOR_FILE
+    if 'is_logged_in' in context.user_data:
+        await update.message.reply_text('Silakan kirim file satu per satu. Ketik /selesai jika sudah.')
+        context.user_data["uploaded_files"] = []
+        return WAITING_FOR_FILE
+    else:
+        await update.message.reply_text('Maaf, saya tidak bisa melayani kamu. Ketik /start untuk mulai.')
 
 
 async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -40,6 +42,8 @@ async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
     file = await context.bot.get_file(file_id)
 
     # ensure folder path exists
+    homedir = context.user_data['homedir']
+    FOLDER_PATH = REPOSITORY_PATH + homedir
     os.makedirs(FOLDER_PATH, exist_ok=True)
 
     file_path = os.path.join(FOLDER_PATH, document.file_name)
