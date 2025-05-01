@@ -112,11 +112,6 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             index = int(file_no) - 1
             if 0 <= index < len(search_results):
                 path = search_results[index]
-                # filename = os.path.basename(path)
-                
-                # rep_path = path.split("/repository", 1)[1]
-                # folder_path = os.path.dirname(rep_path)
-                # filename_wpath = os.path.join(folder_path, filename)
                 url = "http://localhost:5000/summarize"
                 processed = read_docx(path)
                 data = {"message": processed}
