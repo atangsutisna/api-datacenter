@@ -1,0 +1,2 @@
+## read doc
+pip install python-docx

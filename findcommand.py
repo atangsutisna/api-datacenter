@@ -3,10 +3,11 @@
 # format summarize /ringkas-no 1
 # format hapus /hapus-no
 
-import logging, os, re
+import logging, os, re, requests
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
 from dotenv import load_dotenv
+from docx import Document
 
 load_dotenv()
 
@@ -23,6 +24,7 @@ logging.basicConfig(
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
+
 
 def escape_special_chars(text):
     return re.sub(r"([-.])", r"\\\1", text)
@@ -49,6 +51,17 @@ def format_to_list(results: list[str]) -> str:
         no += 1
 
     return output
+
+def read_docx(file_path: str) -> str:
+    doc = Document(file_path)
+    hasil = []
+    for paragraf in doc.paragraphs:
+        isi = paragraf.text.strip()
+        if isi:  # hanya ambil paragraf yang tidak kosong
+            hasil.append(isi)
+        if len(hasil) == 5:
+            break
+    return "\n\n".join(hasil)
 
 async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args
@@ -99,12 +112,18 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             index = int(file_no) - 1
             if 0 <= index < len(search_results):
                 path = search_results[index]
-                filename = os.path.basename(path)
+                # filename = os.path.basename(path)
                 
-                rep_path = path.split("/repository", 1)[1]
-                folder_path = os.path.dirname(rep_path)
-                filename_wpath = os.path.join(folder_path, filename)
-                await update.message.reply_text(f"Kami akan membuat ringkasan file: {filename_wpath}")
+                # rep_path = path.split("/repository", 1)[1]
+                # folder_path = os.path.dirname(rep_path)
+                # filename_wpath = os.path.join(folder_path, filename)
+                url = "http://localhost:5000/summarize"
+                processed = read_docx(path)
+                data = {"message": processed}
+                # logger.debug("Teks processed: %s", processed)
+                response = requests.post(url, json=data)
+                response_json = response.json()
+                await update.message.reply_text(response_json['summary_text'].lower())
             else:
                 await update.message.reply_text(f"Ah, kamu ini bercanda!")
         else:
@@ -177,3 +196,11 @@ searching_handler = ConversationHandler(
 # print(REPOSITORY_PATH + '/atang')
 # results = search(REPOSITORY_PATH + '/atang', 'puskesmas')
 # print(format_to_list(results))
+# path = REPOSITORY_PATH + '/atang/surat-pernyataan-ahli-waris.docx'
+# processed = read_docx(path)
+# url = "http://localhost:5000/summarize"
+# data = {"message": processed}
+# logger.debug("Teks processed: %s", processed)
+# response = requests.post(url, json=data)
+# print(response.json())
+# print(processed)
