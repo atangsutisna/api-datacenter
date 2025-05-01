@@ -112,13 +112,39 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             index = int(file_no) - 1
             if 0 <= index < len(search_results):
                 path = search_results[index]
-                url = "http://localhost:5000/summarize"
-                processed = read_docx(path)
-                data = {"message": processed}
-                # logger.debug("Teks processed: %s", processed)
-                response = requests.post(url, json=data)
-                response_json = response.json()
-                await update.message.reply_text(response_json['summary_text'].lower())
+                # cek apakah folder atau file
+                is_file = os.path.isfile(path)
+                if is_file:
+                    logger.debug("attempting to read file %s", path)
+                    # cek ext file
+                    url = "http://localhost:5000/summarize"
+                    processed = read_docx(path)
+                    data = {"message": processed}
+                    # logger.debug("Teks processed: %s", processed)
+                    response = requests.post(url, json=data)
+                    response_json = response.json()
+                    await update.message.reply_text(response_json['summary_text'].lower())
+                else:
+                    logger.debug("attempting to open folder %s", path)
+                    homedir = context.user_data['homedir']
+                    dir_list = os.listdir(path)
+                    no = 1
+                    results = []
+                    message = "<b>Hasil Pencarian:</b>\n"
+                    for dir in dir_list:
+                        full_path = os.path.join(path, dir)
+                        logger.info("full path %s",full_path)
+                        results.append(full_path)
+                        is_file = os.path.isfile(path + "/" + dir)
+                        no_str = str(no)
+                        if is_file:
+                            message += f"{no_str}. {dir}\n"
+                        else:
+                            message += f"{no_str}. <b>Folder</b> {dir}\n"
+                        no += 1
+                    message = (message)
+                    context.user_data['search_results'] = results
+                    await update.message.reply_text(message, parse_mode="HTML")
             else:
                 await update.message.reply_text(f"Ah, kamu ini bercanda!")
         else:
