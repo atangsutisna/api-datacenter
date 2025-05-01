@@ -82,6 +82,7 @@ async def get_password(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text('''
             Password salah, silakan ulangi atau /cancel untuk membatalkan
             ''')
+            return PASSWORD
     
     return ConversationHandler.END
 
