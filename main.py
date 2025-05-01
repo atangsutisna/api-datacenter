@@ -122,10 +122,10 @@ if __name__ == '__main__':
     app.add_handler(CommandHandler('hapus', findcommand.remove_command))
 
     # help command
-    app.add_handler(CommandHandler('help', help_command))
+    app.add_handler(CommandHandler('bantuan', help_command))
 
     # list homedir handler
-    app.add_handler(CommandHandler('ls', ls_command))
+    app.add_handler(CommandHandler('list', ls_command))
     # Message
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
     # Error
