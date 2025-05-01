@@ -37,19 +37,20 @@ async def ls_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if is_logged_in:
         dir_list = os.listdir(REPOSITORY_PATH + homedir)
         no = 1
+        results = []
         message = "<b>Hasil Pencarian:</b>\n"
         for dir in dir_list:
+            full_path = os.path.join(REPOSITORY_PATH + homedir, dir)
+            results.append(full_path)
             is_file = os.path.isfile(REPOSITORY_PATH + homedir + "/" + dir)
             no_str = str(no)
             if is_file:
-                # message += str(no) +"\\. ["+ escape_special_chars(dir) + "]\n"
                 message += f"{no_str}. {dir}\n"
             else:
-                # message += str(no) +"\\. *Folder* \- "+ escape_special_chars(dir) + "\n"
-                message += f"{no_str}. Folder {dir}\n"
-            # message += "\\.\n"
+                message += f"{no_str}. <b>Folder</b> {dir}\n"
             no += 1
         message = (message)
+        context.user_data['search_results'] = results
         await update.message.reply_text(message, parse_mode="HTML")
     else:
         await update.message.reply_text('Maaf, anda belum bisa mengakses data center.')
