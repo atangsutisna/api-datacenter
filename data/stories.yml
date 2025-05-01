@@ -28,3 +28,18 @@ stories:
   - action: utter_did_that_help
   - intent: deny
   - action: utter_goodbye
+
+- story: ask about data center
+  steps:
+    - intent: ask_datacenter
+    - action: utter_ask_datacenter
+
+- story: ask abount admin admin data center
+  steps:
+    - intent: ask_admin_datacenter
+    - action: utter_ask_admin_datacenter
+
+- story: ask abount inisiatif
+  steps:
+    - intent: ask_about_insi
+    - action: utter_ask_about_insi

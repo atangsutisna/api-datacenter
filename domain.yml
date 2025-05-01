@@ -8,6 +8,9 @@ intents:
   - mood_great
   - mood_unhappy
   - bot_challenge
+  - ask_datacenter
+  - ask_admin_datacenter
+  - ask_about_insi
 
 responses:
   utter_greet:
@@ -28,6 +31,15 @@ responses:
 
   utter_iamabot:
   - text: "I am a bot, powered by Rasa."
+
+  utter_ask_datacenter:
+  - text: "Fasilitas yang digunakan untuk menyimpan data"
+
+  utter_ask_admin_datacenter:
+  - text: "Maaf, saya tidak dapat memberikan informasi tersebut."
+
+  utter_ask_about_insi:
+  - text: "Baik, untuk mengetahui lebih jauh mengenai perkumpulan inisiatif silahkan anda mengunjungi website https://www.inisiatif.org"
 
 session_config:
   session_expiration_time: 60

@@ -89,3 +89,23 @@ nlu:
     - are you a human?
     - am I talking to a bot?
     - am I talking to a human?
+
+- intent: ask_datacenter
+  examples: |
+    - apa itu data center?
+    - data center itu apa ya?
+    - apaan sih data center?
+
+- intent: ask_admin_datacenter
+  examples: |
+    - siapa sih adminnya?
+    - siapa admin data center?
+    - adminnya siapa?
+    - tolong infokan adminnya
+
+- intent: ask_about_insi
+  examples: |
+    - inisiatif itu apa ya?
+    - apa itu inisiatif?
+    - tolong jelaskan, inisiatif itu apa?
+    - apa itu inisiatif?

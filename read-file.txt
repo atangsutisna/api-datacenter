@@ -1,2 +1,40 @@
 ## read doc
 pip install python-docx
+
+## HOW TO RUN RASA AI CHATBOT
+pip install rasa
+rasa init
+perintah ini akan menghasilkan folder dan file berikut:
+** folder actions
+
+** folder data
+- nlu.yml
+Definisikan semua intens di sini
+
+- rules.yml
+Response yang 
+
+- stories.yml
+Interaksi antara bot dan user
+
+** folder tests
+** file config.yml
+** file credential.yml
+** file domain.yml
+** file endpoints.yml
+
+RUN RASA
+------------------------------------------------
+rasa shell
+------------------------------------------------
+dengan perintah tersebut akan masuk ke terminal rasa
+
+--------------------------------------------------
+rasa train
+--------------------------------------------------
+perintah "train" diketik setelah melakukan perubahan terhadap folder data atau folder-folder inti rasa (doamin.yml, nlu.yml, stories.yml dll)
+
+---------------------------------------------------
+rasa run --enable-api --cors "*"
+---------------------------------------------------
+untuk menjalankan server api rasa
