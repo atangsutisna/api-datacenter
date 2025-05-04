@@ -21,7 +21,7 @@ Interaksi antara bot dan user
 ** file config.yml
 ** file credential.yml
 ** file domain.yml
-** file endpoints.yml
+** file endpoints.yml/
 
 RUN RASA
 ------------------------------------------------
