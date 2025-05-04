@@ -1,100 +1,45 @@
 version: "3.1"
 
 nlu:
-- intent: greet
+- intent: nlu_fallback
   examples: |
-    - hey
-    - hello
-    - hi
-    - hello there
-    - good morning
-    - good evening
-    - moin
-    - hey there
-    - let's go
-    - hey dude
-    - goodmorning
-    - goodevening
-    - good afternoon
+    - fsfsfsfsfs
+    - anjing
+    - goblok
+    - asdfasdf
+    - aneh
+    - tolol
 
-- intent: goodbye
+- intent: bertegur_sapa
   examples: |
-    - cu
-    - good by
-    - cee you later
-    - good night
-    - bye
-    - goodbye
-    - have a nice day
-    - see you around
-    - bye bye
-    - see you later
-
-- intent: affirm
-  examples: |
-    - yes
-    - y
-    - indeed
-    - of course
-    - that sounds good
-    - correct
-
-- intent: deny
-  examples: |
-    - no
-    - n
-    - never
-    - I don't think so
-    - don't like that
-    - no way
-    - not really
-
-- intent: mood_great
-  examples: |
-    - perfect
-    - great
-    - amazing
-    - feeling like a king
-    - wonderful
-    - I am feeling very good
-    - I am great
-    - I am amazing
-    - I am going to save the world
-    - super stoked
-    - extremely good
-    - so so perfect
-    - so good
-    - so perfect
-
-- intent: mood_unhappy
-  examples: |
-    - my day was horrible
-    - I am sad
-    - I don't feel very well
-    - I am disappointed
-    - super sad
-    - I'm so sad
-    - sad
-    - very sad
-    - unhappy
-    - not good
-    - not very good
-    - extremly sad
-    - so saad
-    - so sad
+    - hallo
+    - hai
+    - selamat pagi
+    - selamat siang
+    - selamat malam
+    - halo
+    - assalamualaikum
 
 - intent: bot_challenge
   examples: |
-    - are you a bot?
-    - are you a human?
-    - am I talking to a bot?
-    - am I talking to a human?
+    - kamu bot, bukan?
+    - apakah kamu orang?
+    - apakah saya sedang berbicara dengan bot?
+    - kamu bot, ya?
+    - siapa ini?
+    - kamu siapa?
+    - siapa kamu?
+    - dengan siapa saya bicara?
+    - kamu bot atau orang?
+    - kamu orang, bukan?
 
 - intent: ask_datacenter
   examples: |
     - apa itu data center?
     - data center itu apa ya?
     - apaan sih data center?
+    - apa yang dimaksud dengan data center?
+    - data center itu apa?
 
 - intent: ask_admin_datacenter
   examples: |
@@ -102,6 +47,7 @@ nlu:
     - siapa admin data center?
     - adminnya siapa?
     - tolong infokan adminnya
+    - bisa kasih tau adminnya?
 
 - intent: ask_about_insi
   examples: |
@@ -109,3 +55,51 @@ nlu:
     - apa itu inisiatif?
     - tolong jelaskan, inisiatif itu apa?
     - apa itu inisiatif?
+    - perkumpulan inisiatif itu apa?
+    - perkumpulan inisiatif itu ngapain aja?
+    - pekerjaan inisiatif itu apa?
+
+- intent: ask_upload
+  examples: |
+    - saya mau upload data, gimana caranya?
+    - cara upload data bagaimana?
+    - perintah untuk upload apa?
+    - upload file gimana caranya?
+    - tolong saya mau upload data
+    - tolong bagaimana cara upload data.
+    - upload data gimana caranya ya?
+    - saya bingung, gimana caranya upload data?
+
+- intent: ask_download
+  examples: |
+    - bagaimana cara download-nya?
+    - bagaimana cara saya bisa mengunduh file?
+    - tolong beri tahu saya cara download.
+    - gimana cara download?
+    - saya mau download, gimana caranya?
+    - bisa bantu cara unduh file?
+    - langkah-langkah untuk download gimana ya?
+    - saya tidak tahu cara download
+    - bisa bantu saya download?
+
+- intent: ask_search_file
+  examples: |
+    - saya ingin mencari file
+    - bagaimana cara mencari file?
+    - cari file dong
+    - saya butuh file tertentu
+    - tolong bantu cari file
+    - bisa bantu temukan file?
+    - ada fitur pencarian file?
+
+- intent: ask_forgot_password
+  examples: |
+    - saya lupa password
+    - bagaimana kalo saya lupa password?
+    - tolong bantu saya reset password
+    - saya tidak masuk, lupa password
+    - bisa bantu ulang atur kata sandi?
+    - lupa login
+    - gimana cara reset password
+    - saya kehilangan akses karena lupa password
+    - bantu reset password saya dong

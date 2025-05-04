@@ -1,36 +1,27 @@
 version: "3.1"
 
 intents:
-  - greet
-  - goodbye
-  - affirm
-  - deny
-  - mood_great
-  - mood_unhappy
   - bot_challenge
   - ask_datacenter
   - ask_admin_datacenter
   - ask_about_insi
+  - bertegur_sapa
+  - nlu_fallback
+  - ask_upload
+  - ask_download
+  - ask_search_file
+  - ask_forgot_password
 
 responses:
-  utter_greet:
-  - text: "Hey! How are you?"
+  utter_default:
+  - text: "Maaf, saya tidak mengerti."
+  - text: "Maaf, saya tidak mengerti maksud kamu. Bisa dijelaskan ulang?"
 
-  utter_cheer_up:
-  - text: "Here is something to cheer you up:"
-    image: "https://i.imgur.com/nGF1K8f.jpg"
-
-  utter_did_that_help:
-  - text: "Did that help you?"
-
-  utter_happy:
-  - text: "Great, carry on!"
-
-  utter_goodbye:
-  - text: "Bye"
+  utter_bertegur_sapa:
+  - text: "Halo, saya Bot data center."
 
   utter_iamabot:
-  - text: "I am a bot, powered by Rasa."
+  - text: "Saya Bot data center."
 
   utter_ask_datacenter:
   - text: "Fasilitas yang digunakan untuk menyimpan data"
@@ -40,6 +31,20 @@ responses:
 
   utter_ask_about_insi:
   - text: "Baik, untuk mengetahui lebih jauh mengenai perkumpulan inisiatif silahkan anda mengunjungi website https://www.inisiatif.org"
+
+  utter_upload_command:
+  - text: "Gunakan perintah /upload."
+
+  utter_download_command:
+  - text: "Gunakan perintah /download [no]. Sebelum mengetikan perintah itu, kamu harus cari dulu filenya dengan mengetikan /cari [nama file]"
+
+  utter_search_command:
+  - text: "Gunakan perintah /search [nama file]"
+
+  utter_forgot_password_command:
+  - text: "Gunakan perintah /lupa-password"
+
+
 
 session_config:
   session_expiration_time: 60

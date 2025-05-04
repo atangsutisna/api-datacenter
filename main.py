@@ -57,19 +57,19 @@ async def ls_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # handle responses
 def handle_response(text: str) -> str:
-    # url = "http://localhost:5005/webhooks/rest/webhook"
+    url = "http://localhost:5005/webhooks/rest/webhook"
     processed: str = text.lower()
-    # data = {"sender": "user", "message": processed}
-    # response = requests.post(url, json=data)
-    # return response.json()
-    if 'hello' in processed:
-        return 'Hey there'
-    if 'how are you' in processed:
-        return 'I am good'
-    if 'you know ali?' in processed:
-        return 'Yes, I know. He is handsome guy!'
+    data = {"sender": "user", "message": processed}
+    response = requests.post(url, json=data)
+    return response.json()
+    # if 'hello' in processed:
+    #     return 'Hey there'
+    # if 'how are you' in processed:
+    #     return 'I am good'
+    # if 'you know ali?' in processed:
+    #     return 'Yes, I know. He is handsome guy!'
 
-    return 'Maaf, saya tidak mengerti'
+    # return 'Maaf, saya tidak mengerti'
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_type: str = update.message.chat.type
@@ -84,8 +84,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
     else:
         response: str = handle_response(text)
-        await update.message.reply_text(response)
-    logger.info('Bot: %s', response)
+        logger.info('Bot: %s', response)
+        await update.message.reply_text(response[0]['text'])
     # url = "http://localhost:5005/webhooks/rest/webhook"
     # processed: str = text.lower()
     # data = {"sender": "user", "message": processed}

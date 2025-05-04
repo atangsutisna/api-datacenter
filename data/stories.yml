@@ -2,44 +2,44 @@ version: "3.1"
 
 stories:
 
-- story: happy path
-  steps:
-  - intent: greet
-  - action: utter_greet
-  - intent: mood_great
-  - action: utter_happy
+# - story: happy path
+#   steps:
+#   - intent: greet
+#   - action: utter_greet
+#   - intent: mood_great
+#   - action: utter_happy
 
-- story: sad path 1
-  steps:
-  - intent: greet
-  - action: utter_greet
-  - intent: mood_unhappy
-  - action: utter_cheer_up
-  - action: utter_did_that_help
-  - intent: affirm
-  - action: utter_happy
+# - story: sad path 1
+#   steps:
+#   - intent: greet
+#   - action: utter_greet
+#   - intent: mood_unhappy
+#   - action: utter_cheer_up
+#   - action: utter_did_that_help
+#   - intent: affirm
+#   - action: utter_happy
 
-- story: sad path 2
-  steps:
-  - intent: greet
-  - action: utter_greet
-  - intent: mood_unhappy
-  - action: utter_cheer_up
-  - action: utter_did_that_help
-  - intent: deny
-  - action: utter_goodbye
+# - story: sad path 2
+#   steps:
+#   - intent: greet
+#   - action: utter_greet
+#   - intent: mood_unhappy
+#   - action: utter_cheer_up
+#   - action: utter_did_that_help
+#   - intent: deny
+#   - action: utter_goodbye
 
-- story: ask about data center
-  steps:
-    - intent: ask_datacenter
-    - action: utter_ask_datacenter
+# - story: ask about data center
+#   steps:
+#     - intent: ask_datacenter
+#     - action: utter_ask_datacenter
 
-- story: ask abount admin admin data center
-  steps:
-    - intent: ask_admin_datacenter
-    - action: utter_ask_admin_datacenter
+# - story: ask abount admin admin data center
+#   steps:
+#     - intent: ask_admin_datacenter
+#     - action: utter_ask_admin_datacenter
 
-- story: ask abount inisiatif
-  steps:
-    - intent: ask_about_insi
-    - action: utter_ask_about_insi
+# - story: ask abount inisiatif
+#   steps:
+#     - intent: ask_about_insi
+#     - action: utter_ask_about_insi
