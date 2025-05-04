@@ -22,6 +22,9 @@ load_dotenv()
 def escape_special_chars(text):
     return re.sub(r"([-.])", r"\\\1", text)
 
+async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text('Halo, saya asisten data center')
+
 async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f'Ok, terima kasih.')
     return ConversationHandler.END
@@ -107,6 +110,7 @@ if __name__ == '__main__':
     logger.info('Starting bot...')
     app = Application.builder().token(os.getenv('TOKEN')).build()
     
+    app.add_handler(CommandHandler('start', start_command))
     # login command
     app.add_handler(logincommand.login_convhandler)
     # forgot password command

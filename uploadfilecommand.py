@@ -26,7 +26,7 @@ async def start_upload_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context.user_data["uploaded_files"] = []
         return WAITING_FOR_FILE
     else:
-        await update.message.reply_text('Maaf, saya tidak bisa melayani kamu. Ketik /start untuk mulai.')
+        await update.message.reply_text('Maaf, saya tidak bisa melayani kamu. Ketik /login untuk mulai.')
 
 
 async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE):

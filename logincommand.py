@@ -94,8 +94,9 @@ async def fallback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Perintah tidak dikenal. Gunakan /cancel untuk keluar.")
     return USERNAME  # Kembali ke state sebelumnya
 
+# jangan gunakan perintah start
 login_convhandler = ConversationHandler(
-    entry_points=[CommandHandler("start", start_command)],
+    entry_points=[CommandHandler("login", start_command)],
     states={
         USERNAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_username)],
         PASSWORD: [MessageHandler(filters.TEXT & ~filters.COMMAND, get_password)]
