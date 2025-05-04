@@ -36,5 +36,30 @@ perintah "train" diketik setelah melakukan perubahan terhadap folder data atau f
 
 ---------------------------------------------------
 rasa run --enable-api --cors "*"
+
+## agar tidak berhenti prosessnya ketika terminal ditutup
+nohup rasa run --enable-api --cors "*" > rasa.log 2>&1 &
+## cara menghentikannya
+ps aux | grep rasa
+## akan muncul seperti ini
+youruser  12345  0.0  ... rasa run --enable-api --cors "*"
+## kill
+kill 12345
+## jika belum mati, gunakan ini
+kill -9 12345
 ---------------------------------------------------
 untuk menjalankan server api rasa
+======================================================
+
+
+# cara jalanin script
+----------------------------------------------------------
+nohup python3 main.py &
+
+# cara mematikan script
+ps aux | grep main.py
+----------------------------------
+kangatang  12345  0.0  ... python3 main.py
+
+# lalu ketikan perintah ini
+kill 12345
