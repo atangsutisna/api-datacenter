@@ -4,6 +4,7 @@
 # format hapus /hapus-no
 
 import logging, os, re, requests
+import PyPDF2
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
 from dotenv import load_dotenv
@@ -56,6 +57,7 @@ def format_to_list(results: list[str]) -> str:
 
     return output
 
+# read docx
 def read_docx(file_path: str) -> str:
     doc = Document(file_path)
     hasil = []
@@ -66,6 +68,15 @@ def read_docx(file_path: str) -> str:
         if len(hasil) == 5:
             break
     return "\n\n".join(hasil)
+
+# read pdf
+def read_pdf(filepath: str) -> str:
+    with open(filepath, "rb") as file:
+        reader = PyPDF2.PdfReader(file)
+        text = ""
+        for page in reader.pages:
+            text += page.extract_text() or ""
+        return text[:1000]
 
 async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args
@@ -125,13 +136,19 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     # check the extension of file
                     ext = get_ext(path)
                     if ext == "docx":
+                        logger.info("attempting read file with ext docx")
                         processed = read_docx(path)
-                        data = {"message": processed}
-                        response = requests.post(url, json=data)
-                        response_json = response.json()
-                        await update.message.reply_text(response_json['summary_text'].lower())
-                    else:
-                        await update.message.reply_text(f"Maaf, saya belum diajari untuk membaca file dengan ekstensi {ext}")
+                    elif ext == "pdf":
+                        logger.info("attempting read file with ext pdf")
+                        processed = read_pdf(path)
+
+                    logger.info("process text: %s", processed)
+                    data = {"message": processed}
+                    response = requests.post(url, json=data)
+                    response_json = response.json()
+                    await update.message.reply_text(response_json['summary_text'].lower())
+                    # else:
+                    #     await update.message.reply_text(f"Maaf, saya belum diajari untuk membaca file dengan ekstensi {ext}")
                 else:
                     logger.debug("attempting to open folder %s", path)
                     homedir = context.user_data['homedir']

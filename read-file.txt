@@ -1,5 +1,7 @@
 ## read doc
 pip install python-docx
+## read pdf
+pip install pyPDF2
 
 ## HOW TO RUN RASA AI CHATBOT
 pip install rasa
