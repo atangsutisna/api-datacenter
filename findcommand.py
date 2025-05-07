@@ -8,6 +8,7 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
 from dotenv import load_dotenv
 from docx import Document
+from pathlib import Path
 
 load_dotenv()
 
@@ -25,6 +26,9 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
+def get_ext(path: str) -> str:
+    fullpath = Path(path)
+    return fullpath.suffix.lstrip(".")
 
 def escape_special_chars(text):
     return re.sub(r"([-.])", r"\\\1", text)
@@ -118,12 +122,16 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     logger.debug("attempting to read file %s", path)
                     # cek ext file
                     url = "http://localhost:5000/summarize"
-                    processed = read_docx(path)
-                    data = {"message": processed}
-                    # logger.debug("Teks processed: %s", processed)
-                    response = requests.post(url, json=data)
-                    response_json = response.json()
-                    await update.message.reply_text(response_json['summary_text'].lower())
+                    # check the extension of file
+                    ext = get_ext(path)
+                    if ext == "docx":
+                        processed = read_docx(path)
+                        data = {"message": processed}
+                        response = requests.post(url, json=data)
+                        response_json = response.json()
+                        await update.message.reply_text(response_json['summary_text'].lower())
+                    else:
+                        await update.message.reply_text(f"Maaf, saya belum diajari untuk membaca file dengan ekstensi {ext}")
                 else:
                     logger.debug("attempting to open folder %s", path)
                     homedir = context.user_data['homedir']
@@ -217,7 +225,7 @@ searching_handler = ConversationHandler(
 # print(REPOSITORY_PATH + '/atang')
 # results = search(REPOSITORY_PATH + '/atang', 'puskesmas')
 # print(format_to_list(results))
-# path = REPOSITORY_PATH + '/atang/surat-pernyataan-ahli-waris.docx'
+# path = REPOSITORY_PATH + '/atang/storyline inisiatif.xlsx'
 # processed = read_docx(path)
 # url = "http://localhost:5000/summarize"
 # data = {"message": processed}
@@ -225,3 +233,5 @@ searching_handler = ConversationHandler(
 # response = requests.post(url, json=data)
 # print(response.json())
 # print(processed)
+# ext = get_ext(path)
+# print(ext)
