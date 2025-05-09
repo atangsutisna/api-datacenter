@@ -10,6 +10,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 from dotenv import load_dotenv
 from docx import Document
 from pathlib import Path
+import assistant_file_reader;
 
 load_dotenv()
 
@@ -17,6 +18,7 @@ ASK_SEARCH = range(1)
 ASK_SUMMARIZE = range(1)
 
 REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
+OPENAI_APIKEY = os.getenv('OPENAI_APIKEY')
 
 # Enable logging
 logging.basicConfig(
@@ -135,20 +137,29 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     url = "http://localhost:5000/summarize"
                     # check the extension of file
                     ext = get_ext(path)
-                    if ext == "docx":
-                        logger.info("attempting read file with ext docx")
-                        processed = read_docx(path)
-                    elif ext == "pdf":
-                        logger.info("attempting read file with ext pdf")
-                        processed = read_pdf(path)
 
-                    logger.info("process text: %s", processed)
-                    data = {"message": processed}
-                    response = requests.post(url, json=data)
-                    response_json = response.json()
-                    await update.message.reply_text(response_json['summary_text'].lower())
+                    # result = assistant_file_reader.read_file_with_file_search(
+                    #     api_key=OPENAI_APIKEY,
+                    #     file_path=path
+                    # )
+                    # bila ext csv, excel atau ppt, convert dulu ke pdf sebelum diringkas
+                    
+                    # ini sudah tidak diperlukan.
+                    # if ext == "docx":
+                    #     logger.info("attempting read file with ext docx")
+                    #     processed = read_docx(path)
+                    # elif ext == "pdf":
+                    #     logger.info("attempting read file with ext pdf")
+                    #     processed = read_pdf(path)
+
+                    # logger.info("process text: %s", processed)
+                    # data = {"message": processed}
+                    # response = requests.post(url, json=data)
+                    # response_json = response.json()
+                    # await update.message.reply_text(response_json['summary_text'].lower())
                     # else:
                     #     await update.message.reply_text(f"Maaf, saya belum diajari untuk membaca file dengan ekstensi {ext}")
+                    await update.message.reply_text("Maaf, fitur ini sedang dalam perbaikan")
                 else:
                     logger.debug("attempting to open folder %s", path)
                     homedir = context.user_data['homedir']
