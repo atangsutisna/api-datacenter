@@ -67,3 +67,5 @@ kangatang  12345  0.0  ... python3 main.py
 kill 12345
 
 ## intall libreoffice for converting file (csv, xls, ppt) to pdf
+sudo apt install libreoffice   # Debian/Ubuntu
+
