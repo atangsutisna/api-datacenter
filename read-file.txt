@@ -1,5 +1,6 @@
 ## read doc
 pip install python-docx
+## ini sudah tidak diperlukan karena sudah ditangani oleh openai
 ## read pdf
 pip install pyPDF2
 

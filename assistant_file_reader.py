@@ -16,7 +16,10 @@ def read_file_with_file_search(
     # Buat Assistant dengan file_search (jika belum punya, kamu bisa reuse ID)
     assistant = client.beta.assistants.create(
         name="File Reader",
-        instructions="Bantu membaca dan merangkum file teks, PDF, atau dokumen lainnya.",
+        instructions=(
+            "Bacalah file ini dan ringkas isinya."
+            "Jika tidak dapat dibaca, jelaskan penyebabnya secara singkat, tanpa mengajukan pertanyaan."
+        ),
         model="gpt-4-1106-preview",
         tools=[{"type": "file_search"}]
     )
