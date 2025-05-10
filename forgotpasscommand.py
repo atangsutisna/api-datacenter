@@ -1,13 +1,23 @@
-import logging
+import logging, os
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
-
+from dotenv import load_dotenv
 import json,bcrypt
 
+load_dotenv()
+USER_REPOSITORY_PATH = os.getenv('USER_REPOSITORY_PATH')
 ASK_EMAIL = 1
 
 async def forgotpass_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = ('Baik, bisa tolong sebutkan emailnya?')
+    # todo: find email
+    # with open(USER_REPOSITORY_PATH, 'r', encoding='utf-8') as file:
+    #     users = json.load(file)
+    # user = None
+    # for user_id, user_data in users.items():
+    #     if user_data["username"] == username:
+    #         user = user_data
+    #         break
     await update.message.reply_text(message)
     return ASK_EMAIL
     
