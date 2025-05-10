@@ -10,7 +10,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 from dotenv import load_dotenv
 from docx import Document
 from pathlib import Path
-import assistant_file_reader;
+import assistant_file_reader, fileconverter;
 
 load_dotenv()
 
@@ -147,7 +147,16 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                         await update.message.reply_text(result)
                     else:
                         # should be convert to pdf
-                        await update.message.reply_text(f"Maaf, saya belum diajarkan membaca file dengan ekstensi {ext}")
+                        logger.info(f"attempting to convert {path} to pdf")
+                        tmp_file_fullpath = fileconverter.convert_to_pdf(path)
+                        logger.info("attempting to ask to openai")
+                        result = assistant_file_reader.read_file_with_file_search(
+                            api_key=OPENAI_APIKEY,
+                            file_path=tmp_file_fullpath
+                        )
+                        await update.message.reply_text(result)
+                        os.remove(tmp_file_fullpath)
+                    # await update.message.reply_text(f"Maaf, saya belum diajarkan membaca file dengan ekstensi {ext}")
                     # bila ext csv, excel atau ppt, convert dulu ke pdf sebelum diringkas
                     
                     # ini sudah tidak diperlukan.
