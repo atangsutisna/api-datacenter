@@ -134,14 +134,20 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 if is_file:
                     logger.debug("attempting to read file %s", path)
                     # cek ext file
-                    url = "http://localhost:5000/summarize"
+                    # url = "http://localhost:5000/summarize"
                     # check the extension of file
                     ext = get_ext(path)
-
-                    # result = assistant_file_reader.read_file_with_file_search(
-                    #     api_key=OPENAI_APIKEY,
-                    #     file_path=path
-                    # )
+                    supported_extension = {"pdf", "doc", "docx", "txt"}
+                    if ext in supported_extension:
+                        logger.info("attempting to send request to openai")
+                        result = assistant_file_reader.read_file_with_file_search(
+                            api_key=OPENAI_APIKEY,
+                            file_path=path
+                        )
+                        await update.message.reply_text(result)
+                    else:
+                        # should be convert to pdf
+                        await update.message.reply_text(f"Maaf, saya belum diajarkan membaca file dengan ekstensi {ext}")
                     # bila ext csv, excel atau ppt, convert dulu ke pdf sebelum diringkas
                     
                     # ini sudah tidak diperlukan.
@@ -159,7 +165,7 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     # await update.message.reply_text(response_json['summary_text'].lower())
                     # else:
                     #     await update.message.reply_text(f"Maaf, saya belum diajari untuk membaca file dengan ekstensi {ext}")
-                    await update.message.reply_text("Maaf, fitur ini sedang dalam perbaikan")
+                    # await update.message.reply_text("Maaf, fitur ini sedang dalam perbaikan")
                 else:
                     logger.debug("attempting to open folder %s", path)
                     homedir = context.user_data['homedir']
