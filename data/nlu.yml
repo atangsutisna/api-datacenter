@@ -91,6 +91,13 @@ nlu:
     - tolong bantu cari file
     - bisa bantu temukan file?
     - ada fitur pencarian file?
+    - saya ingin mencari data
+    - tolong bantu cariin data
+    - bantuin cariin file
+    - minta data dong
+    - bantu saya cari file
+    - bantuin cariin file dong
+    - tolong bantuin saya nyari file
 
 - intent: ask_forgot_password
   examples: |
@@ -103,3 +110,14 @@ nlu:
     - gimana cara reset password
     - saya kehilangan akses karena lupa password
     - bantu reset password saya dong
+
+- intent: ask_list_homedir
+  examples: |
+    - tampilkan ada data apa saja
+    - tolong bantu list semua file saya
+    - tolong tampilkan data saya
+    - ada file apa?
+    - tolong tampilkan semua filenya
+    - apa saja filenya?
+    - datanya apa saja?
+    - minta data dong
