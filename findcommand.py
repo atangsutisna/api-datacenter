@@ -94,11 +94,14 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                 fullpath = REPOSITORY_PATH + homedir
                 # cukup dapatkan listnya saja
                 results = search(fullpath, keyword)
-                # lalu, masukan ke dalam context.user_data sebagai list
-                # context.user_data['search_results'] = []
-                context.user_data['search_results'] = results
-                output = format_to_list(results)
-                await update.message.reply_text(output, parse_mode="HTML")
+                if not results:
+                    await update.message.reply_text(f"Tidak ditemukan file dengan keyword {keyword}", parse_mode="HTML")
+                else:
+                    # lalu, masukan ke dalam context.user_data sebagai list
+                    # context.user_data['search_results'] = []
+                    context.user_data['search_results'] = results
+                    output = format_to_list(results)
+                    await update.message.reply_text(output, parse_mode="HTML")
         else:
             await update.message.reply_text('Maaf, saya tidak bisa melayani kamu. Ketik /login untuk mulai.')
         return ConversationHandler.END
@@ -113,9 +116,12 @@ async def do_search(update: Update, context: ContextTypes.DEFAULT_TYPE):
             fullpath = REPOSITORY_PATH + homedir
             logger.debug("attempting to find %s on %s", keyword, fullpath)
             results = search(fullpath, keyword)
-            await update.message.reply_text(results, parse_mode="HTML")
+            if not result:
+                await update.message.reply_text(f"Tidak ditemukan file dengan keyword {keyword}")
+            else:
+                await update.message.reply_text(results, parse_mode="HTML")
     else:
-        await update.message.reply_text('Maaf, saya tidak mengenali kamu. Silakan login terlebih dahulu.')
+        await update.message.reply_text('Maaf, saya tidak mengenali kamu. Silakan login terlebih dahulu. Ketik /login untuk mulai.')
         return ConversationHandler.END
 
 async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
