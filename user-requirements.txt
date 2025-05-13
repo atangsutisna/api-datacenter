@@ -1,0 +1,12 @@
+## Bisa login dengan lebih dari satu akun:
+struktur data yang bisa digunakan seperti ini:
+[
+{
+- telegram_id: ''
+- users_paths: [{"atang": "/atang"}, {"acc_publik": "/publik"}],
+- users_permissions: [{"atang": "read|write|upload|download|batchdownload|zip|chmod"}]
+}
+]
+
+## buat file untuk menyimpan user telah login atau belum, agar tidak selalu login berkali-kali
+simpan di file usersloggedin.json
