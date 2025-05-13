@@ -12,6 +12,7 @@ intents:
   - ask_search_file
   - ask_forgot_password
   - ask_list_homedir
+  - ask_login
 
 responses:
   utter_default:
@@ -40,13 +41,16 @@ responses:
   - text: "Gunakan perintah /download [no]. Sebelum mengetikan perintah itu, kamu harus cari dulu filenya dengan mengetikan /cari [nama file]"
 
   utter_search_command:
-  - text: "Baik. Untuk mencari sebuah data atau file, gunakan ketik perintah ini: /search [nama file] atau cukup klik link ini: /search"
+  - text: "Baik. Untuk mencari sebuah data atau file, gunakan ketik perintah ini: /cari [nama file] atau cukup klik link ini: /cari"
 
   utter_forgot_password_command:
   - text: "Gunakan perintah /lupa-password"
 
   utter_list_homedir:
   - text: "Baik. Untuk menampilkan data, gunakan ketika perintah /list atau cukup klik link ini: /list"
+
+  utter_login:
+  - text: "Baik. Ketik perintah /login atau cukup klik link ini /login"
 
 session_config:
   session_expiration_time: 60

@@ -121,3 +121,12 @@ nlu:
     - apa saja filenya?
     - datanya apa saja?
     - minta data dong
+
+- intent: ask_login
+  examples: |
+    - saya mau login
+    - cara login, gimana?
+    - bagaimana caranya login?
+    - login gimana caranya?
+    - bantu saya login
+    - apa perintah login
