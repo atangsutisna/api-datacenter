@@ -31,29 +31,51 @@ async def start_upload_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info('starting to process upload file')
-    document = update.message.document
-    if not document:
-        logger.info('The message is not document')
-        await update.message.reply_text("Tolong kirim file. Atau ketik /selesai jika sudah.")
-        return WAITING_FOR_FILE
-    
-    file_id = document.file_id
-    logger.info('attempting to process file with id %s', file_id)
-    file = await context.bot.get_file(file_id)
-
+    # todo: check permissions
     # ensure folder path exists
     homedir = context.user_data['homedir']
     FOLDER_PATH = REPOSITORY_PATH + homedir
-    os.makedirs(FOLDER_PATH, exist_ok=True)
+    # cek foto
+    if update.message.photo:
+        photo_list = update.message.photo
+        photo = photo_list[-1] # mengambil gambar dengan resolusi tertinggi
+        logger.info('attempting to process photo with id %s', photo.file_id)
+        file = await context.bot.get_file(photo.file_id)
 
-    file_path = os.path.join(FOLDER_PATH, document.file_name)
-    await file.download_to_drive(file_path)
+        os.makedirs(FOLDER_PATH, exist_ok=True)
+        filename = f"photo_{photo.file_id}.jpg"
+        file_path = os.path.join(FOLDER_PATH, filename)
+        await file.download_to_drive(file_path)
 
-    context.user_data['uploaded_files'].append(document.file_name)
-    await update.message.reply_text(f"File {document.file_name} telah disimpan")
+        context.user_data['uploaded_files'].append(filename)
+        await update.message.reply_text(f"File {filename} telah disimpan. Klik atau ketik /selesai jika sudah.")
+        return WAITING_FOR_FILE
+    elif update.message.document:
+        document = update.message.document
+        file_id = document.file_id
+        logger.info('attempting to process file with id %s', file_id)
+        file = await context.bot.get_file(file_id)
 
-    return WAITING_FOR_FILE
+        # ensure folder path exists
+        homedir = context.user_data['homedir']
+        FOLDER_PATH = REPOSITORY_PATH + homedir
+        os.makedirs(FOLDER_PATH, exist_ok=True)
 
+        file_path = os.path.join(FOLDER_PATH, document.file_name)
+        await file.download_to_drive(file_path)
+
+        context.user_data['uploaded_files'].append(document.file_name)
+        await update.message.reply_text(f"File {document.file_name} telah disimpan. Klik atau ketik /selesai jika sudah.")
+        return WAITING_FOR_FILE
+    else:
+        await update.message.reply_text("Tolong kirim file. Atau ketik /selesai jika sudah.")
+        return WAITING_FOR_FILE
+    # document = update.message.document
+    # if not document:
+    #     logger.info('The message is not document')
+    #     await update.message.reply_text("Tolong kirim file. Atau ketik /selesai jika sudah.")
+    #     return WAITING_FOR_FILE
+    
 async def done_upload(update: Update, context: ContextTypes.DEFAULT_TYPE):
     uploaded = context.user_data.get('uploaded_files', [])
     if uploaded:
