@@ -1,5 +1,6 @@
 .rasa
 .venv
 .env
+usersloggedin.json
 __pychache__
 models
