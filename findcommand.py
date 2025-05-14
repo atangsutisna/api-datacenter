@@ -5,7 +5,7 @@
 
 import logging, os, re, requests
 import PyPDF2
-from telegram import Update
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
 from dotenv import load_dotenv
 from docx import Document
@@ -100,8 +100,21 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                     # lalu, masukan ke dalam context.user_data sebagai list
                     # context.user_data['search_results'] = []
                     context.user_data['search_results'] = results
-                    output = format_to_list(results)
-                    await update.message.reply_text(output, parse_mode="HTML")
+                    no = 1
+                    keyboard = []
+                    for path in results:
+                        filename = os.path.basename(path)
+                        rep_path = path.split("/repository", 1)[1]
+                        folder_path = os.path.dirname(rep_path)
+                        filename_wpath = os.path.join(folder_path, filename)
+                        button = InlineKeyboardButton(
+                            text=f"{no} - {filename_wpath} /info",
+                            callback_data=f"pilih_{no}"
+                        )
+                        keyboard.append([button])
+                        no += 1
+                    reply_markup = InlineKeyboardMarkup(keyboard)
+                    await update.message.reply_text("Hasil Pencarian: ", reply_markup=reply_markup)
         else:
             await update.message.reply_text('Maaf, saya tidak bisa melayani kamu. Ketik /login untuk mulai.')
         return ConversationHandler.END
@@ -125,87 +138,72 @@ async def do_search(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return ConversationHandler.END
 
 async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    args = context.args
-    if not args:
-        await update.message.reply_text('Silakan balas dengan format /info nomor-file')
-    else:
-        file_no = args[0]
-        search_results = context.user_data['search_results']
-        if file_no.isdigit():
-            index = int(file_no) - 1
-            if 0 <= index < len(search_results):
-                path = search_results[index]
-                # cek apakah folder atau file
-                is_file = os.path.isfile(path)
-                if is_file:
-                    logger.debug("attempting to read file %s", path)
-                    # cek ext file
-                    # url = "http://localhost:5000/summarize"
-                    # check the extension of file
-                    ext = get_ext(path)
-                    supported_extension = {"pdf", "doc", "docx", "txt"}
-                    if ext in supported_extension:
-                        logger.info("attempting to send request to openai")
-                        result = assistant_file_reader.read_file_with_file_search(
-                            api_key=OPENAI_APIKEY,
-                            file_path=path
-                        )
-                        await update.message.reply_text(result)
-                    else:
-                        # should be convert to pdf
-                        logger.info(f"attempting to convert {path} to pdf")
-                        tmp_file_fullpath = fileconverter.convert_to_pdf(path)
-                        logger.info("attempting to ask to openai")
-                        result = assistant_file_reader.read_file_with_file_search(
-                            api_key=OPENAI_APIKEY,
-                            file_path=tmp_file_fullpath
-                        )
-                        await update.message.reply_text(result)
-                        os.remove(tmp_file_fullpath)
-                    # await update.message.reply_text(f"Maaf, saya belum diajarkan membaca file dengan ekstensi {ext}")
-                    # bila ext csv, excel atau ppt, convert dulu ke pdf sebelum diringkas
-                    
-                    # ini sudah tidak diperlukan.
-                    # if ext == "docx":
-                    #     logger.info("attempting read file with ext docx")
-                    #     processed = read_docx(path)
-                    # elif ext == "pdf":
-                    #     logger.info("attempting read file with ext pdf")
-                    #     processed = read_pdf(path)
+    query = update.callback_query
+    await query.answer()
 
-                    # logger.info("process text: %s", processed)
-                    # data = {"message": processed}
-                    # response = requests.post(url, json=data)
-                    # response_json = response.json()
-                    # await update.message.reply_text(response_json['summary_text'].lower())
-                    # else:
-                    #     await update.message.reply_text(f"Maaf, saya belum diajari untuk membaca file dengan ekstensi {ext}")
-                    # await update.message.reply_text("Maaf, fitur ini sedang dalam perbaikan")
-                else:
-                    logger.debug("attempting to open folder %s", path)
-                    homedir = context.user_data['homedir']
-                    dir_list = os.listdir(path)
-                    no = 1
-                    results = []
-                    message = "<b>Hasil Pencarian:</b>\n"
-                    for dir in dir_list:
-                        full_path = os.path.join(path, dir)
-                        logger.info("full path %s",full_path)
-                        results.append(full_path)
-                        is_file = os.path.isfile(path + "/" + dir)
-                        no_str = str(no)
-                        if is_file:
-                            message += f"{no_str}. {dir}\n"
-                        else:
-                            message += f"{no_str}. <b>Folder</b> {dir}\n"
-                        no += 1
-                    message = (message)
-                    context.user_data['search_results'] = results
-                    await update.message.reply_text(message, parse_mode="HTML")
-            else:
-                await update.message.reply_text(f"Ah, kamu ini bercanda!")
-        else:
-            await update.message.reply_text("Silakan balas dengan angka 1 sampai 5.")
+    data = query.data
+    index = int(data.split("_")[1])
+    logger.info("Got params with id %s", index)
+    await query.edit_message_text(f"🍽️ Kamu memilih: *{index}*", parse_mode="Markdown")
+    # args = context.args
+    # if not args:
+    #     await update.message.reply_text('Silakan balas dengan format /info nomor-file')
+    # else:
+    #     file_no = args[0]
+    #     search_results = context.user_data['search_results']
+    #     if file_no.isdigit():
+    #         index = int(file_no) - 1
+    #         if 0 <= index < len(search_results):
+    #             path = search_results[index]
+    #             # cek apakah folder atau file
+    #             is_file = os.path.isfile(path)
+    #             if is_file:
+    #                 logger.debug("attempting to read file %s", path)
+    #                 ext = get_ext(path)
+    #                 supported_extension = {"pdf", "doc", "docx", "txt"}
+    #                 if ext in supported_extension:
+    #                     logger.info("attempting to send request to openai")
+    #                     result = assistant_file_reader.read_file_with_file_search(
+    #                         api_key=OPENAI_APIKEY,
+    #                         file_path=path
+    #                     )
+    #                     await update.message.reply_text(result)
+    #                 else:
+    #                     # should be convert to pdf
+    #                     logger.info(f"attempting to convert {path} to pdf")
+    #                     tmp_file_fullpath = fileconverter.convert_to_pdf(path)
+    #                     logger.info("attempting to ask to openai")
+    #                     result = assistant_file_reader.read_file_with_file_search(
+    #                         api_key=OPENAI_APIKEY,
+    #                         file_path=tmp_file_fullpath
+    #                     )
+    #                     await update.message.reply_text(result)
+    #                     os.remove(tmp_file_fullpath)
+    #             else:
+    #                 logger.debug("attempting to open folder %s", path)
+    #                 homedir = context.user_data['homedir']
+    #                 dir_list = os.listdir(path)
+    #                 no = 1
+    #                 results = []
+    #                 message = "<b>Hasil Pencarian:</b>\n"
+    #                 for dir in dir_list:
+    #                     full_path = os.path.join(path, dir)
+    #                     logger.info("full path %s",full_path)
+    #                     results.append(full_path)
+    #                     is_file = os.path.isfile(path + "/" + dir)
+    #                     no_str = str(no)
+    #                     if is_file:
+    #                         message += f"{no_str}. {dir}\n"
+    #                     else:
+    #                         message += f"{no_str}. <b>Folder</b> {dir}\n"
+    #                     no += 1
+    #                 message = (message)
+    #                 context.user_data['search_results'] = results
+    #                 await update.message.reply_text(message, parse_mode="HTML")
+    #         else:
+    #             await update.message.reply_text(f"Ah, kamu ini bercanda!")
+    #     else:
+    #         await update.message.reply_text("Silakan balas dengan angka 1 sampai 5.")
 
 async def remove_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args

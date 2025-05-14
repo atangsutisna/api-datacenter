@@ -1,13 +1,10 @@
 from typing import Final
-from telegram import Update
-from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler, CallbackQueryHandler
 from dotenv import load_dotenv
 import requests, json, bcrypt, os, re, logging
 
 import logincommand, forgotpasscommand, findcommand, uploadfilecommand
-
-BOT_USERNAME: Final = '@dcinisiatifdev_bot'
-REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
 
 # Enable logging
 logging.basicConfig(
@@ -17,6 +14,15 @@ logging.basicConfig(
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 load_dotenv()
+
+logger.info("starting to load all users logged in...")
+with open("userloggedin.json", 'r', encoding='utf-8') as file:
+    users_loggedin = json.load(file)
+logger.info("all users logged in has been loaded")
+print(users_loggedin)
+
+BOT_USERNAME: Final = '@dcinisiatifdev_bot'
+REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
 
 # commands
 def escape_special_chars(text):
@@ -35,28 +41,54 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # list all directory on user's home
 async def ls_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # get current telegram id
+    telegram_id = str(update.effective_user.id)
+    logger.info("attempting to find user with telegram id %s", telegram_id)
+    if "is_logged_in" not in context.user_data:
+        # look up on users_loggedin
+        user = None
+        for user_data in users_loggedin:
+            if user_data["telegram_id"] == telegram_id:
+                logger.info("Got user with telegram id %s", telegram_id)
+                user = user_data
+                break
+        logger.info("attempting to list all for user with name %s", user['fullname'])
+        context.user_data['homedir'] = user['homedir']
+        context.user_data['is_logged_in'] = True
+    
     is_logged_in = context.user_data['is_logged_in']
     homedir = context.user_data['homedir']
     if is_logged_in:
         dir_list = os.listdir(REPOSITORY_PATH + homedir)
         no = 1
         results = []
-        message = "<b>Hasil Pencarian:</b>\n"
+        # message = "<b>Hasil Pencarian:</b>\n"
+        keyboard = []
         for dir in dir_list:
             full_path = os.path.join(REPOSITORY_PATH + homedir, dir)
             results.append(full_path)
             is_file = os.path.isfile(REPOSITORY_PATH + homedir + "/" + dir)
             no_str = str(no)
             if is_file:
-                message += f"{no_str}. {dir}\n"
+                button = InlineKeyboardButton(
+                    text=f"{no_str} - {dir} /info",
+                    callback_data=f"pilih_{no_str}"
+                )
+                keyboard.append([button])
             else:
-                message += f"{no_str}. <b>Folder</b> {dir}\n"
+                button = InlineKeyboardButton(
+                    text=f"{no_str} - Folder {dir} /info",
+                    callback_data=f"pilih_{no_str}"
+                )
+                keyboard.append([button])
             no += 1
-        message = (message)
+        # message = (message)
         context.user_data['search_results'] = results
-        await update.message.reply_text(message, parse_mode="HTML")
+        # await update.message.reply_text(message, parse_mode="HTML")
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await update.message.reply_text("Hasil Pencarian: ", reply_markup=reply_markup)
     else:
-        await update.message.reply_text('Maaf, anda belum bisa mengakses data center.')
+        await update.message.reply_text('Maaf, anda belum bisa mengakses data center. Klik /login untuk mulai')
 
 # handle responses
 def handle_response(text: str) -> str:
@@ -122,7 +154,8 @@ if __name__ == '__main__':
     # download command
     app.add_handler(CommandHandler('kirim', findcommand.download_command))
     # summarize command
-    app.add_handler(CommandHandler('info', findcommand.summarize_command))
+    app.add_handler(CallbackQueryHandler(findcommand.summarize_command, pattern=r"^pilih_\d+$"))
+    # app.add_handler(CommandHandler('info', findcommand.summarize_command))
     # remove command
     app.add_handler(CommandHandler('hapus', findcommand.remove_command))
 
