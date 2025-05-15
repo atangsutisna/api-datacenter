@@ -23,12 +23,31 @@ logger.debug("all users logged in has been loaded: %r", users_loggedin)
 BOT_USERNAME: Final = '@dcinisiatifdev_bot'
 REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
 
+# load user logged in
+def get_user_logged_in(telegram_id: str):
+    logger.info("attempting to find user with telegram id %s", telegram_id)
+    with open("userloggedin.json", 'r', encoding='utf-8') as file:
+        users_loggedin = json.load(file)
+    user = None
+    for user_data in users_loggedin:
+        if user_data["telegram_id"] == telegram_id:
+            logger.info("Got user with telegram id %s", telegram_id)
+            user = user_data
+            break
+    return user
+
 # commands
 def escape_special_chars(text):
     return re.sub(r"([-.])", r"\\\1", text)
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text('Halo, saya asisten data center')
+    telegram_id = str(update.effective_user.id)
+    curr_user = get_user_logged_in(telegram_id)
+    if curr_user is None:
+        await update.message.reply_text('Halo, saya asisten data center. Ada yang bisa saya bantu?')
+    else:
+        fullname = curr_user['fullname']
+        await update.message.reply_text(f"Halo,  {fullname} saya asisten data center. Ada yang bisa saya bantu?")
 
 async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(f'Ok, terima kasih.')
