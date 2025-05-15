@@ -8,18 +8,17 @@ import logincommand, forgotpasscommand, findcommand, uploadfilecommand
 
 # Enable logging
 logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.DEBUG
 )
 # set higher logging level for httpx to avoid all GET and POST requests being logged
-logging.getLogger("httpx").setLevel(logging.WARNING)
+# logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 load_dotenv()
 
-logger.info("starting to load all users logged in...")
+logger.debug("starting to load all users logged in...")
 with open("userloggedin.json", 'r', encoding='utf-8') as file:
     users_loggedin = json.load(file)
-logger.info("all users logged in has been loaded")
-print(users_loggedin)
+logger.debug("all users logged in has been loaded: %r", users_loggedin)
 
 BOT_USERNAME: Final = '@dcinisiatifdev_bot'
 REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
@@ -71,13 +70,13 @@ async def ls_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             no_str = str(no)
             if is_file:
                 button = InlineKeyboardButton(
-                    text=f"{no_str} - {dir} /info",
+                    text=f"{no_str} - {dir}",
                     callback_data=f"pilih_{no_str}"
                 )
                 keyboard.append([button])
             else:
                 button = InlineKeyboardButton(
-                    text=f"{no_str} - Folder {dir} /info",
+                    text=f"{no_str} - Folder {dir}",
                     callback_data=f"pilih_{no_str}"
                 )
                 keyboard.append([button])
@@ -140,6 +139,7 @@ async def fallback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 if __name__ == '__main__':
     logger.info('Starting bot...')
+    logger.debug('ini debugg...')
     app = Application.builder().token(os.getenv('TOKEN')).build()
     
     app.add_handler(CommandHandler('start', start_command))
