@@ -15,18 +15,13 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 load_dotenv()
 
-logger.debug("starting to load all users logged in...")
-with open("userloggedin.json", 'r', encoding='utf-8') as file:
-    users_loggedin = json.load(file)
-logger.debug("all users logged in has been loaded: %r", users_loggedin)
-
 BOT_USERNAME: Final = '@dcinisiatifdev_bot'
 REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
 
 # load user logged in
 def get_user_logged_in(telegram_id: str):
     logger.info("attempting to find user with telegram id %s", telegram_id)
-    with open("userloggedin.json", 'r', encoding='utf-8') as file:
+    with open("db.json", 'r', encoding='utf-8') as file:
         users_loggedin = json.load(file)
     user = None
     for user_data in users_loggedin:
