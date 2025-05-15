@@ -139,7 +139,7 @@ async def fallback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 if __name__ == '__main__':
     logger.info('Starting bot...')
-    logger.debug('ini debugg...')
+    # logger.debug('ini debugg...')
     app = Application.builder().token(os.getenv('TOKEN')).build()
     
     app.add_handler(CommandHandler('start', start_command))
