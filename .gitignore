@@ -2,6 +2,6 @@
 .venv
 .env
 usersloggedin.json
-__pychache__
+__pycache__
 models
 db.json
