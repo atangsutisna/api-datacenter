@@ -80,6 +80,10 @@ async def ls_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 InlineKeyboardButton(
                     text=f"Folder {homedir}",
                     callback_data=f"pilih_{no_str}"
+                ),
+                InlineKeyboardButton(
+                    text=f"❌",
+                    callback_data=f"remove_{no_str}"
                 )
             ]
             keyboard.append(button)

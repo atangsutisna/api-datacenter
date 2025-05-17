@@ -182,55 +182,69 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup = InlineKeyboardMarkup(keyboard)
             await query.edit_message_text("Ini workspace kamu: ", reply_markup=reply_markup)
     else:
-        dirname = os.path.dirname(current_dir)
-        logger.info("list all child of %s", dirname)
-        dir_list = os.listdir(current_dir)
-        keyboard = []
-        no = 1
-        results = []
-        for dir in dir_list:
-            child_path = os.path.join(current_dir, dir)
-            results.append(child_path)
+        # dirname = os.path.dirname(current_dir)
+        is_file = os.path.isfile(current_dir)
+        if is_file:
+            # summarize file
+            button = [
+                InlineKeyboardButton(
+                    text=f"<< Kembali ",
+                    callback_data=f"pilih_0"
+                )
+            ]
+            reply_markup = InlineKeyboardMarkup([button])
+            await query.edit_message_text("Saya membuat summary untuk file ini.. tunggu sebentar", reply_markup=reply_markup)
+            # await query.edit_message_text("Ini workspace kamu: ", reply_markup=reply_markup)
+        else:
+            # list of childs folder
+            logger.info("list all child of %s", current_dir)
+            dir_list = os.listdir(current_dir)
+            keyboard = []
+            no = 1
+            results = []
+            for dir in dir_list:
+                child_path = os.path.join(current_dir, dir)
+                results.append(child_path)
 
+                no_str = str(no)
+                file = os.path.isfile(child_path)
+                if not file:
+                    buttons = [
+                        InlineKeyboardButton(
+                            text=f"File {dir}",
+                            callback_data=f"pilih_{no_str}"
+                        ),
+                        InlineKeyboardButton(
+                            text=f"❌",
+                            callback_data=f"remove_{no_str}"
+                        )
+                    ]
+                else:
+                    buttons = [
+                        InlineKeyboardButton(
+                            text=f"{dir}",
+                            callback_data=f"pilih_{no_str}"
+                        ),
+                        InlineKeyboardButton(
+                            text=f"❌",
+                            callback_data=f"remove_{no_str}"
+                        )
+                    ]
+                keyboard.append(buttons)
+                no += 1
+            
+            parent_dir = os.path.dirname(current_dir)
+            results.append(os.path.join(REPOSITORY_PATH, parent_dir))
+            context.user_data['search_results'] = results
+            
             no_str = str(no)
-            file = os.path.isfile(child_path)
-            if not file:
-                buttons = [
-                    InlineKeyboardButton(
-                        text=f"File {dir}",
-                        callback_data=f"pilih_{no_str}"
-                    ),
-                    InlineKeyboardButton(
-                        text=f"❌",
-                        callback_data=f"remove_{no_str}"
-                    )
-                ]
-            else:
-                buttons = [
-                    InlineKeyboardButton(
-                        text=f"{dir}",
-                        callback_data=f"pilih_{no_str}"
-                    ),
-                    InlineKeyboardButton(
-                        text=f"❌",
-                        callback_data=f"remove_{no_str}"
-                    )
-                ]
-            keyboard.append(buttons)
-            no += 1
-        
-        parent_dir = os.path.dirname(current_dir)
-        results.append(os.path.join(REPOSITORY_PATH, parent_dir))
-        context.user_data['search_results'] = results
-        
-        no_str = str(no)
-        button = InlineKeyboardButton(
-            text=f"<< Kembali ",
-            callback_data=f"pilih_{no_str}"
-        )
-        keyboard.append([button])
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(f"Path: {current_dir} ", reply_markup=reply_markup)
+            button = InlineKeyboardButton(
+                text=f"<< Kembali ",
+                callback_data=f"pilih_{no_str}"
+            )
+            keyboard.append([button])
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            await query.edit_message_text(f"Path: {current_dir} ", reply_markup=reply_markup)
     # args = context.args
     # if not args:
     #     await update.message.reply_text('Silakan balas dengan format /info nomor-file')
