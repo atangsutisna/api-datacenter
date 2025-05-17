@@ -76,12 +76,15 @@ async def ls_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             results.append(fullpath)
 
             no_str = str(no)
-            button = InlineKeyboardButton(
-                text=f"Folder {homedir}",
-                callback_data=f"pilih_{no_str}"
-            )
-            keyboard.append([button])
+            button = [
+                InlineKeyboardButton(
+                    text=f"Folder {homedir}",
+                    callback_data=f"pilih_{no_str}"
+                )
+            ]
+            keyboard.append(button)
             no += 1
+        
         context.user_data['search_results'] = results
         reply_markup = InlineKeyboardMarkup(keyboard)
         await update.message.reply_text("Ini workspace kamu: ", reply_markup=reply_markup)

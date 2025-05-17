@@ -195,16 +195,28 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             no_str = str(no)
             file = os.path.isfile(child_path)
             if not file:
-                button = InlineKeyboardButton(
-                    text=f"File {dir}",
-                    callback_data=f"pilih_{no_str}"
-                )
+                buttons = [
+                    InlineKeyboardButton(
+                        text=f"File {dir}",
+                        callback_data=f"pilih_{no_str}"
+                    ),
+                    InlineKeyboardButton(
+                        text=f"❌",
+                        callback_data=f"remove_{no_str}"
+                    )
+                ]
             else:
-                button = InlineKeyboardButton(
-                    text=f"Folder {dir}",
-                    callback_data=f"pilih_{no_str}"
-                )
-            keyboard.append([button])
+                buttons = [
+                    InlineKeyboardButton(
+                        text=f"{dir}",
+                        callback_data=f"pilih_{no_str}"
+                    ),
+                    InlineKeyboardButton(
+                        text=f"❌",
+                        callback_data=f"remove_{no_str}"
+                    )
+                ]
+            keyboard.append(buttons)
             no += 1
         
         parent_dir = os.path.dirname(current_dir)
