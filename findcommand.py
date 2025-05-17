@@ -141,6 +141,10 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
+    # cek permissions: apakah diperbolehkan untuk read?
+    # permission dicek berdasarkan path folder
+    # misal: homedir atang: /atang
+    # get current user dicek homdir-nya juga permissionnya
     data = query.data
     index = int(data.split("_")[1])
     logger.info("Got params with id %s", index)
