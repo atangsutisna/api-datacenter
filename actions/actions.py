@@ -45,13 +45,25 @@ class ActionGreeting(Action):
         # metadata = tracker.metadata
         # fullname = metadata.get("fullname") if metadata else None
         fullname = tracker.sender_id
-        if 4 <= current_hour < 10:
-            message = f"Hai {fullname}, selamat pagi"
-        elif 10 <= current_hour < 15:
-            message = f"Hai {fullname}, selamat siang"
-        elif 15 <= current_hour < 18:
-            message = f"Hai {fullname}, selamat sore"
+        if fullname == "user":
+            # hallo biasa.
+            if 4 <= current_hour < 10:
+                message = f"Hai, selamat pagi. Ada yang bisa saya bantu?"
+            elif 10 <= current_hour < 15:
+                message = f"Hai, selamat siang. Ada yang bisa saya bantu?"
+            elif 15 <= current_hour < 18:
+                message = f"Hai, selamat sore. Ada yang bisa saya bantu?"
+            else:
+                message = f"Hai, selamat malam. Ada yang bisa saya bantu?"
         else:
-            message = f"Hai {fullname}, selamat malam"
+            if 4 <= current_hour < 10:
+                message = f"Hai {fullname}, selamat pagi. Ada yang bisa saya bantu?"
+            elif 10 <= current_hour < 15:
+                message = f"Hai {fullname}, selamat siang. Ada yang bisa saya bantu?"
+            elif 15 <= current_hour < 18:
+                message = f"Hai {fullname}, selamat sore. Ada yang bisa saya bantu?"
+            else:
+                message = f"Hai {fullname}, selamat malam. Ada yang bisa saya bantu?"
+        
         dispatcher.utter_message(text=message)
         return []

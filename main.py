@@ -136,10 +136,10 @@ def handle_response(update: Update, text: str) -> str:
     data = {
         "sender": sender, 
         "message": processed, 
-        "metadata": {
-            "telegram_id": telegram_id,
-            "fullname": curr_user["fullname"]
-        }
+        # "metadata": {
+        #     "telegram_id": telegram_id,
+        #     "fullname": curr_user["fullname"]
+        # }
     }
     response = requests.post(url, json=data)
     return response.json()
