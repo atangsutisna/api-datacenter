@@ -52,6 +52,8 @@ responses:
   utter_login:
   - text: "Baik. Ketik perintah /login atau cukup klik link ini /login"
 
+actions:
+  - action_greeting
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

@@ -126,10 +126,21 @@ async def ls_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     #     await update.message.reply_text('Maaf, anda belum bisa mengakses data center. Klik /login untuk mulai')
 
 # handle responses
-def handle_response(text: str) -> str:
+def handle_response(update: Update, text: str) -> str:
     url = "http://localhost:5005/webhooks/rest/webhook"
     processed: str = text.lower()
-    data = {"sender": "user", "message": processed}
+
+    telegram_id = str(update.effective_user.id)
+    curr_user = get_user_logged_in(telegram_id)
+    sender = curr_user["fullname"] if curr_user is not None else "user"
+    data = {
+        "sender": sender, 
+        "message": processed, 
+        "metadata": {
+            "telegram_id": telegram_id,
+            "fullname": curr_user["fullname"]
+        }
+    }
     response = requests.post(url, json=data)
     return response.json()
     # if 'hello' in processed:
@@ -153,7 +164,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         else:
             return
     else:
-        response: str = handle_response(text)
+        response: str = handle_response(update, text)
         logger.info('Bot: %s', response)
         await update.message.reply_text(response[0]['text'])
     # url = "http://localhost:5005/webhooks/rest/webhook"

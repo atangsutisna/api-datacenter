@@ -9,7 +9,7 @@ rules:
 - rule: Bertegur sapa
   steps:
     - intent: bertegur_sapa
-    - action: utter_bertegur_sapa
+    - action: action_greeting
 
 - rule: Say 'I am a bot' anytime the user challenges
   steps:

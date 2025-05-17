@@ -70,3 +70,6 @@ kill 12345
 ## intall libreoffice for converting file (csv, xls, ppt) to pdf
 sudo apt install libreoffice   # Debian/Ubuntu
 
+## jangan lupa nyalakan server actions
+rasa run actions
+
