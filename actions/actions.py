@@ -41,9 +41,6 @@ class ActionGreeting(Action):
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         tz = datetime.now(ZoneInfo("Asia/Jakarta"))
         current_hour = tz.hour
-        # telegram_id = tracker.sender_id
-        # metadata = tracker.metadata
-        # fullname = metadata.get("fullname") if metadata else None
         fullname = tracker.sender_id
         if fullname == "user":
             # hallo biasa.
