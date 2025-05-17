@@ -140,15 +140,83 @@ async def do_search(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-
     # cek permissions: apakah diperbolehkan untuk read?
     # permission dicek berdasarkan path folder
     # misal: homedir atang: /atang
     # get current user dicek homdir-nya juga permissionnya
     data = query.data
-    index = int(data.split("_")[1])
-    logger.info("Got params with id %s", index)
-    await query.edit_message_text(f"🍽️ Kamu memilih: *{index}*", parse_mode="Markdown")
+    file_no = int(data.split("_")[1])
+    logger.info("Got params with id %s", file_no)
+
+    index = int(file_no) - 1
+    search_results = context.user_data['search_results']
+    logger.info("attempting to find array with idx %d", index)
+    current_dir = search_results[index]
+    logger.info("current directory: %s", current_dir)
+    # check current directory name
+    if current_dir == REPOSITORY_PATH:
+        # get home directory the user
+        curr_user = get_user_logged_in(telegram_id)
+        if curr_user is None:
+            await update.message.reply_text('Maaf, anda belum bisa mengakses data center. Klik /login untuk mulai')
+        else:
+            accounts = curr_user['accounts']
+            keyboard = []
+            no = 1
+            results = []
+            for account in accounts:
+                homedir = account['homedir'].lstrip("/")
+                fullpath = os.path.join(REPOSITORY_PATH, homedir)
+                results.append(fullpath)
+
+                no_str = str(no)
+                button = InlineKeyboardButton(
+                    text=f"Folder {homedir}",
+                    callback_data=f"pilih_{no_str}"
+                )
+                keyboard.append([button])
+                no += 1
+            context.user_data['search_results'] = results
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            await update.message.reply_text("Ini workspace kamu: ", reply_markup=reply_markup)
+    else:
+        dirname = os.path.dirname(current_dir)
+        logger.info("list all child of %s", dirname)
+        dir_list = os.listdir(current_dir)
+        keyboard = []
+        no = 1
+        results = []
+        for dir in dir_list:
+            child_path = os.path.join(current_dir, dir)
+            results.append(child_path)
+
+            no_str = str(no)
+            file = os.path.isfile(child_path)
+            if not file:
+                button = InlineKeyboardButton(
+                    text=f"File {dir}",
+                    callback_data=f"pilih_{no_str}"
+                )
+            else:
+                button = InlineKeyboardButton(
+                    text=f"Folder {dir}",
+                    callback_data=f"pilih_{no_str}"
+                )
+            keyboard.append([button])
+            no += 1
+        
+        parent_dir = os.path.dirname(current_dir)
+        results.append(os.path.join(REPOSITORY_PATH, parent_dir))
+        context.user_data['search_results'] = results
+        
+        no_str = str(no)
+        button = InlineKeyboardButton(
+            text=f"<< Kembali ",
+            callback_data=f"pilih_{no_str}"
+        )
+        keyboard.append([button])
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(f"Path: {current_dir} ", reply_markup=reply_markup)
     # args = context.args
     # if not args:
     #     await update.message.reply_text('Silakan balas dengan format /info nomor-file')

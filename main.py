@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import requests, json, bcrypt, os, re, logging
 
 import logincommand, forgotpasscommand, findcommand, uploadfilecommand
+from userloggedin import get_user_logged_in
 
 # Enable logging
 logging.basicConfig(
@@ -17,20 +18,6 @@ load_dotenv()
 
 BOT_USERNAME: Final = '@dcinisiatifdev_bot'
 REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
-DB_PATH = os.getenv('DB_PATH')
-
-# load user logged in
-def get_user_logged_in(telegram_id: str):
-    logger.info("attempting to find user with telegram id %s", telegram_id)
-    with open(DB_PATH, 'r', encoding='utf-8') as file:
-        users_loggedin = json.load(file)
-    user = None
-    for user_data in users_loggedin:
-        if user_data["telegram_id"] == telegram_id:
-            logger.info("Got user with telegram id %s", telegram_id)
-            user = user_data
-            break
-    return user
 
 # commands
 def escape_special_chars(text):
@@ -82,8 +69,12 @@ async def ls_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         accounts = curr_user['accounts']
         keyboard = []
         no = 1
+        results = []
         for account in accounts:
             homedir = account['homedir'].lstrip("/")
+            fullpath = os.path.join(REPOSITORY_PATH, homedir)
+            results.append(fullpath)
+
             no_str = str(no)
             button = InlineKeyboardButton(
                 text=f"Folder {homedir}",
@@ -91,6 +82,7 @@ async def ls_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
             keyboard.append([button])
             no += 1
+        context.user_data['search_results'] = results
         reply_markup = InlineKeyboardMarkup(keyboard)
         await update.message.reply_text("Ini workspace kamu: ", reply_markup=reply_markup)
     # homedir = context.user_data['homedir']
