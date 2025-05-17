@@ -84,7 +84,7 @@ def format_to_list(results: list[str]) -> str:
 async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args
     if not args:
-        await update.message.reply_text('File apa yang kamu cari?')
+        await update.message.reply_text('File apa yang kamu cari? klik /batal jika kamu urung mencarinya')
         return ASK_SEARCH
     else:
         if 'is_logged_in' in context.user_data:
