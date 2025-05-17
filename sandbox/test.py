@@ -9,4 +9,6 @@ import json, math
 # print(escaped_text)
 # is_file = os.path.isfile("/home/kangatang/git/filegator/repository/sdd/Public Internal/shu-pinjaman.csv")
 # print(is_file)
-print(math.pi)
+# print(math.pi)
+homedir = "/atang"
+print(homedir.lstrip("/"))

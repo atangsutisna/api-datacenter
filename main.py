@@ -58,51 +58,53 @@ async def ls_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # get current telegram id
     telegram_id = str(update.effective_user.id)
     logger.info("attempting to find user with telegram id %s", telegram_id)
-    if "is_logged_in" not in context.user_data:
-        # look up on users_loggedin
-        user = None
-        for user_data in users_loggedin:
-            if user_data["telegram_id"] == telegram_id:
-                logger.info("Got user with telegram id %s", telegram_id)
-                user = user_data
-                break
-        logger.info("attempting to list all for user with name %s", user['fullname'])
-        context.user_data['homedir'] = user['homedir']
-        context.user_data['is_logged_in'] = True
-    
-    is_logged_in = context.user_data['is_logged_in']
-    homedir = context.user_data['homedir']
-    if is_logged_in:
-        dir_list = os.listdir(REPOSITORY_PATH + homedir)
-        no = 1
-        results = []
-        # message = "<b>Hasil Pencarian:</b>\n"
-        keyboard = []
-        for dir in dir_list:
-            full_path = os.path.join(REPOSITORY_PATH + homedir, dir)
-            results.append(full_path)
-            is_file = os.path.isfile(REPOSITORY_PATH + homedir + "/" + dir)
-            no_str = str(no)
-            if is_file:
-                button = InlineKeyboardButton(
-                    text=f"{no_str} - {dir}",
-                    callback_data=f"pilih_{no_str}"
-                )
-                keyboard.append([button])
-            else:
-                button = InlineKeyboardButton(
-                    text=f"{no_str} - Folder {dir}",
-                    callback_data=f"pilih_{no_str}"
-                )
-                keyboard.append([button])
-            no += 1
-        # message = (message)
-        context.user_data['search_results'] = results
-        # await update.message.reply_text(message, parse_mode="HTML")
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await update.message.reply_text("Hasil Pencarian: ", reply_markup=reply_markup)
-    else:
+    curr_user = get_user_logged_in(telegram_id)
+    if curr_user is None:
         await update.message.reply_text('Maaf, anda belum bisa mengakses data center. Klik /login untuk mulai')
+    else:
+        accounts = curr_user['accounts']
+        keyboard = []
+        for account in accounts:
+            homedir = account['homedir'].lstrip("/")
+            button = InlineKeyboardButton(
+                text=f"Folder {homedir}",
+                callback_data=f"pilih_1"
+            )
+            keyboard.append([button])
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await update.message.reply_text("Ini workspace kamu: ", reply_markup=reply_markup)
+    # homedir = context.user_data['homedir']
+    # if is_logged_in:
+    #     dir_list = os.listdir(REPOSITORY_PATH + homedir)
+    #     no = 1
+    #     results = []
+    #     # message = "<b>Hasil Pencarian:</b>\n"
+    #     keyboard = []
+    #     for dir in dir_list:
+    #         full_path = os.path.join(REPOSITORY_PATH + homedir, dir)
+    #         results.append(full_path)
+    #         is_file = os.path.isfile(REPOSITORY_PATH + homedir + "/" + dir)
+    #         no_str = str(no)
+    #         if is_file:
+    #             button = InlineKeyboardButton(
+    #                 text=f"{no_str} - {dir}",
+    #                 callback_data=f"pilih_{no_str}"
+    #             )
+    #             keyboard.append([button])
+    #         else:
+    #             button = InlineKeyboardButton(
+    #                 text=f"{no_str} - Folder {dir}",
+    #                 callback_data=f"pilih_{no_str}"
+    #             )
+    #             keyboard.append([button])
+    #         no += 1
+    #     # message = (message)
+    #     context.user_data['search_results'] = results
+    #     # await update.message.reply_text(message, parse_mode="HTML")
+    #     reply_markup = InlineKeyboardMarkup(keyboard)
+    #     await update.message.reply_text("Hasil Pencarian: ", reply_markup=reply_markup)
+    # else:
+    #     await update.message.reply_text('Maaf, anda belum bisa mengakses data center. Klik /login untuk mulai')
 
 # handle responses
 def handle_response(text: str) -> str:
