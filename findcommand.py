@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from docx import Document
 from pathlib import Path
 import assistant_file_reader, fileconverter;
+from userloggedin import get_user_logged_in
 
 load_dotenv()
 
@@ -59,26 +60,26 @@ def format_to_list(results: list[str]) -> str:
 
     return output
 
-# read docx
-def read_docx(file_path: str) -> str:
-    doc = Document(file_path)
-    hasil = []
-    for paragraf in doc.paragraphs:
-        isi = paragraf.text.strip()
-        if isi:  # hanya ambil paragraf yang tidak kosong
-            hasil.append(isi)
-        if len(hasil) == 5:
-            break
-    return "\n\n".join(hasil)
+# # read docx
+# def read_docx(file_path: str) -> str:
+#     doc = Document(file_path)
+#     hasil = []
+#     for paragraf in doc.paragraphs:
+#         isi = paragraf.text.strip()
+#         if isi:  # hanya ambil paragraf yang tidak kosong
+#             hasil.append(isi)
+#         if len(hasil) == 5:
+#             break
+#     return "\n\n".join(hasil)
 
-# read pdf
-def read_pdf(filepath: str) -> str:
-    with open(filepath, "rb") as file:
-        reader = PyPDF2.PdfReader(file)
-        text = ""
-        for page in reader.pages:
-            text += page.extract_text() or ""
-        return text[:1000]
+# # read pdf
+# def read_pdf(filepath: str) -> str:
+#     with open(filepath, "rb") as file:
+#         reader = PyPDF2.PdfReader(file)
+#         text = ""
+#         for page in reader.pages:
+#             text += page.extract_text() or ""
+#         return text[:1000]
 
 async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args
@@ -156,9 +157,10 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # check current directory name
     if current_dir == REPOSITORY_PATH:
         # get home directory the user
+        telegram_id = str(update.effective_user.id)
         curr_user = get_user_logged_in(telegram_id)
         if curr_user is None:
-            await update.message.reply_text('Maaf, anda belum bisa mengakses data center. Klik /login untuk mulai')
+            await update.message.reply_text('Maaf, anda belum bisa mengakses data center. Silakan verifikasi nomor HP kamu')
         else:
             accounts = curr_user['accounts']
             keyboard = []
@@ -178,7 +180,7 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 no += 1
             context.user_data['search_results'] = results
             reply_markup = InlineKeyboardMarkup(keyboard)
-            await update.message.reply_text("Ini workspace kamu: ", reply_markup=reply_markup)
+            await query.edit_message_text("Ini workspace kamu: ", reply_markup=reply_markup)
     else:
         dirname = os.path.dirname(current_dir)
         logger.info("list all child of %s", dirname)
