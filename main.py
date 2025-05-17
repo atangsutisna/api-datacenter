@@ -1,5 +1,5 @@
 from typing import Final
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler, CallbackQueryHandler
 from dotenv import load_dotenv
 import requests, json, bcrypt, os, re, logging
@@ -36,11 +36,28 @@ def get_user_logged_in(telegram_id: str):
 def escape_special_chars(text):
     return re.sub(r"([-.])", r"\\\1", text)
 
+async def share_contact(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    contact = update.message.contact
+    if contact:
+        nomor = contact.phone_number
+        nama = contact.first_name
+        await update.message.reply_text(f"Terima kasih, {nama}. Nomor HP kamu: {nomor}")
+    else:
+        await update.message.reply_text("Tidak menerima nomor kontak.")
+
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     telegram_id = str(update.effective_user.id)
     curr_user = get_user_logged_in(telegram_id)
+    logger.info("current user %r", curr_user)
     if curr_user is None:
-        await update.message.reply_text('Halo, saya asisten data center. Ada yang bisa saya bantu?')
+        # await update.message.reply_text('Halo, saya asisten data center. Ada yang bisa saya bantu?')
+        logger.info("failed to find user with telegram id %s", telegram_id)
+        tombol_kontak = KeyboardButton("Verifikasi Nomor HP", request_contact=True)
+        markup = ReplyKeyboardMarkup([[tombol_kontak]], one_time_keyboard=True, resize_keyboard=True)
+        await update.message.reply_text(
+            "Silakan bagikan nomor HP Anda dengan menekan tombol di bawah.",
+            reply_markup=markup
+        )
     else:
         fullname = curr_user['fullname']
         await update.message.reply_text(f"Halo,  {fullname} saya asisten data center. Ada yang bisa saya bantu?")
@@ -160,6 +177,7 @@ if __name__ == '__main__':
     app = Application.builder().token(os.getenv('TOKEN')).build()
     
     app.add_handler(CommandHandler('start', start_command))
+    app.add_handler(MessageHandler(filters.CONTACT, share_contact))
     # login command
     app.add_handler(logincommand.login_convhandler)
     # forgot password command
