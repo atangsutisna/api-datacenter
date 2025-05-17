@@ -11,6 +11,11 @@ rules:
     - intent: bertegur_sapa
     - action: action_greeting
 
+- rule: Ask about guessing name
+  steps:
+    - intent: ask_about_guess_name
+    - action: action_guessing_name
+
 - rule: Say 'I am a bot' anytime the user challenges
   steps:
   - intent: bot_challenge

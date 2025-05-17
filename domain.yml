@@ -13,6 +13,7 @@ intents:
   - ask_forgot_password
   - ask_list_homedir
   - ask_login
+  - ask_about_guess_name
 
 responses:
   utter_default:
@@ -54,6 +55,7 @@ responses:
 
 actions:
   - action_greeting
+  - action_guessing_name
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

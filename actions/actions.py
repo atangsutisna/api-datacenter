@@ -64,3 +64,21 @@ class ActionGreeting(Action):
         
         dispatcher.utter_message(text=message)
         return []
+
+class ActionGuessingName(Action):
+    def name(self) -> Text:
+        return "action_guessing_name"
+    
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        fullname = tracker.sender_id
+        if fullname == "user":
+            # belum login
+            dispatcher.utter_message(text="""
+            Maaf, saya belum mengenal kamu.
+            Silahkan verifikasi nomor HP kamu dulu.
+            """)
+        else:
+            dispatcher.utter_message(text="😊 Tentu saja! ID kamu sudah terdaftar di dalam sistem.\nBaik, ada yang bisa saya bantu terkait data center?")
+

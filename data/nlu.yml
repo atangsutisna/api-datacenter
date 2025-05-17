@@ -130,3 +130,11 @@ nlu:
     - login gimana caranya?
     - bantu saya login
     - apa perintah login
+
+- intent: ask_about_guess_name
+  examples: |
+    - naha apal nama saya?
+    - bagaimana kamu tahu nama saya?
+    - ko bisa tahu nama saya?
+    - dari mana tahu nama saya?
+    - kamu tahu nama saya?
