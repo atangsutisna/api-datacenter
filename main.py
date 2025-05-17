@@ -81,13 +81,16 @@ async def ls_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         accounts = curr_user['accounts']
         keyboard = []
+        no = 1
         for account in accounts:
             homedir = account['homedir'].lstrip("/")
+            no_str = str(no)
             button = InlineKeyboardButton(
                 text=f"Folder {homedir}",
-                callback_data=f"pilih_1"
+                callback_data=f"pilih_{no_str}"
             )
             keyboard.append([button])
+            no += 1
         reply_markup = InlineKeyboardMarkup(keyboard)
         await update.message.reply_text("Ini workspace kamu: ", reply_markup=reply_markup)
     # homedir = context.user_data['homedir']
