@@ -154,6 +154,8 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info("attempting to find array with idx %d", index)
     current_dir = search_results[index]
     logger.info("current directory: %s", current_dir)
+    # set current directory
+    context.user_data['current_directory'] = current_dir
     # check current directory name
     if current_dir == REPOSITORY_PATH:
         # get home directory the user
@@ -325,7 +327,56 @@ async def remove_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             folder_path = os.path.dirname(rep_path)
             filename_wpath = os.path.join(folder_path, filename)
             os.remove(path)
-            await query.message.reply_text(f"File {filename_wpath} telah dihapus")
+            # todo: reload all file
+            current_dir = context.user_data['current_directory']
+            dir_list = os.listdir(current_dir)
+            keyboard = []
+            no = 1
+            results = []
+            for dir in dir_list:
+                child_path = os.path.join(current_dir, dir)
+                results.append(child_path)
+
+                no_str = str(no)
+                file = os.path.isfile(child_path)
+                if not file:
+                    buttons = [
+                        InlineKeyboardButton(
+                            text=f"File {dir}",
+                            callback_data=f"info_{no_str}"
+                        ),
+                        InlineKeyboardButton(
+                            text=f"❌",
+                            callback_data=f"remove_{no_str}"
+                        )
+                    ]
+                else:
+                    buttons = [
+                        InlineKeyboardButton(
+                            text=f"{dir}",
+                            callback_data=f"info_{no_str}"
+                        ),
+                        InlineKeyboardButton(
+                            text=f"❌",
+                            callback_data=f"remove_{no_str}"
+                        )
+                    ]
+                keyboard.append(buttons)
+                no += 1
+            
+            parent_dir = os.path.dirname(current_dir)
+            results.append(os.path.join(REPOSITORY_PATH, parent_dir))
+            context.user_data['search_results'] = results
+            
+            no_str = str(no)
+            button = InlineKeyboardButton(
+                text=f"<< Kembali ",
+                callback_data=f"info_{no_str}"
+            )
+            keyboard.append([button])
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            await query.edit_message_text(f"File sudah dihapus\n. 📂 : {current_dir} ", reply_markup=reply_markup)
+            # await query.message.reply_text(f"File {filename_wpath} telah dihapus")
         else:
             await query.message.reply_text(f"Ah, kamu ini bercanda!")
     # args = context.args
