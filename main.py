@@ -78,12 +78,8 @@ async def ls_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             no_str = str(no)
             button = [
                 InlineKeyboardButton(
-                    text=f"Folder {homedir}",
-                    callback_data=f"pilih_{no_str}"
-                ),
-                InlineKeyboardButton(
-                    text=f"❌",
-                    callback_data=f"remove_{no_str}"
+                    text=f"📁 {homedir}",
+                    callback_data=f"info_{no_str}"
                 )
             ]
             keyboard.append(button)
@@ -107,13 +103,13 @@ async def ls_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     #         if is_file:
     #             button = InlineKeyboardButton(
     #                 text=f"{no_str} - {dir}",
-    #                 callback_data=f"pilih_{no_str}"
+    #                 callback_data=f"info_{no_str}"
     #             )
     #             keyboard.append([button])
     #         else:
     #             button = InlineKeyboardButton(
     #                 text=f"{no_str} - Folder {dir}",
-    #                 callback_data=f"pilih_{no_str}"
+    #                 callback_data=f"info_{no_str}"
     #             )
     #             keyboard.append([button])
     #         no += 1
@@ -143,14 +139,6 @@ def handle_response(update: Update, text: str) -> str:
     }
     response = requests.post(url, json=data)
     return response.json()
-    # if 'hello' in processed:
-    #     return 'Hey there'
-    # if 'how are you' in processed:
-    #     return 'I am good'
-    # if 'you know ali?' in processed:
-    #     return 'Yes, I know. He is handsome guy!'
-
-    # return 'Maaf, saya tidak mengerti'
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_type: str = update.message.chat.type
@@ -202,11 +190,11 @@ if __name__ == '__main__':
     # download command
     app.add_handler(CommandHandler('kirim', findcommand.download_command))
     # summarize command
-    app.add_handler(CallbackQueryHandler(findcommand.summarize_command, pattern=r"^pilih_\d+$"))
     # app.add_handler(CommandHandler('info', findcommand.summarize_command))
+    app.add_handler(CallbackQueryHandler(findcommand.summarize_command, pattern=r"^info_\d+$"))
     # remove command
-    app.add_handler(CommandHandler('hapus', findcommand.remove_command))
-
+    # app.add_handler(CommandHandler('hapus', findcommand.remove_command))
+    app.add_handler(CallbackQueryHandler(findcommand.remove_command, pattern=r"^remove_\d+$"))
     # help command
     app.add_handler(CommandHandler('bantuan', help_command))
 

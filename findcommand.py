@@ -110,7 +110,7 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                         filename_wpath = os.path.join(folder_path, filename)
                         button = InlineKeyboardButton(
                             text=f"{no} - {filename_wpath} /info",
-                            callback_data=f"pilih_{no}"
+                            callback_data=f"info_{no}"
                         )
                         keyboard.append([button])
                         no += 1
@@ -173,8 +173,8 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
                 no_str = str(no)
                 button = InlineKeyboardButton(
-                    text=f"Folder {homedir}",
-                    callback_data=f"pilih_{no_str}"
+                    text=f"📁 {homedir}",
+                    callback_data=f"info_{no_str}"
                 )
                 keyboard.append([button])
                 no += 1
@@ -189,7 +189,7 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             button = [
                 InlineKeyboardButton(
                     text=f"<< Kembali ",
-                    callback_data=f"pilih_0"
+                    callback_data=f"info_0"
                 )
             ]
             reply_markup = InlineKeyboardMarkup([button])
@@ -212,7 +212,7 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     buttons = [
                         InlineKeyboardButton(
                             text=f"File {dir}",
-                            callback_data=f"pilih_{no_str}"
+                            callback_data=f"info_{no_str}"
                         ),
                         InlineKeyboardButton(
                             text=f"❌",
@@ -223,7 +223,7 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     buttons = [
                         InlineKeyboardButton(
                             text=f"{dir}",
-                            callback_data=f"pilih_{no_str}"
+                            callback_data=f"info_{no_str}"
                         ),
                         InlineKeyboardButton(
                             text=f"❌",
@@ -240,7 +240,7 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             no_str = str(no)
             button = InlineKeyboardButton(
                 text=f"<< Kembali ",
-                callback_data=f"pilih_{no_str}"
+                callback_data=f"info_{no_str}"
             )
             keyboard.append([button])
             reply_markup = InlineKeyboardMarkup(keyboard)
@@ -306,28 +306,35 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     #         await update.message.reply_text("Silakan balas dengan angka 1 sampai 5.")
 
 async def remove_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    args = context.args
-    if not args:
-        await update.message.reply_text('Silakan balas dengan format /info nomor-file')
-    else:
-        file_no = args[0]
-        search_results = context.user_data['search_results']
-        if file_no.isdigit():
-            index = int(file_no) - 1
-            if 0 <= index < len(search_results):
-                path = search_results[index]
-                filename = os.path.basename(path)
+    query = update.callback_query
+    await query.answer()
+
+    data = query.data
+    file_no = int(data.split("_")[1])
+    logger.info("attempting to find file to be delete with no %s", file_no)
+    await query.message.reply_text(f"File dengan nomor {file_no} akan dihapus")
+    # args = context.args
+    # if not args:
+    #     await update.message.reply_text('Silakan balas dengan format /info nomor-file')
+    # else:
+    #     file_no = args[0]
+    #     search_results = context.user_data['search_results']
+    #     if file_no.isdigit():
+    #         index = int(file_no) - 1
+    #         if 0 <= index < len(search_results):
+    #             path = search_results[index]
+    #             filename = os.path.basename(path)
                 
-                rep_path = path.split("/repository", 1)[1]
-                folder_path = os.path.dirname(rep_path)
-                filename_wpath = os.path.join(folder_path, filename)
-                os.remove(path)
-                await update.message.reply_text(f"File {filename_wpath} telah dihapus")
-            else:
-                await update.message.reply_text(f"Ah, kamu ini bercanda!")
-        else:
-            count_results = len(context.user_data['search_results'])
-            await update.message.reply_text("Silakan balas dengan angka 1 sampai {count_results}.")
+    #             rep_path = path.split("/repository", 1)[1]
+    #             folder_path = os.path.dirname(rep_path)
+    #             filename_wpath = os.path.join(folder_path, filename)
+    #             os.remove(path)
+    #             await update.message.reply_text(f"File {filename_wpath} telah dihapus")
+    #         else:
+    #             await update.message.reply_text(f"Ah, kamu ini bercanda!")
+    #     else:
+    #         count_results = len(context.user_data['search_results'])
+    #         await update.message.reply_text("Silakan balas dengan angka 1 sampai {count_results}.")
 
 async def download_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # todo: check before searching the file
