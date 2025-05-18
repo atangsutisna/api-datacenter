@@ -47,6 +47,13 @@ def search(base_path: str, keyword: str) -> str:
                 results.append(full_path)
     return results
 
+def is_child(parent, child):
+    try:
+        Path(child).resolve().relative_to(Path(parent).resolve())
+        return True
+    except ValueError:
+        return False
+
 # def format_to_list(results: list[str]) -> str:
 #     output = "<b>Hasil Pencarian: </b>\n"
 #     no = 1
@@ -321,6 +328,20 @@ async def remove_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         search_results = context.user_data['search_results']
         if 0 <= index < len(search_results):
             path = search_results[index]
+            # get parent directory
+            # telegram_id = str(update.effective_user.id)
+            # logger.info("attempting to find current user with telegram id %s", telegram_id)
+            # curr_user = get_user_logged_in(telegram_id)
+            # accounts = curr_user['accounts']
+            # for account in accounts:
+            #     parent_dir = account['parentdir']
+            #     if is_child(parent_dir, path):
+            #         logger.info("The %s is child of %s, so then checking permission for delete", path, parent_dir)
+            #         permissions = account['permissions'].split("|")
+                    # if permitted then remove it
+                    # else show error message
+
+            # remove the folder or file
             filename = os.path.basename(path)
             
             rep_path = path.split("/repository", 1)[1]

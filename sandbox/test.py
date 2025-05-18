@@ -24,7 +24,7 @@ def is_child(parent, child):
 
 # Contoh penggunaan
 parent_folder = "/home/kangatang/git/filegator/repository/spark"
-child_folder = "/home/kangatang/git/filegator/repository/spark/Folder 1/"
+child_folder = "/home/kangatang/git/filegator/repository/spark/samplepptx.pptx"
 
 if is_child(parent_folder, child_folder):
     print(f"{child_folder} adalah child dari {parent_folder}")
