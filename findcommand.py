@@ -30,12 +30,12 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
-def get_ext(path: str) -> str:
-    fullpath = Path(path)
-    return fullpath.suffix.lstrip(".")
+# def get_ext(path: str) -> str:
+#     fullpath = Path(path)
+#     return fullpath.suffix.lstrip(".")
 
-def escape_special_chars(text):
-    return re.sub(r"([-.])", r"\\\1", text)
+# def escape_special_chars(text):
+#     return re.sub(r"([-.])", r"\\\1", text)
 
 # cukup kembalikan dalam bentuk list saja
 def search(base_path: str, keyword: str) -> str:
@@ -47,18 +47,18 @@ def search(base_path: str, keyword: str) -> str:
                 results.append(full_path)
     return results
 
-def format_to_list(results: list[str]) -> str:
-    output = "<b>Hasil Pencarian: </b>\n"
-    no = 1
-    for path in results:
-        filename = os.path.basename(path)
-        rep_path = path.split("/repository", 1)[1]
-        folder_path = os.path.dirname(rep_path)
-        filename_wpath = os.path.join(folder_path, filename)
-        output += f"{no} - {filename_wpath}\n"
-        no += 1
+# def format_to_list(results: list[str]) -> str:
+#     output = "<b>Hasil Pencarian: </b>\n"
+#     no = 1
+#     for path in results:
+#         filename = os.path.basename(path)
+#         rep_path = path.split("/repository", 1)[1]
+#         folder_path = os.path.dirname(rep_path)
+#         filename_wpath = os.path.join(folder_path, filename)
+#         output += f"{no} - {filename_wpath}\n"
+#         no += 1
 
-    return output
+#     return output
 
 # # read docx
 # def read_docx(file_path: str) -> str:
@@ -367,18 +367,3 @@ searching_handler = ConversationHandler(
     },
     fallbacks=[CommandHandler("batal", cancel_command)]
 )
-
-# tambahkan fungsi untuk summarize
-# print(REPOSITORY_PATH + '/atang')
-# results = search(REPOSITORY_PATH + '/atang', 'puskesmas')
-# print(format_to_list(results))
-# path = REPOSITORY_PATH + '/atang/storyline inisiatif.xlsx'
-# processed = read_docx(path)
-# url = "http://localhost:5000/summarize"
-# data = {"message": processed}
-# logger.debug("Teks processed: %s", processed)
-# response = requests.post(url, json=data)
-# print(response.json())
-# print(processed)
-# ext = get_ext(path)
-# print(ext)

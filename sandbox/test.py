@@ -10,5 +10,24 @@ import json, math
 # is_file = os.path.isfile("/home/kangatang/git/filegator/repository/sdd/Public Internal/shu-pinjaman.csv")
 # print(is_file)
 # print(math.pi)
-homedir = "/atang"
-print(homedir.lstrip("/"))
+# homedir = "/atang"
+# print(homedir.lstrip("/"))
+
+from pathlib import Path
+
+def is_child(parent, child):
+    try:
+        Path(child).resolve().relative_to(Path(parent).resolve())
+        return True
+    except ValueError:
+        return False
+
+# Contoh penggunaan
+parent_folder = "/home/kangatang/git/filegator/repository/spark"
+child_folder = "/home/kangatang/git/filegator/repository/spark/Folder 1/"
+
+if is_child(parent_folder, child_folder):
+    print(f"{child_folder} adalah child dari {parent_folder}")
+else:
+    print(f"{child_folder} BUKAN child dari {parent_folder}")
+
