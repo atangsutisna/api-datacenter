@@ -30,9 +30,9 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
-# def get_ext(path: str) -> str:
-#     fullpath = Path(path)
-#     return fullpath.suffix.lstrip(".")
+def get_ext(path: str) -> str:
+    fullpath = Path(path)
+    return fullpath.suffix.lstrip(".")
 
 # def escape_special_chars(text):
 #     return re.sub(r"([-.])", r"\\\1", text)
@@ -193,6 +193,8 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         # dirname = os.path.dirname(current_dir)
         is_file = os.path.isfile(current_dir)
+        path = current_dir
+        context.user_data['current_directory'] = os.path.dirname(current_dir)
         if is_file:
             # summarize file
             button = [
@@ -202,8 +204,26 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 )
             ]
             reply_markup = InlineKeyboardMarkup([button])
-            await query.edit_message_text("Saya membuat summary untuk file ini.. tunggu sebentar", reply_markup=reply_markup)
-            # await query.edit_message_text("Ini workspace kamu: ", reply_markup=reply_markup)
+
+            ext = get_ext(path)
+            supported_extension = {"pdf", "doc", "docx", "txt"}
+            if ext in supported_extension:
+                logger.info("attempting to send request to openai")
+                result = assistant_file_reader.read_file_with_file_search(
+                    api_key=OPENAI_APIKEY,
+                    file_path=path
+                )
+                await query.edit_message_text(result, reply_markup=reply_markup)
+            else:
+                logger.info(f"attempting to convert {path} to pdf")
+                tmp_file_fullpath = fileconverter.convert_to_pdf(path)
+                logger.info("attempting to ask to openai")
+                result = assistant_file_reader.read_file_with_file_search(
+                    api_key=OPENAI_APIKEY,
+                    file_path=tmp_file_fullpath
+                )
+                await query.edit_message_text(result, reply_markup=reply_markup)
+                os.remove(tmp_file_fullpath)
         else:
             # list of childs folder
             logger.info("list all child of %s", current_dir)
