@@ -312,7 +312,22 @@ async def remove_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     data = query.data
     file_no = int(data.split("_")[1])
     logger.info("attempting to find file to be delete with no %s", file_no)
-    await query.message.reply_text(f"File dengan nomor {file_no} akan dihapus")
+    if 'search_results' not in context.user_data:
+        await query.message.reply_text("Mohon maaf, data gagal dihapus. Ada proses perbaikan sistem, sehingga saya lupa file apa yang akan kamu hapus. Silahkan diulang dari awal.")
+    else:
+        index = int(file_no) - 1
+        search_results = context.user_data['search_results']
+        if 0 <= index < len(search_results):
+            path = search_results[index]
+            filename = os.path.basename(path)
+            
+            rep_path = path.split("/repository", 1)[1]
+            folder_path = os.path.dirname(rep_path)
+            filename_wpath = os.path.join(folder_path, filename)
+            os.remove(path)
+            await query.message.reply_text(f"File {filename_wpath} telah dihapus")
+        else:
+            await query.message.reply_text(f"Ah, kamu ini bercanda!")
     # args = context.args
     # if not args:
     #     await update.message.reply_text('Silakan balas dengan format /info nomor-file')
