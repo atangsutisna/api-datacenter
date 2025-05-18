@@ -27,7 +27,7 @@ responses:
   - text: "Saya Bot data center."
 
   utter_ask_datacenter:
-  - text: "Fasilitas yang digunakan untuk menyimpan data"
+  - text: "Fasilitas yang digunakan untuk menyimpan data (cloud untuk penyimpanan data perkumpulan inisiatif)."
 
   utter_ask_admin_datacenter:
   - text: "Maaf, saya tidak dapat memberikan informasi tersebut."
