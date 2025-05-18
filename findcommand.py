@@ -244,7 +244,7 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
             keyboard.append([button])
             reply_markup = InlineKeyboardMarkup(keyboard)
-            await query.edit_message_text(f"Path: {current_dir} ", reply_markup=reply_markup)
+            await query.edit_message_text(f"📂 : {current_dir} ", reply_markup=reply_markup)
     # args = context.args
     # if not args:
     #     await update.message.reply_text('Silakan balas dengan format /info nomor-file')
