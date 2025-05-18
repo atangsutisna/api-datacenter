@@ -42,7 +42,7 @@ responses:
   - text: "Gunakan perintah /download [no]. Sebelum mengetikan perintah itu, kamu harus cari dulu filenya dengan mengetikan /cari [nama file]"
 
   utter_search_command:
-  - text: "Baik. Untuk mencari sebuah data atau file, ketik perintah ini: /cari [nama file] atau cukup klik link ini: /cari"
+  - text: "Baik, silakan kirim perintah /list. Nanti kamu bisa mencarinya secara manual dengan membuka satu persatu setiap folder. Atau, bila kamu ingin saya mencarikannya untukmu, silakan kirim perintah /cari."
 
   utter_forgot_password_command:
   - text: "Gunakan perintah /lupa-password"
