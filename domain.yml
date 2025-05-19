@@ -48,7 +48,7 @@ responses:
   - text: "Gunakan perintah /lupa-password"
 
   utter_list_homedir:
-  - text: "Baik. Untuk menampilkan data, gunakan ketika perintah /list atau cukup klik link ini: /list"
+  - text: "Silakan kirim perintah /list. Atau, bila kamu ingin saya mencarikannya untukmu, silakan kirim perintah /cari."
 
   utter_login:
   - text: "Baik. Ketik perintah /login atau cukup klik link ini /login"
