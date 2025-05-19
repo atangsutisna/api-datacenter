@@ -14,7 +14,7 @@ Press Ctrl-C on the command line or send a signal to the process to stop the
 bot.
 """
 
-import logging
+import logging, os
 from typing import Final
 from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import (
@@ -25,8 +25,8 @@ from telegram.ext import (
     MessageHandler,
     filters,
 )
-
-TOKEN: Final = '7757059485:AAEef6ovSAwS95Gq2cvfLX6Y-DOMxWcIy1U'
+from dotenv import load_dotenv
+load_dotenv()
 
 # Enable logging
 logging.basicConfig(
@@ -141,7 +141,7 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 def main() -> None:
     """Run the bot."""
     # Create the Application and pass it your bot's token.
-    application = Application.builder().token(TOKEN).build()
+    application = Application.builder().token(os.getenv('TOKEN')).build()
 
     # Add conversation handler with the states GENDER, PHOTO, LOCATION and BIO
     conv_handler = ConversationHandler(

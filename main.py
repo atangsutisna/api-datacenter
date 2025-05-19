@@ -1,11 +1,12 @@
 from typing import Final
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler, CallbackQueryHandler
 from dotenv import load_dotenv
 import requests, json, bcrypt, os, re, logging
 
 import logincommand, forgotpasscommand, findcommand, uploadfilecommand
 from userloggedin import get_user_logged_in
+from mappinguser import verify_phone_number
 
 # Enable logging
 logging.basicConfig(
@@ -25,12 +26,22 @@ def escape_special_chars(text):
 
 async def share_contact(update: Update, context: ContextTypes.DEFAULT_TYPE):
     contact = update.message.contact
+    telegram_id = str(update.effective_user.id)
     if contact:
-        nomor = contact.phone_number
-        nama = contact.first_name
-        await update.message.reply_text(f"Terima kasih, {nama}. Nomor HP kamu: {nomor}")
+        phone_number = contact.phone_number
+        name = contact.first_name
+        verified = verify_phone_number(telegram_id, phone_number)
+        if verified:
+            await update.message.reply_text(
+                f"Terima kasih {name} atas kepercayaannya. \n" 
+                "Baik, ada yang bisa saya bantu?", 
+                reply_markup=ReplyKeyboardRemove())
+        else:
+            await update.message.reply_text(
+                "Maaf, nomor HP kamu belum terdaftar. Silahkan hubungi administrator."
+            )
     else:
-        await update.message.reply_text("Tidak menerima nomor kontak.")
+        await update.message.reply_text("Maaf, kamu belum bisa mengakses data center sebelum melakukan verifikasi nomor HP")
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     telegram_id = str(update.effective_user.id)
@@ -42,7 +53,9 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         tombol_kontak = KeyboardButton("Verifikasi Nomor HP", request_contact=True)
         markup = ReplyKeyboardMarkup([[tombol_kontak]], one_time_keyboard=True, resize_keyboard=True)
         await update.message.reply_text(
-            "Silakan bagikan nomor HP Anda dengan menekan tombol di bawah.",
+            "Hai, terima kasih sudah menghubungi.\n" 
+            "Mohon maaf, bisakah kamu verifikasi nomor teleponmu? \n" 
+            "Silakan klik \"Verifikasi Nomor HP\" ",
             reply_markup=markup
         )
     else:
