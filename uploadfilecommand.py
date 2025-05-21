@@ -134,9 +134,6 @@ async def done_upload(update: Update, context: ContextTypes.DEFAULT_TYPE):
         keyboard.append([button])
         reply_markup = InlineKeyboardMarkup(keyboard)
         await update.message.reply_text(f"📂 {len(uploaded)} file berhasil diunggah. \n 📂 : {current_dir}", reply_markup=reply_markup)
-        # await update.message.reply_text(
-        #     f"{len(uploaded)} file berhasil diunggah:\n" + "\n".join(uploaded)
-        # )
     else:
         results = []
         keyboard = []
