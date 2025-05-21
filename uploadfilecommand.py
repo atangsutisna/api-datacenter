@@ -1,5 +1,5 @@
 import logging, os, re
-from telegram import Update
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
 from dotenv import load_dotenv
 from userloggedin import get_user_logged_in
@@ -133,12 +133,27 @@ async def done_upload(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         keyboard.append([button])
         reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.edit_message_text(f"📂 {len(uploaded)} file berhasil diunggah: ", reply_markup=reply_markup)
+        await update.message.reply_text(f"📂 {len(uploaded)} file berhasil diunggah: ", reply_markup=reply_markup)
         # await update.message.reply_text(
         #     f"{len(uploaded)} file berhasil diunggah:\n" + "\n".join(uploaded)
         # )
     else:
-        await update.message.reply_text("Tidak ada file yang dikirim.")
+        results = []
+        keyboard = []
+
+        current_dir = context.user_data['current_directory']
+        parent_dir = os.path.dirname(current_dir)
+        results.append(os.path.join(REPOSITORY_PATH, parent_dir))
+        context.user_data['search_results'] = results
+
+        button = InlineKeyboardButton(
+            text=f"<< Kembali ",
+            callback_data=f"info_{1}"
+        )
+        keyboard.append([button])
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await update.message.reply_text(f"Tidak ada file yang dikirim.\n 📂 : {current_dir}", reply_markup=reply_markup)
+
     return ConversationHandler.END
 
 async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
