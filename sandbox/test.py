@@ -1,5 +1,5 @@
 # import re, os
-import json, math
+import json, math, os
 # def escape_hyphen(text):
 #     return re.sub(r"-", r"\\-", text)
 
@@ -26,8 +26,10 @@ def is_child(parent, child):
 parent_folder = "/home/kangatang/git/filegator/repository/spark"
 child_folder = "/home/kangatang/git/filegator/repository/spark/samplepptx.pptx"
 
-if is_child(parent_folder, child_folder):
-    print(f"{child_folder} adalah child dari {parent_folder}")
-else:
-    print(f"{child_folder} BUKAN child dari {parent_folder}")
+# if is_child(parent_folder, child_folder):
+#     print(f"{child_folder} adalah child dari {parent_folder}")
+# else:
+#     print(f"{child_folder} BUKAN child dari {parent_folder}")
 
+dirname = os.path.dirname("/home/kangatang/git/filegator/repository/spark/Folder 6")
+print(dirname)

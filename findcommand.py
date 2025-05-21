@@ -194,7 +194,7 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # dirname = os.path.dirname(current_dir)
         is_file = os.path.isfile(current_dir)
         path = current_dir
-        context.user_data['current_directory'] = os.path.dirname(current_dir)
+        # context.user_data['current_directory'] = os.path.dirname(current_dir)
         if is_file:
             # summarize file
             button = [

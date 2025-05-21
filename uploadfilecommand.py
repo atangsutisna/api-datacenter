@@ -2,6 +2,7 @@ import logging, os, re
 from telegram import Update
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
 from dotenv import load_dotenv
+from userloggedin import get_user_logged_in
 
 load_dotenv()
 
@@ -21,20 +22,27 @@ WAITING_FOR_FILE = range(1)
 # fix me, do not hard code
 # FOLDER_PATH = "/home/kangatang/git/filegator/repository/atang"
 async def start_upload_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if 'is_logged_in' in context.user_data:
-        await update.message.reply_text('Silakan kirim file satu per satu. Ketik /selesai jika sudah.')
-        context.user_data["uploaded_files"] = []
-        return WAITING_FOR_FILE
+    telegram_id = str(update.effective_user.id)
+    curr_user = get_user_logged_in(telegram_id)
+    if curr_user is None:
+        await update.message.reply_text('Maaf, saya belum bisa melayani kamu. Silahkan verifikasi dulu nomor HPmu.')
     else:
-        await update.message.reply_text('Maaf, saya tidak bisa melayani kamu. Ketik /login untuk mulai.')
+        if "current_directory" not in context.user_data:
+            await update.message.reply_text('Mohon tentukan terlebih dahulu di folder mana kamu akan menyimpan filenya. \nKirim perintah /list untuk melihat semua folder.')
+        else:  
+            await update.message.reply_text('Silakan kirim file satu per satu. Ketik /selesai jika sudah.')
+            context.user_data["uploaded_files"] = []
+            return WAITING_FOR_FILE        
 
 
 async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info('starting to process upload file')
     # todo: check permissions
     # ensure folder path exists
-    homedir = context.user_data['homedir']
-    FOLDER_PATH = REPOSITORY_PATH + homedir
+    if "current_directory" not in context.user_data:
+        await update.message.reply_text('Mohon tentukan terlebih dahulu di folder mana kamu akan menyimpan filenya')
+        return WAITING_FOR_FILE
+    
     # cek foto
     if update.message.photo:
         photo_list = update.message.photo
@@ -53,12 +61,11 @@ async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
     elif update.message.document:
         document = update.message.document
         file_id = document.file_id
-        logger.info('attempting to process file with id %s', file_id)
         file = await context.bot.get_file(file_id)
 
         # ensure folder path exists
-        homedir = context.user_data['homedir']
-        FOLDER_PATH = REPOSITORY_PATH + homedir
+        FOLDER_PATH = context.user_data['current_directory']
+        logger.info('attempting to upload file with id %s to %s', file_id, FOLDER_PATH)
         os.makedirs(FOLDER_PATH, exist_ok=True)
 
         file_path = os.path.join(FOLDER_PATH, document.file_name)
