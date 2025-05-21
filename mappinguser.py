@@ -77,4 +77,4 @@ def verify_phone_number(telegram_id: str, phone: str) -> bool:
         logger.info("user with phone %s not found", phone)
         return False
 
-verify_phone_number("12345678", "6283821230266")
+# verify_phone_number("12345678", "6283821230266")

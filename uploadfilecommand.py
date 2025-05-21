@@ -86,9 +86,57 @@ async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def done_upload(update: Update, context: ContextTypes.DEFAULT_TYPE):
     uploaded = context.user_data.get('uploaded_files', [])
     if uploaded:
-        await update.message.reply_text(
-            f"{len(uploaded)} file berhasil diunggah:\n" + "\n".join(uploaded)
+        current_dir = context.user_data['current_directory']
+        dir_list = os.listdir(current_dir)
+        keyboard = []
+        no = 1
+        results = []
+        for dir in dir_list:
+            child_path = os.path.join(current_dir, dir)
+            results.append(child_path)
+
+            no_str = str(no)
+            file = os.path.isfile(child_path)
+            if not file:
+                buttons = [
+                    InlineKeyboardButton(
+                        text=f"File {dir}",
+                        callback_data=f"info_{no_str}"
+                    ),
+                    InlineKeyboardButton(
+                        text=f"❌",
+                        callback_data=f"remove_{no_str}"
+                    )
+                ]
+            else:
+                buttons = [
+                    InlineKeyboardButton(
+                        text=f"{dir}",
+                        callback_data=f"info_{no_str}"
+                    ),
+                    InlineKeyboardButton(
+                        text=f"❌",
+                        callback_data=f"remove_{no_str}"
+                    )
+                ]
+            keyboard.append(buttons)
+            no += 1
+            
+        parent_dir = os.path.dirname(current_dir)
+        results.append(os.path.join(REPOSITORY_PATH, parent_dir))
+        context.user_data['search_results'] = results
+        
+        no_str = str(no)
+        button = InlineKeyboardButton(
+            text=f"<< Kembali ",
+            callback_data=f"info_{no_str}"
         )
+        keyboard.append([button])
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text(f"📂 {len(uploaded)} file berhasil diunggah: ", reply_markup=reply_markup)
+        # await update.message.reply_text(
+        #     f"{len(uploaded)} file berhasil diunggah:\n" + "\n".join(uploaded)
+        # )
     else:
         await update.message.reply_text("Tidak ada file yang dikirim.")
     return ConversationHandler.END
