@@ -1,4 +1,5 @@
 import logging, os, re
+from checkpermissions import is_permitted
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
 from dotenv import load_dotenv
@@ -29,7 +30,16 @@ async def start_upload_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         if "current_directory" not in context.user_data:
             await update.message.reply_text('Mohon tentukan terlebih dahulu di folder mana kamu akan menyimpan filenya. \nKirim perintah /list untuk melihat semua folder.')
-        else:  
+        else:
+            # todo: check permissions
+            telegram_id = str(update.effective_user.id)
+            
+            target_path = context.user_data['current_directory']
+            upload_permitted = is_permitted(telegram_id, target_path, "upload")
+            if not upload_permitted:
+                await update.message.reply_text("Mohon maaf, kamu tidak punya ijin untuk melakukan upload.")
+                return
+
             await update.message.reply_text('Silakan kirim file satu per satu. Ketik /selesai jika sudah.')
             context.user_data["uploaded_files"] = []
             return WAITING_FOR_FILE        
@@ -37,11 +47,10 @@ async def start_upload_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info('starting to process upload file')
-    # todo: check permissions
     # ensure folder path exists
     if "current_directory" not in context.user_data:
         await update.message.reply_text('Mohon tentukan terlebih dahulu di folder mana kamu akan menyimpan filenya')
-        return WAITING_FOR_FILE
+        return ConversationHandler.END
     
     # cek foto
     if update.message.photo:
