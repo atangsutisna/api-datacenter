@@ -17,6 +17,7 @@ load_dotenv()
 
 ASK_SEARCH = range(1)
 ASK_SUMMARIZE = range(1)
+ASK_FOLDER_NAME = range(1)
 
 REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
 OPENAI_APIKEY = os.getenv('OPENAI_APIKEY')
@@ -87,6 +88,58 @@ def is_child(parent, child):
 #         for page in reader.pages:
 #             text += page.extract_text() or ""
 #         return text[:1000]
+def list_dir(current_dir: str):
+    logger.info("list all child of %s", current_dir)
+    dir_list = os.listdir(current_dir)
+
+    keyboard = []
+    no = 1
+    results = []
+    for dir in dir_list:
+        child_path = os.path.join(current_dir, dir)
+        results.append(child_path)
+
+        no_str = str(no)
+        file = os.path.isfile(child_path)
+        if not file:
+            buttons = [
+                InlineKeyboardButton(
+                    text=f"File {dir}",
+                    callback_data=f"info_{no_str}"
+                ),
+                InlineKeyboardButton(
+                    text=f"❌",
+                    callback_data=f"remove_{no_str}"
+                )
+            ]
+        else:
+            buttons = [
+                InlineKeyboardButton(
+                    text=f"{dir}",
+                    callback_data=f"info_{no_str}"
+                ),
+                InlineKeyboardButton(
+                    text=f"❌",
+                    callback_data=f"remove_{no_str}"
+                )
+            ]
+        keyboard.append(buttons)
+        no += 1
+
+    parent_dir = os.path.dirname(current_dir)
+    results.append(os.path.join(REPOSITORY_PATH, parent_dir))
+            
+    no_str = str(no)
+    button = InlineKeyboardButton(
+        text=f"<< Kembali ",
+        callback_data=f"info_{no_str}"
+    )
+    keyboard.append([button])
+    return {
+        "results": results,
+        "keyboard": keyboard 
+    }
+
 
 async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args
@@ -272,8 +325,14 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 callback_data=f"info_{no_str}"
             )
             keyboard.append([button])
+
+            # button = InlineKeyboardButton(
+            #     text=f"Buat Baru",
+            #     callback_data=f"info_0"
+            # )
+            # keyboard.append([button])            
             reply_markup = InlineKeyboardMarkup(keyboard)
-            await query.edit_message_text(f"📂 : {current_dir} ", reply_markup=reply_markup)
+            await query.edit_message_text(f"📂 : {current_dir}. \n Gunakan perintah /buatfolder [nama folder] untuk membuat folder baru.", reply_markup=reply_markup)
     # args = context.args
     # if not args:
     #     await update.message.reply_text('Silakan balas dengan format /info nomor-file')
@@ -348,19 +407,6 @@ async def remove_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         search_results = context.user_data['search_results']
         if 0 <= index < len(search_results):
             path = search_results[index]
-            # get parent directory
-            # telegram_id = str(update.effective_user.id)
-            # logger.info("attempting to find current user with telegram id %s", telegram_id)
-            # curr_user = get_user_logged_in(telegram_id)
-            # accounts = curr_user['accounts']
-            # for account in accounts:
-            #     parent_dir = account['parentdir']
-            #     if is_child(parent_dir, path):
-            #         logger.info("The %s is child of %s, so then checking permission for delete", path, parent_dir)
-            #         permissions = account['permissions'].split("|")
-                    # if permitted then remove it
-                    # else show error message
-
             # remove the folder or file
             filename = os.path.basename(path)
             
@@ -471,13 +517,53 @@ async def download_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(f"Silakan balas dengan angka 1 sampai {count_results}.")
 
 async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text(f'Ok, terima kasih.')
+    await update.message.reply_text('Ok, terima kasih.')
+    return ConversationHandler.END
+
+async def create_folder_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if "current_directory" not in context.user_data:
+        await update.message.reply_text("Silahkan tentukan terlebih dahulu di mana kamu akan menyimpan folder-nya")
+        return
+    
+    await update.message.reply_text("Apa nama folder-nya?")
+    return ASK_FOLDER_NAME
+
+async def do_create_folder(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    folder_name = update.message.text.strip()
+    current_dir = context.user_data['current_directory']
+
+    # os.makedirs(current_dir, exist_ok=True)
+    folder_path = os.path.join(current_dir, folder_name)
+    try:
+        os.makedirs(folder_path)
+        results = list_dir(current_dir)
+        context.user_data['results'] = results['results']
+        if "keyboard" in results:
+            logger.info("terdapat keyboard")
+        else:
+            logger.info("tidak ada keyboard")
+        reply_markup = InlineKeyboardMarkup(results['keyboard'])
+        # await query.edit_message_text(f"📂 : {current_dir}. \n Gunakan perintah /buatfolder [nama folder] untuk membuat folder baru.", reply_markup=reply_markup)
+        await update.message.reply_text(f"✅ Folder '{folder_name}' berhasil dibuat", reply_markup=reply_markup)
+    except FileExistsError:
+        await update.message.reply_text(f"⚠️ Folder '{folder_name}' sudah ada.")
+    except Exception as e:
+        await update.message.reply_text(f"❌ Gagal membuat folder: {e}")
+
     return ConversationHandler.END
 
 searching_handler = ConversationHandler(
     entry_points=[CommandHandler("cari", ask_search_command)],
     states={
         ASK_SEARCH: [MessageHandler(filters.TEXT & ~filters.COMMAND, do_search)],
+    },
+    fallbacks=[CommandHandler("batal", cancel_command)]
+)
+
+create_folder_handler = ConversationHandler(
+    entry_points=[CommandHandler("buatfolder", create_folder_command)],
+    states={
+        ASK_FOLDER_NAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, do_create_folder)],
     },
     fallbacks=[CommandHandler("batal", cancel_command)]
 )

@@ -208,6 +208,8 @@ if __name__ == '__main__':
     # remove command
     # app.add_handler(CommandHandler('hapus', findcommand.remove_command))
     app.add_handler(CallbackQueryHandler(findcommand.remove_command, pattern=r"^remove_\d+$"))
+    # buat folder baru command
+    app.add_handler(findcommand.create_folder_handler)
     # help command
     app.add_handler(CommandHandler('bantuan', help_command))
 
