@@ -237,24 +237,6 @@ async def search_command_handler(update: Update, context: ContextTypes.DEFAULT_T
                 no += 1
         return ConversationHandler.END
 
-#deprecated
-async def do_search(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if 'is_logged_in' in context.user_data:
-        is_logged_in = context.user_data['is_logged_in']
-        if is_logged_in:
-            keyword = update.message.text
-            homedir = context.user_data['homedir']
-            logger.debug("base path %s", REPOSITORY_PATH)
-            fullpath = REPOSITORY_PATH + homedir
-            logger.debug("attempting to find %s on %s", keyword, fullpath)
-            results = search(fullpath, keyword)
-            if not result:
-                await update.message.reply_text(f"Tidak ditemukan file dengan keyword {keyword}")
-            else:
-                await update.message.reply_text(results, parse_mode="HTML")
-    else:
-        await update.message.reply_text('Maaf, saya tidak mengenali kamu. Silakan login terlebih dahulu. Ketik /login untuk mulai.')
-        return ConversationHandler.END
 
 async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
