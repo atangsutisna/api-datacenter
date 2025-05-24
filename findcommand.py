@@ -178,8 +178,9 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                 file = os.path.isfile(dir)
                 if not file:
                     # folder
-                    folder_name = os.path.basename(path)
-                    rep_path = path.split("/repository", 1)[1]
+                    logger.info("%s is not a file but dir", file)
+                    folder_name = os.path.basename(dir)
+                    rep_path = dir.split("/repository", 1)[1]
                     parent_path = os.path.dirname(rep_path)
                     folder_path = os.path.join(parent_path, folder_name)
 
@@ -202,8 +203,9 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                     reply_markup = InlineKeyboardMarkup(keyboard)
                     await update.message.reply_text(f"📂 {folder_path}", reply_markup=reply_markup)
                 else:
-                    file_name = os.path.basename(path)
-                    rep_path = path.split("/repository", 1)[1]
+                    logger.info("%s is not a file", dir)
+                    file_name = os.path.basename(dir)
+                    rep_path = dir.split("/repository", 1)[1]
                     parent_path = os.path.dirname(rep_path)
                     file_path = os.path.join(parent_path, file_name)
 
