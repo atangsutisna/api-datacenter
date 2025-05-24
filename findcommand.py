@@ -633,13 +633,6 @@ async def do_create_folder(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     return ConversationHandler.END
 
-# searching_handler = ConversationHandler(
-#     entry_points=[CommandHandler("cari", search_command_handler)],
-#     states={
-#         ASK_SEARCH: [MessageHandler(filters.TEXT & ~filters.COMMAND, do_search)],
-#     },
-#     fallbacks=[CommandHandler("batal", cancel_command)]
-# )
 create_folder_handler = ConversationHandler(
     entry_points=[CommandHandler("buatfolder", create_folder_command)],
     states={
