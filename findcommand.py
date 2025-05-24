@@ -533,6 +533,12 @@ async def handle_download_btn_callback(update: Update, context: ContextTypes.DEF
             # Misal: cek apakah folder masih ada
             if os.path.exists(path):
                 file = os.path.isfile(path)
+
+                file_name = os.path.basename(path)
+                rep_path = path.split("/repository", 1)[1]
+                parent_path = os.path.dirname(rep_path)
+                short_path = os.path.join(parent_path, file_name)
+
                 if not file:
                     # preparing for zip, but check for permissions
                     chat_id = query.message.chat_id
@@ -542,7 +548,7 @@ async def handle_download_btn_callback(update: Update, context: ContextTypes.DEF
                     await context.bot.send_document(
                         chat_id=chat_id, 
                         document=open(path, "rb"),
-                        caption=f"📎 Berikut adalah dokumen yang kamu minta ({path}).",
+                        caption=f"📎 Berikut adalah dokumen yang kamu minta\n`{short_path}`).",
                         parse_mode="Markdown")
                     
                 # await query.edit_message_text(f"📂 Kamu memilih folder:\n`{path}`", parse_mode="Markdown")
