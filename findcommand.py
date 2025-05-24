@@ -13,6 +13,7 @@ from pathlib import Path
 import assistant_file_reader, fileconverter;
 from userloggedin import get_user_logged_in
 from checkpermissions import is_permitted
+import shutil
 
 load_dotenv()
 
@@ -546,6 +547,21 @@ async def handle_download_btn_callback(update: Update, context: ContextTypes.DEF
                     zip_permitted = is_permitted(telegram_id, path, "zip")
                     if not zip_permitted:
                         await query.message.reply_text(f"Mohon maaf, folder `{short_path}` tidak dapat diunduh. \nTidak ijin untuk melakukan zip 😞", parse_mode="Markdown")
+
+                    # download folder here
+                    await query.message.reply_text("Mohon tunggu\nSaya sedang membuat zip untuk folder tersebut...")
+                    logger.info("rep_path: %s, parent_path %s", REPOSITORY_PATH, parent_path)
+                    root_path = os.path.join(REPOSITORY_PATH, parent_path.lstrip("/"))
+                    logger.info("parent path: %s, folder wil be zipped %s", root_path, path)
+                    ziped_path = shutil.make_archive(os.path.join(root_path, file_name), "zip", path)
+                    logger.info("zipped path %s", ziped_path)
+                    await context.bot.send_document(
+                        chat_id=chat_id,
+                        document=open(ziped_path, "rb"),
+                        caption=f"📦 `{short_path}`",
+                        parse_mode="Markdown"
+                    )
+                    os.remove(ziped_path)
                 else:
                     # send the file
                     chat_id = query.message.chat_id

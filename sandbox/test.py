@@ -3,6 +3,7 @@ import json, math, os
 import base64
 import zlib
 import hashlib
+import shutil
 
 # def escape_hyphen(text):
 #     return re.sub(r"-", r"\\-", text)
@@ -56,10 +57,13 @@ def hash_path(path):
 # print(f"encoded path: {encoded_path}")
 # print(f"decoded path: {decoded_path}")
 # print(len("L2hvbWUva2FuZ2F0YW5nL2dpdC9maWxlZ2F0b3IvcmVwb3NpdG9yeS9hdGFuZy9zdG9yeWxpbmUgaW5pc2lhdGlmLnhsc3g="))
-path = "/home/kangatang/git/filegator/repository/spark/samplepptx.pptx"
+target_path = "/home/kangatang/git/filegator/repository/spark/Folder 1/"
 # compressed = zlib.compress(path.encode())
 # encoded = base64.urlsafe_b64encode(compressed).decode()
 # print(encoded)
 
-path_hash = hash_path(path)
-print(path_hash)
+# path_hash = hash_path(path)
+# print(path_hash)
+zip_path = shutil.make_archive("/home/kangatang/git/filegator/repository/spark/Folder 1", "zip", target_path)
+print(zip_path)
+
