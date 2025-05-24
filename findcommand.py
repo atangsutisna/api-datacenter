@@ -56,29 +56,52 @@ def is_child(parent, child):
         return True
     except ValueError:
         return False
-    
-def get_folder_size(folder_path):
+
+def get_folder_size_bytes(folder_path):
     total_size = 0
-    for dirpath, dirnames, filenames in os.walk(folder_path):
-        for filename in filenames:
-            filepath = os.path.join(dirpath, filename)
-            if os.path.isfile(filepath):  # pastikan benar-benar file
-                total_size += os.path.getsize(filepath)
+    for dirpath, _, filenames in os.walk(folder_path):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            if os.path.isfile(fp):
+                total_size += os.path.getsize(fp)
+    return total_size    
+
+def get_folder_size(folder_path):
+    # total_size = 0
+    # for dirpath, dirnames, filenames in os.walk(folder_path):
+    #     for filename in filenames:
+    #         filepath = os.path.join(dirpath, filename)
+    #         if os.path.isfile(filepath):  # pastikan benar-benar file
+    #             total_size += os.path.getsize(filepath)
     
-    total_size = total_size / (1024 * 1024)
-    return format_size(total_size)
+    # total_size = total_size / (1024 * 1024)
+    total_size = 0
+    for dirpath, _, filenames in os.walk(folder_path):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            if os.path.isfile(fp):
+                total_size += os.path.getsize(fp)
+    return total_size
 
 def get_file_size(file_path):
     total_size = os.path.getsize(file_path)
     return format_size(total_size)
 
 def format_size(size_bytes):
-    units = ['B', 'kB', 'MB', 'GB', 'TB']
-    i = 0
-    while size_bytes >= 1024 and i < len(units) - 1:
-        size_bytes /= 1024.0
-        i += 1
-    return f"{size_bytes:,.2f} {units[i]}"
+    if size_bytes < 1024:
+        return f"{size_bytes} B"
+    elif size_bytes < 1024**2:
+        return f"{size_bytes / 1024:.2f} KB"
+    elif size_bytes < 1024**3:
+        return f"{size_bytes / 1024**2:.2f} MB"
+    else:
+        return f"{size_bytes / 1024**3:.2f} GB"
+    # units = ['B', 'kB', 'MB', 'GB', 'TB']
+    # i = 0
+    # while size_bytes >= 1024 and i < len(units) - 1:
+    #     size_bytes /= 1024.0
+    #     i += 1
+    # return f"{size_bytes:,.2f} {units[i]}"
 
 def list_dir(current_dir: str):
     logger.info("list all child of %s", current_dir)
@@ -207,7 +230,8 @@ async def search_command_handler(update: Update, context: ContextTypes.DEFAULT_T
                     ]
                     keyboard.append(buttons)
                     reply_markup = InlineKeyboardMarkup(keyboard)
-                    await update.message.reply_text(f"📂 `{folder_path}` (`{total_size}`)", reply_markup=reply_markup, parse_mode="Markdown")
+                    size = format_size(total_size)
+                    await update.message.reply_text(f"📂 `{folder_path}` (`{size}`)", reply_markup=reply_markup, parse_mode="Markdown")
                 else:
                     logger.info("%s is not a file", dir)
                     total_size = get_file_size(dir)
@@ -234,7 +258,8 @@ async def search_command_handler(update: Update, context: ContextTypes.DEFAULT_T
                     ]
                     keyboard.append(buttons)
                     reply_markup = InlineKeyboardMarkup(keyboard)
-                    await update.message.reply_text(f"📂 `{file_path}` (`{total_size}`)", reply_markup=reply_markup, parse_mode="Markdown")
+                    size = format_size(total_size)
+                    await update.message.reply_text(f"📂 `{file_path}` (`{size}`)", reply_markup=reply_markup, parse_mode="Markdown")
                 no += 1
         return ConversationHandler.END
 
@@ -550,11 +575,21 @@ async def handle_download_btn_callback(update: Update, context: ContextTypes.DEF
 
                     # download folder here
                     await query.message.reply_text("Mohon tunggu\nSaya sedang membuat zip untuk folder tersebut...")
+                    # cek the size of file
+                    max_size_mb = 50
+                    max_size_bytes = max_size_mb * 1024 * 1024
+                    folder_size = get_folder_size_bytes(path)
+                    if folder_size > max_size_bytes:
+                        await query.message.reply_text("❌ Folder melebihi batas 50 MB. Batal dizip.")
+                        return
+                    
                     logger.info("rep_path: %s, parent_path %s", REPOSITORY_PATH, parent_path)
                     root_path = os.path.join(REPOSITORY_PATH, parent_path.lstrip("/"))
                     logger.info("parent path: %s, folder wil be zipped %s", root_path, path)
                     ziped_path = shutil.make_archive(os.path.join(root_path, file_name), "zip", path)
                     logger.info("zipped path %s", ziped_path)
+
+                    # tolong dibatasi hingga 
                     await context.bot.send_document(
                         chat_id=chat_id,
                         document=open(ziped_path, "rb"),
