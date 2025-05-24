@@ -200,15 +200,15 @@ if __name__ == '__main__':
     app.add_handler(uploadfilecommand.upload_cmd_handler)
     # search command
     app.add_handler(findcommand.searching_handler)
-    # download command
-    app.add_handler(CommandHandler('kirim', findcommand.download_command))
+    # download callback query handler
+    app.add_handler(CallbackQueryHandler(findcommand.handle_download_btn_callback, pattern=r"^download\|"))
+    # buat folder baru command
     # summarize command
     # app.add_handler(CommandHandler('info', findcommand.summarize_command))
     app.add_handler(CallbackQueryHandler(findcommand.summarize_command, pattern=r"^info_\d+$"))
     # remove command
     # app.add_handler(CommandHandler('hapus', findcommand.remove_command))
     app.add_handler(CallbackQueryHandler(findcommand.remove_command, pattern=r"^remove_\d+$"))
-    # buat folder baru command
     app.add_handler(findcommand.create_folder_handler)
     # help command
     app.add_handler(CommandHandler('bantuan', help_command))

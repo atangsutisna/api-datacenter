@@ -3,7 +3,7 @@
 # format summarize /ringkas-no 1
 # format hapus /hapus-no
 
-import logging, os, re, requests
+import logging, os, re, requests, hashlib
 import PyPDF2
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
@@ -32,12 +32,12 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
+def hash_path(path):
+    return hashlib.sha1(path.encode()).hexdigest()[:10]
+
 def get_ext(path: str) -> str:
     fullpath = Path(path)
     return fullpath.suffix.lstrip(".")
-
-# def escape_special_chars(text):
-#     return re.sub(r"([-.])", r"\\\1", text)
 
 # cukup kembalikan dalam bentuk list saja
 def search(base_path: str, keyword: str):
@@ -172,6 +172,10 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
             no = 1
             await update.message.reply_text(f"Hasil pencarian: {keyword}")
             for dir in results:
+                # save to user_data
+                hashed_path = hash_path(dir)
+                context.user_data[hashed_path] = dir
+                
                 no_str = str(no)
                 file = os.path.isfile(dir)
                 if not file:
@@ -191,7 +195,7 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                         ),
                         InlineKeyboardButton(
                             text="⬇️ Unduh",
-                            callback_data=f"download_{no_str}"
+                            callback_data=f"download|{hashed_path}"
                         ),
                         InlineKeyboardButton(
                             text="❌ Hapus",
@@ -210,7 +214,7 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                     parent_path = os.path.dirname(rep_path)
                     file_path = os.path.join(parent_path, file_name)
 
-                    keyboard = []
+                    keyboard = []                
                     buttons = [
                         InlineKeyboardButton(
                             text="\u2139 Info",
@@ -218,11 +222,11 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                         ),
                         InlineKeyboardButton(
                             text="⬇️ Unduh",
-                            callback_data=f"download_{no_str}"
+                            callback_data=f"download|{hashed_path}"
                         ),
                         InlineKeyboardButton(
                             text=f"❌ Hapus",
-                            callback_data=f"remove_{no_str}"
+                            callback_data=f"remove|{hashed_path}"
                         )
                     ]
                     keyboard.append(buttons)
@@ -230,7 +234,7 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                     await update.message.reply_text(f"📂 {file_path} ({total_size})", reply_markup=reply_markup)
                 no += 1
 
-            context.user_data['search_results'] = results
+            # context.user_data['search_results'] = results
             # reply_markup = InlineKeyboardMarkup(keyboard)
             # await update.message.reply_text(f"Hasil pencarian: {keyword}", reply_markup=reply_markup)
         # legacy code
@@ -286,10 +290,7 @@ async def do_search(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    # cek permissions: apakah diperbolehkan untuk read?
-    # permission dicek berdasarkan path folder
-    # misal: homedir atang: /atang
-    # get current user dicek homdir-nya juga permissionnya
+
     data = query.data
     file_no = int(data.split("_")[1])
     logger.info("Got params with id %s", file_no)
@@ -574,32 +575,51 @@ async def remove_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     #         count_results = len(context.user_data['search_results'])
     #         await update.message.reply_text("Silakan balas dengan angka 1 sampai {count_results}.")
 
-async def download_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # todo: check before searching the file
-    args = context.args
-    if not args:
-        await update.message.reply_text('Silakan balas dengan format /kirim-file nomor-file')
-    else:
-        file_no = args[0]
-        search_results = context.user_data['search_results']
-        if file_no.isdigit():
-            index = int(file_no) - 1
-            if 0 <= index < len(search_results):
-                path = search_results[index]
-                filename = os.path.basename(path)
-                # rep_path = path.split("/repository", 1)[1]
-                # folder_path = os.path.dirname(rep_path)
-                # filename_wpath = os.path.join(folder_path, filename)
-                logger.info('attempting to send file on %s', path)
-                try:
-                    await update.message.reply_document(document=open(path, 'rb'))
-                except FileNotFoundError:
-                    await update.message.reply_text("File tidak ditemukan.")
+async def handle_download_btn_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    try:
+        command, hashed_path = query.data.split("|", 1)
+        logger.info("hashed_path: %s", hashed_path)
+
+        if hashed_path in context.user_data:
+            path = context.user_data[hashed_path]
+            # Misal: cek apakah folder masih ada
+            if os.path.exists(path):
+                await query.edit_message_text(f"📂 Kamu memilih folder:\n`{path}`", parse_mode="Markdown")
             else:
-                await update.message.reply_text(f"Ah, yang bener dong! Tolong masukan angka.")
+                await query.edit_message_text(f"⚠️ Folder tidak ditemukan:\n`{path}`", parse_mode="Markdown")
         else:
-            count_results = len(context.user_data['search_results'])
-            await update.message.reply_text(f"Silakan balas dengan angka 1 sampai {count_results}.")
+            await query.edit_message_text(f"⚠️ Folder sudah tidak ditemukan:\n`{path}`\n. Silahkan melakukan pencarian ulang.", parse_mode="Markdown")
+    except Exception as e:
+        await query.edit_message_text("❌ Terjadi kesalahan saat memproses tombol.")
+        print("Error:", e)
+    # todo: check before searching the file
+    # args = context.args
+    # if not args:
+    #     await update.message.reply_text('Silakan balas dengan format /kirim-file nomor-file')
+    # else:
+    #     file_no = args[0]
+    #     search_results = context.user_data['search_results']
+    #     if file_no.isdigit():
+    #         index = int(file_no) - 1
+    #         if 0 <= index < len(search_results):
+    #             path = search_results[index]
+    #             filename = os.path.basename(path)
+    #             # rep_path = path.split("/repository", 1)[1]
+    #             # folder_path = os.path.dirname(rep_path)
+    #             # filename_wpath = os.path.join(folder_path, filename)
+    #             logger.info('attempting to send file on %s', path)
+    #             try:
+    #                 await update.message.reply_document(document=open(path, 'rb'))
+    #             except FileNotFoundError:
+    #                 await update.message.reply_text("File tidak ditemukan.")
+    #         else:
+    #             await update.message.reply_text(f"Ah, yang bener dong! Tolong masukan angka.")
+    #     else:
+    #         count_results = len(context.user_data['search_results'])
+    #         await update.message.reply_text(f"Silakan balas dengan angka 1 sampai {count_results}.")
 
 async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('Ok, terima kasih.')
