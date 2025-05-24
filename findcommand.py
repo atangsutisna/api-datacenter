@@ -12,6 +12,7 @@ from docx import Document
 from pathlib import Path
 import assistant_file_reader, fileconverter;
 from userloggedin import get_user_logged_in
+from checkpermissions import is_permitted
 
 load_dotenv()
 
@@ -521,10 +522,23 @@ async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return ConversationHandler.END
 
 async def create_folder_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # check current user
+    telegram_id = str(update.effective_user.id)
+    curr_user = get_user_logged_in(telegram_id)
+    if curr_user is None:
+        await update.message.reply_text("Maaf, kamu belum bisa mengakses data center sebelum melakukan verifikasi nomor HP")
+        return
+    # check current directory
     if "current_directory" not in context.user_data:
         await update.message.reply_text("Silahkan tentukan terlebih dahulu di mana kamu akan menyimpan folder-nya")
         return
-    
+    # check permission
+    current_directory = context.user_data['current_directory']
+    write_permitted = is_permitted(telegram_id, current_directory, "write")
+    if not write_permitted:
+        await update.message.reply_text("Mohon maaf, kamu tidak diijinkan untuk membuat folder")
+        return
+
     await update.message.reply_text("Apa nama folder-nya?")
     return ASK_FOLDER_NAME
 
