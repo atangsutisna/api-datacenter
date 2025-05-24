@@ -55,6 +55,29 @@ def is_child(parent, child):
         return True
     except ValueError:
         return False
+    
+def get_folder_size(folder_path):
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(folder_path):
+        for filename in filenames:
+            filepath = os.path.join(dirpath, filename)
+            if os.path.isfile(filepath):  # pastikan benar-benar file
+                total_size += os.path.getsize(filepath)
+    
+    total_size = total_size / (1024 * 1024)
+    return format_size(total_size)
+
+def get_file_size(file_path):
+    total_size = os.path.getsize(file_path)
+    return format_size(total_size)
+
+def format_size(size_bytes):
+    units = ['B', 'kB', 'MB', 'GB', 'TB']
+    i = 0
+    while size_bytes >= 1024 and i < len(units) - 1:
+        size_bytes /= 1024.0
+        i += 1
+    return f"{size_bytes:,.2f} {units[i]}"
 
 # def format_to_list(results: list[str]) -> str:
 #     output = "<b>Hasil Pencarian: </b>\n"
@@ -67,28 +90,6 @@ def is_child(parent, child):
 #         output += f"{no} - {filename_wpath}\n"
 #         no += 1
 
-#     return output
-
-# # read docx
-# def read_docx(file_path: str) -> str:
-#     doc = Document(file_path)
-#     hasil = []
-#     for paragraf in doc.paragraphs:
-#         isi = paragraf.text.strip()
-#         if isi:  # hanya ambil paragraf yang tidak kosong
-#             hasil.append(isi)
-#         if len(hasil) == 5:
-#             break
-#     return "\n\n".join(hasil)
-
-# # read pdf
-# def read_pdf(filepath: str) -> str:
-#     with open(filepath, "rb") as file:
-#         reader = PyPDF2.PdfReader(file)
-#         text = ""
-#         for page in reader.pages:
-#             text += page.extract_text() or ""
-#         return text[:1000]
 def list_dir(current_dir: str):
     logger.info("list all child of %s", current_dir)
     dir_list = os.listdir(current_dir)
@@ -174,7 +175,7 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                     if keyword.lower() in file.lower():
                         fullpath = os.path.join(root, file)
                         results.append(fullpath)
-                        
+
         if len(results) == 0:
             await update.message.reply_text(f"Saya tidak dapat menemukan file atau data yang mengandung kata \"{keyword}\" 😞")
         else:
@@ -186,6 +187,7 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                 file = os.path.isfile(dir)
                 if not file:
                     # folder
+                    total_size = get_folder_size(dir)
                     logger.info("%s is not a file but dir", file)
                     folder_name = os.path.basename(dir)
                     rep_path = dir.split("/repository", 1)[1]
@@ -209,9 +211,11 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                     ]
                     keyboard.append(buttons)
                     reply_markup = InlineKeyboardMarkup(keyboard)
-                    await update.message.reply_text(f"📂 {folder_path}", reply_markup=reply_markup)
+                    await update.message.reply_text(f"📂 {folder_path} ({total_size})", reply_markup=reply_markup)
                 else:
                     logger.info("%s is not a file", dir)
+                    total_size = get_file_size(dir)
+
                     file_name = os.path.basename(dir)
                     rep_path = dir.split("/repository", 1)[1]
                     parent_path = os.path.dirname(rep_path)
@@ -234,7 +238,7 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                     ]
                     keyboard.append(buttons)
                     reply_markup = InlineKeyboardMarkup(keyboard)
-                    await update.message.reply_text(f"📂 {file_path}", reply_markup=reply_markup)
+                    await update.message.reply_text(f"📂 {file_path} ({total_size})", reply_markup=reply_markup)
                 no += 1
 
             context.user_data['search_results'] = results
