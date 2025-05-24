@@ -145,7 +145,9 @@ async def search_command_handler(update: Update, context: ContextTypes.DEFAULT_T
         await update.message.reply_text('❌ Format pencarian data keliru. Gunakan perintah seperti ini: /cari [nama file]')
         return
     else:
-        keyword = args[0]
+        # keyword = args[0]
+        keyword = ' '.join([arg for arg in context.args if arg.strip()])
+
         results = []
         accounts = curr_user['accounts']
         for account in accounts:
