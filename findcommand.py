@@ -204,7 +204,7 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                     ]
                     keyboard.append(buttons)
                     reply_markup = InlineKeyboardMarkup(keyboard)
-                    await update.message.reply_text(f"📂 {folder_path} ({total_size})", reply_markup=reply_markup)
+                    await update.message.reply_text(f"📂 `{folder_path}` (`{total_size}`)", reply_markup=reply_markup, parse_mode="Markdown")
                 else:
                     logger.info("%s is not a file", dir)
                     total_size = get_file_size(dir)
@@ -231,7 +231,7 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                     ]
                     keyboard.append(buttons)
                     reply_markup = InlineKeyboardMarkup(keyboard)
-                    await update.message.reply_text(f"📂 {file_path} ({total_size})", reply_markup=reply_markup)
+                    await update.message.reply_text(f"📂 `{file_path}` (`{total_size}`)", reply_markup=reply_markup, parse_mode="Markdown")
                 no += 1
 
             # context.user_data['search_results'] = results
