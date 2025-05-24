@@ -79,17 +79,6 @@ def format_size(size_bytes):
         i += 1
     return f"{size_bytes:,.2f} {units[i]}"
 
-# def format_to_list(results: list[str]) -> str:
-#     output = "<b>Hasil Pencarian: </b>\n"
-#     no = 1
-#     for path in results:
-#         filename = os.path.basename(path)
-#         rep_path = path.split("/repository", 1)[1]
-#         folder_path = os.path.dirname(rep_path)
-#         filename_wpath = os.path.join(folder_path, filename)
-#         output += f"{no} - {filename_wpath}\n"
-#         no += 1
-
 def list_dir(current_dir: str):
     logger.info("list all child of %s", current_dir)
     dir_list = os.listdir(current_dir)
