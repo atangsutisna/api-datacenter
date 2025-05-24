@@ -196,7 +196,7 @@ async def search_command_handler(update: Update, context: ContextTypes.DEFAULT_T
                             callback_data=f"info_{no_str}"
                         ),
                         InlineKeyboardButton(
-                            text="⬇️ Unduh",
+                            text="⬇️ Zip & Unduh",
                             callback_data=f"download|{hashed_path}"
                         ),
                         InlineKeyboardButton(
@@ -542,6 +542,10 @@ async def handle_download_btn_callback(update: Update, context: ContextTypes.DEF
                 if not file:
                     # preparing for zip, but check for permissions
                     chat_id = query.message.chat_id
+                    telegram_id = str(update.effective_user.id)
+                    zip_permitted = is_permitted(telegram_id, path, "zip")
+                    if not zip_permitted:
+                        await query.message.reply_text(f"Mohon maaf, folder `{short_path}` tidak dapat diunduh. \nTidak ijin untuk melakukan zip 😞", parse_mode="Markdown")
                 else:
                     # send the file
                     chat_id = query.message.chat_id
