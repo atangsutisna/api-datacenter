@@ -552,7 +552,7 @@ async def do_create_folder(update: Update, context: ContextTypes.DEFAULT_TYPE):
     try:
         os.makedirs(folder_path)
         results = list_dir(current_dir)
-        context.user_data['results'] = results['results']
+        context.user_data['search_results'] = results['results']
         reply_markup = InlineKeyboardMarkup(results['keyboard'])
         # await query.edit_message_text(f"📂 : {current_dir}. \n Gunakan perintah /buatfolder [nama folder] untuk membuat folder baru.", reply_markup=reply_markup)
         await update.message.reply_text(f"✅ Folder '{folder_name}' berhasil dibuat", reply_markup=reply_markup)
