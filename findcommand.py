@@ -235,6 +235,7 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                 no += 1
         return ConversationHandler.END
 
+#deprecated
 async def do_search(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if 'is_logged_in' in context.user_data:
         is_logged_in = context.user_data['is_logged_in']
