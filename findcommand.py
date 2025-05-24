@@ -163,10 +163,18 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
             base_path = os.path.join(REPOSITORY_PATH, homedir)
             logger.info("attempting to find file with key %s on path %s", keyword, base_path)
             for root, dirs, files in os.walk(base_path):
+                # find a folder with name like keyword
+                for dir_name in dirs:
+                    if keyword.lower() in dir_name.lower():
+                        fullpath = os.path.join(root, dir_name)
+                        results.append(fullpath)
+
+                # find for a file
                 for file in files:
                     if keyword.lower() in file.lower():
                         fullpath = os.path.join(root, file)
                         results.append(fullpath)
+                        
         if len(results) == 0:
             await update.message.reply_text(f"Saya tidak dapat menemukan file atau data yang mengandung kata \"{keyword}\" 😞")
         else:
