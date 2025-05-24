@@ -142,8 +142,8 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
     args = context.args
     if not args:
-        await update.message.reply_text('File apa yang kamu cari? klik /batal jika kamu urung mencarinya')
-        return ASK_SEARCH
+        await update.message.reply_text('❌ Format pencarian data keliru. Gunakan perintah seperti ini: /cari [nama file]')
+        return
     else:
         keyword = args[0]
         results = []
