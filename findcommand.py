@@ -84,8 +84,7 @@ def get_folder_size(folder_path):
     return total_size
 
 def get_file_size(file_path):
-    total_size = os.path.getsize(file_path)
-    return format_size(total_size)
+    return os.path.getsize(file_path)
 
 def format_size(size_bytes):
     if size_bytes < 1024:
@@ -233,7 +232,7 @@ async def search_command_handler(update: Update, context: ContextTypes.DEFAULT_T
                     size = format_size(total_size)
                     await update.message.reply_text(f"📂 `{folder_path}` (`{size}`)", reply_markup=reply_markup, parse_mode="Markdown")
                 else:
-                    logger.info("%s is not a file", dir)
+                    logger.info("%s is a file", dir)
                     total_size = get_file_size(dir)
 
                     file_name = os.path.basename(dir)
