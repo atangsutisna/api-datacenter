@@ -133,7 +133,7 @@ def list_dir(current_dir: str):
     }
 
 
-async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def search_command_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     telegram_id = str(update.effective_user.id)
     curr_user = get_user_logged_in(telegram_id)
     if curr_user is None:
@@ -633,14 +633,13 @@ async def do_create_folder(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     return ConversationHandler.END
 
-searching_handler = ConversationHandler(
-    entry_points=[CommandHandler("cari", ask_search_command)],
-    states={
-        ASK_SEARCH: [MessageHandler(filters.TEXT & ~filters.COMMAND, do_search)],
-    },
-    fallbacks=[CommandHandler("batal", cancel_command)]
-)
-
+# searching_handler = ConversationHandler(
+#     entry_points=[CommandHandler("cari", search_command_handler)],
+#     states={
+#         ASK_SEARCH: [MessageHandler(filters.TEXT & ~filters.COMMAND, do_search)],
+#     },
+#     fallbacks=[CommandHandler("batal", cancel_command)]
+# )
 create_folder_handler = ConversationHandler(
     entry_points=[CommandHandler("buatfolder", create_folder_command)],
     states={
