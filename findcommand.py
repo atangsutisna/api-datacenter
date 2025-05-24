@@ -40,7 +40,7 @@ def get_ext(path: str) -> str:
 #     return re.sub(r"([-.])", r"\\\1", text)
 
 # cukup kembalikan dalam bentuk list saja
-def search(base_path: str, keyword: str) -> str:
+def search(base_path: str, keyword: str):
     results = []
     for root, dirs, files in os.walk(base_path):
         for file in files:
@@ -144,42 +144,122 @@ def list_dir(current_dir: str):
 
 
 async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    telegram_id = str(update.effective_user.id)
+    curr_user = get_user_logged_in(telegram_id)
+    if curr_user is None:
+        await update.message.reply_text('Maaf, anda belum bisa mengakses data center. Silakan verifikasi nomor HP kamu')
+        return
+
     args = context.args
     if not args:
         await update.message.reply_text('File apa yang kamu cari? klik /batal jika kamu urung mencarinya')
         return ASK_SEARCH
     else:
-        if 'is_logged_in' in context.user_data:
-            is_logged_in = context.user_data['is_logged_in']
-            if is_logged_in:
-                keyword = args[0]
-                homedir = context.user_data['homedir']
-                fullpath = REPOSITORY_PATH + homedir
-                # cukup dapatkan listnya saja
-                results = search(fullpath, keyword)
-                if not results:
-                    await update.message.reply_text(f"Tidak ditemukan file dengan keyword {keyword}", parse_mode="HTML")
-                else:
-                    # lalu, masukan ke dalam context.user_data sebagai list
-                    # context.user_data['search_results'] = []
-                    context.user_data['search_results'] = results
-                    no = 1
-                    keyboard = []
-                    for path in results:
-                        filename = os.path.basename(path)
-                        rep_path = path.split("/repository", 1)[1]
-                        folder_path = os.path.dirname(rep_path)
-                        filename_wpath = os.path.join(folder_path, filename)
-                        button = InlineKeyboardButton(
-                            text=f"{no} - {filename_wpath} /info",
-                            callback_data=f"info_{no}"
-                        )
-                        keyboard.append([button])
-                        no += 1
-                    reply_markup = InlineKeyboardMarkup(keyboard)
-                    await update.message.reply_text("Hasil Pencarian: ", reply_markup=reply_markup)
+        keyword = args[0]
+        results = []
+        accounts = curr_user['accounts']
+        for account in accounts:
+            homedir = account['homedir'].lstrip("/")
+            base_path = os.path.join(REPOSITORY_PATH, homedir)
+            logger.info("attempting to find file with key %s on path %s", keyword, base_path)
+            for root, dirs, files in os.walk(base_path):
+                for file in files:
+                    if keyword.lower() in file.lower():
+                        fullpath = os.path.join(root, file)
+                        results.append(fullpath)
+        if len(results) == 0:
+            await update.message.reply_text(f"Saya tidak dapat menemukan file atau data yang mengandung kata \"{keyword}\" 😞")
         else:
-            await update.message.reply_text('Maaf, saya tidak bisa melayani kamu. Ketik /login untuk mulai.')
+            # show all in the buttons
+            no = 1
+            await update.message.reply_text(f"Hasil pencarian: {keyword}")
+            for dir in results:
+                no_str = str(no)
+                file = os.path.isfile(dir)
+                if not file:
+                    # folder
+                    folder_name = os.path.basename(path)
+                    rep_path = path.split("/repository", 1)[1]
+                    parent_path = os.path.dirname(rep_path)
+                    folder_path = os.path.join(parent_path, folder_name)
+
+                    keyboard = []
+                    buttons = [
+                        InlineKeyboardButton(
+                            text="\u2139 Info",
+                            callback_data=f"info_{no_str}"
+                        ),
+                        InlineKeyboardButton(
+                            text="⬇️ Unduh",
+                            callback_data=f"download_{no_str}"
+                        ),
+                        InlineKeyboardButton(
+                            text="❌ Hapus",
+                            callback_data=f"remove_{no_str}"
+                        )
+                    ]
+                    keyboard.append(buttons)
+                    reply_markup = InlineKeyboardMarkup(keyboard)
+                    await update.message.reply_text(f"📂 {folder_path}", reply_markup=reply_markup)
+                else:
+                    file_name = os.path.basename(path)
+                    rep_path = path.split("/repository", 1)[1]
+                    parent_path = os.path.dirname(rep_path)
+                    file_path = os.path.join(parent_path, file_name)
+
+                    keyboard = []
+                    buttons = [
+                        InlineKeyboardButton(
+                            text="\u2139 Info",
+                            callback_data=f"info_{no_str}"
+                        ),
+                        InlineKeyboardButton(
+                            text="⬇️ Unduh",
+                            callback_data=f"download_{no_str}"
+                        ),
+                        InlineKeyboardButton(
+                            text=f"❌ Hapus",
+                            callback_data=f"remove_{no_str}"
+                        )
+                    ]
+                    keyboard.append(buttons)
+                    reply_markup = InlineKeyboardMarkup(keyboard)
+                    await update.message.reply_text(f"📂 {file_path}", reply_markup=reply_markup)
+                no += 1
+
+            context.user_data['search_results'] = results
+            # reply_markup = InlineKeyboardMarkup(keyboard)
+            # await update.message.reply_text(f"Hasil pencarian: {keyword}", reply_markup=reply_markup)
+        # legacy code
+        # if 'is_logged_in' in context.user_data:
+        #     is_logged_in = context.user_data['is_logged_in']
+        #     if is_logged_in:
+        #         keyword = args[0]
+        #         homedir = context.user_data['homedir']
+        #         fullpath = REPOSITORY_PATH + homedir
+        #         # cukup dapatkan listnya saja
+        #         results = search(fullpath, keyword)
+        #         if not results:
+        #             await update.message.reply_text(f"Tidak ditemukan file dengan keyword {keyword}", parse_mode="HTML")
+        #         else:
+        #             context.user_data['search_results'] = results
+        #             no = 1
+        #             keyboard = []
+        #             for path in results:
+        #                 filename = os.path.basename(path)
+        #                 rep_path = path.split("/repository", 1)[1]
+        #                 folder_path = os.path.dirname(rep_path)
+        #                 filename_wpath = os.path.join(folder_path, filename)
+        #                 button = InlineKeyboardButton(
+        #                     text=f"{no} - {filename_wpath} /info",
+        #                     callback_data=f"info_{no}"
+        #                 )
+        #                 keyboard.append([button])
+        #                 no += 1
+        #             reply_markup = InlineKeyboardMarkup(keyboard)
+        #             await update.message.reply_text("Hasil Pencarian: ", reply_markup=reply_markup)
+        # else:
+        #     await update.message.reply_text('Maaf, saya tidak bisa melayani kamu. Ketik /login untuk mulai.')
         return ConversationHandler.END
 
 async def do_search(update: Update, context: ContextTypes.DEFAULT_TYPE):

@@ -31,5 +31,10 @@ child_folder = "/home/kangatang/git/filegator/repository/spark/samplepptx.pptx"
 # else:
 #     print(f"{child_folder} BUKAN child dari {parent_folder}")
 
-dirname = os.path.dirname("/home/kangatang/git/filegator/repository/spark/Folder 6")
-print(dirname)
+path = "/home/kangatang/git/filegator/repository/spark/Folder 6"
+# dirname = os.path.dirname("/home/kangatang/git/filegator/repository/spark/Folder 6")
+folder_name = os.path.basename(child_folder)
+rep_path = path.split("/repository", 1)[1]
+parent_path = os.path.dirname(rep_path)
+folder_path = os.path.join(parent_path, folder_name)
+print(folder_path)
