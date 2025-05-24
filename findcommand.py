@@ -131,6 +131,7 @@ def list_dir(current_dir: str):
     results.append(os.path.join(REPOSITORY_PATH, parent_dir))
             
     no_str = str(no)
+    logger.info(f"button back is place for no {no_str}")
     button = InlineKeyboardButton(
         text=f"<< Kembali ",
         callback_data=f"info_{no_str}"
@@ -552,10 +553,6 @@ async def do_create_folder(update: Update, context: ContextTypes.DEFAULT_TYPE):
         os.makedirs(folder_path)
         results = list_dir(current_dir)
         context.user_data['results'] = results['results']
-        if "keyboard" in results:
-            logger.info("terdapat keyboard")
-        else:
-            logger.info("tidak ada keyboard")
         reply_markup = InlineKeyboardMarkup(results['keyboard'])
         # await query.edit_message_text(f"📂 : {current_dir}. \n Gunakan perintah /buatfolder [nama folder] untuk membuat folder baru.", reply_markup=reply_markup)
         await update.message.reply_text(f"✅ Folder '{folder_name}' berhasil dibuat", reply_markup=reply_markup)
