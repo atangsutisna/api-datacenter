@@ -233,40 +233,6 @@ async def ask_search_command(update: Update, context: ContextTypes.DEFAULT_TYPE)
                     reply_markup = InlineKeyboardMarkup(keyboard)
                     await update.message.reply_text(f"📂 `{file_path}` (`{total_size}`)", reply_markup=reply_markup, parse_mode="Markdown")
                 no += 1
-
-            # context.user_data['search_results'] = results
-            # reply_markup = InlineKeyboardMarkup(keyboard)
-            # await update.message.reply_text(f"Hasil pencarian: {keyword}", reply_markup=reply_markup)
-        # legacy code
-        # if 'is_logged_in' in context.user_data:
-        #     is_logged_in = context.user_data['is_logged_in']
-        #     if is_logged_in:
-        #         keyword = args[0]
-        #         homedir = context.user_data['homedir']
-        #         fullpath = REPOSITORY_PATH + homedir
-        #         # cukup dapatkan listnya saja
-        #         results = search(fullpath, keyword)
-        #         if not results:
-        #             await update.message.reply_text(f"Tidak ditemukan file dengan keyword {keyword}", parse_mode="HTML")
-        #         else:
-        #             context.user_data['search_results'] = results
-        #             no = 1
-        #             keyboard = []
-        #             for path in results:
-        #                 filename = os.path.basename(path)
-        #                 rep_path = path.split("/repository", 1)[1]
-        #                 folder_path = os.path.dirname(rep_path)
-        #                 filename_wpath = os.path.join(folder_path, filename)
-        #                 button = InlineKeyboardButton(
-        #                     text=f"{no} - {filename_wpath} /info",
-        #                     callback_data=f"info_{no}"
-        #                 )
-        #                 keyboard.append([button])
-        #                 no += 1
-        #             reply_markup = InlineKeyboardMarkup(keyboard)
-        #             await update.message.reply_text("Hasil Pencarian: ", reply_markup=reply_markup)
-        # else:
-        #     await update.message.reply_text('Maaf, saya tidak bisa melayani kamu. Ketik /login untuk mulai.')
         return ConversationHandler.END
 
 async def do_search(update: Update, context: ContextTypes.DEFAULT_TYPE):
