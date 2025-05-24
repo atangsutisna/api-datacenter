@@ -362,12 +362,6 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 callback_data=f"info_{no_str}"
             )
             keyboard.append([button])
-
-            # button = InlineKeyboardButton(
-            #     text=f"Buat Baru",
-            #     callback_data=f"info_0"
-            # )
-            # keyboard.append([button])            
             reply_markup = InlineKeyboardMarkup(keyboard)
             await query.edit_message_text(f"📂 : {current_dir}. \n Gunakan perintah /buatfolder [nama folder] untuk membuat folder baru.", reply_markup=reply_markup)
     # args = context.args
