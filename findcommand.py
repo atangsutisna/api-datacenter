@@ -444,13 +444,14 @@ async def remove_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     path = context.user_data[hashed_path]
+    simple_path = simplified_path(path)
     filename = os.path.basename(path)
     
     repository_path = path.split("/repository", 1)[1]
     folder_path = os.path.dirname(repository_path)
     # filename_wpath = os.path.join(folder_path, filename)
     os.remove(path)
-    await query.edit_message_text(f"⚠️ File sudah dihapus")
+    await query.edit_message_text(f"⚠️ File {simple_path} sudah dihapus")
 
     # if 'search_results' not in context.user_data:
     #     await query.message.reply_text("Mohon maaf, data gagal dihapus. Ada proses perbaikan sistem, sehingga saya lupa file apa yang akan kamu hapus. Silahkan diulang dari awal.")
