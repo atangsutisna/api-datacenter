@@ -103,7 +103,7 @@ def format_size(size_bytes):
     # return f"{size_bytes:,.2f} {units[i]}"
 
 def list_dir(current_dir: str, context: ContextTypes.DEFAULT_TYPE) -> InlineKeyboardMarkup:
-    logger.info("list all child of %s", current_dir)
+    logger.info("attempting to list all files in %s", current_dir)
     dir_list = os.listdir(current_dir)
 
     keyboard = []
@@ -116,7 +116,7 @@ def list_dir(current_dir: str, context: ContextTypes.DEFAULT_TYPE) -> InlineKeyb
         if not file:
             buttons = [
                 InlineKeyboardButton(
-                    text=f"File {dir}",
+                    text=f"Folder {dir}",
                     callback_data=f"info|{key_path}"
                 ),
                 InlineKeyboardButton(
