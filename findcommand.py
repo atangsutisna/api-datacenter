@@ -347,8 +347,6 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             context.user_data['current_directory'] = current_dir
             dir_list = os.listdir(current_dir)
             
-            keyboard = []
-            no = 1
             for dir in dir_list:
                 child_path = os.path.join(current_dir, dir)
                 key_path = hash_path(child_path)
@@ -356,40 +354,94 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
                 file = os.path.isfile(child_path)
                 if not file:
+                    keyboard = []
                     buttons = [
                         InlineKeyboardButton(
-                            text=f"File {dir}",
+                            text="\u2139 Info",
                             callback_data=f"info|{key_path}"
                         ),
                         InlineKeyboardButton(
-                            text=f"❌",
+                            text="⬇️ Zip & Unduh",
+                            callback_data=f"download|{key_path}"
+                        ),
+                        InlineKeyboardButton(
+                            text="❌ Hapus",
                             callback_data=f"remove|{key_path}"
                         )
                     ]
+                    keyboard.append(buttons)
+                    reply_markup = InlineKeyboardMarkup(keyboard)
+
+                    total_size = get_folder_size(child_path)
+                    formatted_size = format_size(total_size)
+                    folder_path = simplified_path(child_path)
+                    await query.message.reply_text(
+                        f"📂 `{folder_path}` (`{formatted_size}`)", 
+                        reply_markup=reply_markup, 
+                        parse_mode="Markdown"
+                    )
                 else:
+                    total_size = get_file_size(child_path)
+
+                    file_name = os.path.basename(child_path)
+                    repository_path = child_path.split("/repository", 1)[1]
+                    parent_path = os.path.dirname(repository_path)
+                    file_path = os.path.join(parent_path, file_name)
+                    
+                    keyboard = [] 
                     buttons = [
                         InlineKeyboardButton(
-                            text=f"{dir}",
+                            text="\u2139 Info",
                             callback_data=f"info|{key_path}"
                         ),
                         InlineKeyboardButton(
-                            text=f"❌",
+                            text="⬇️ Unduh",
+                            callback_data=f"download|{key_path}"
+                        ),
+                        InlineKeyboardButton(
+                            text=f"❌ Hapus",
                             callback_data=f"remove|{key_path}"
                         )
                     ]
-                keyboard.append(buttons)
-                no += 1
-            
+                    keyboard.append(buttons)
+                    reply_markup = InlineKeyboardMarkup(keyboard)
+                    size = format_size(total_size)
+                    await query.message.reply_text(
+                        f"📂 `{file_path}` (`{size}`)", 
+                        reply_markup=reply_markup, 
+                        parse_mode="Markdown"
+                    )  
+
+            keyboard = []
             parent_dir = os.path.dirname(current_dir)
             key_path = hash_path(parent_dir)
-            context.user_data[key_path] = os.path.join(REPOSITORY_PATH, parent_dir)             
             button = InlineKeyboardButton(
-                text=f"<< Kembali ",
+                text="⬅️ Kembali",
                 callback_data=f"info|{key_path}"
             )
             keyboard.append([button])
             reply_markup = InlineKeyboardMarkup(keyboard)
-            await query.edit_message_text(f"📂 : {current_dir}. \n Gunakan perintah /buatfolder [nama folder] untuk membuat folder baru.", reply_markup=reply_markup)
+            
+            key_path = hash_path(parent_dir)
+            context.user_data[key_path] = parent_dir
+            simplified_current_dir = simplified_path(current_dir)
+            await query.message.reply_text(
+                f"Sekarang kamu berada folder `{simplified_current_dir}`", 
+                reply_markup=reply_markup, 
+                parse_mode="Markdown"
+            )
+          
+            # parent_dir = os.path.dirname(current_dir)
+            # key_path = hash_path(parent_dir)
+            # context.user_data[key_path] = os.path.join(REPOSITORY_PATH, parent_dir)             
+            # button = InlineKeyboardButton(
+            #     text=f"<< Kembali ",
+            #     callback_data=f"info|{key_path}"
+            # )
+            # keyboard.append([button])
+            # reply_markup = InlineKeyboardMarkup(keyboard)
+            # await query.edit_message_text(f"📂 : {current_dir}. \n Gunakan perintah /buatfolder [nama folder] untuk membuat folder baru.", reply_markup=reply_markup)
+    
     # args = context.args
     # if not args:
     #     await update.message.reply_text('Silakan balas dengan format /info nomor-file')
