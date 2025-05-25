@@ -102,58 +102,56 @@ def format_size(size_bytes):
     #     i += 1
     # return f"{size_bytes:,.2f} {units[i]}"
 
-def list_dir(current_dir: str):
+def list_dir(current_dir: str, context: ContextTypes.DEFAULT_TYPE) -> InlineKeyboardMarkup:
     logger.info("list all child of %s", current_dir)
     dir_list = os.listdir(current_dir)
 
     keyboard = []
-    no = 1
-    results = []
     for dir in dir_list:
         child_path = os.path.join(current_dir, dir)
-        results.append(child_path)
+        key_path = hash_path(child_path)
+        context.user_data[key_path] = child_path
 
-        no_str = str(no)
         file = os.path.isfile(child_path)
         if not file:
             buttons = [
                 InlineKeyboardButton(
                     text=f"File {dir}",
-                    callback_data=f"info_{no_str}"
+                    callback_data=f"info|{key_path}"
                 ),
                 InlineKeyboardButton(
                     text=f"❌",
-                    callback_data=f"remove_{no_str}"
+                    callback_data=f"remove|{key_path}"
                 )
             ]
         else:
             buttons = [
                 InlineKeyboardButton(
                     text=f"{dir}",
-                    callback_data=f"info_{no_str}"
+                    callback_data=f"info|{key_path}"
                 ),
                 InlineKeyboardButton(
                     text=f"❌",
-                    callback_data=f"remove_{no_str}"
+                    callback_data=f"remove|{key_path}"
                 )
             ]
         keyboard.append(buttons)
-        no += 1
 
     parent_dir = os.path.dirname(current_dir)
-    results.append(os.path.join(REPOSITORY_PATH, parent_dir))
-            
-    no_str = str(no)
-    logger.info(f"button back is place for no {no_str}")
+    parent_path = os.path.join(REPOSITORY_PATH, parent_dir)
+    key_path = hash_path(parent_path)
+    context.user_data[key_path] = parent_path
+
     button = InlineKeyboardButton(
         text=f"<< Kembali ",
-        callback_data=f"info_{no_str}"
+        callback_data=f"info|{key_path}"
     )
     keyboard.append([button])
-    return {
-        "results": results,
-        "keyboard": keyboard 
-    }
+    return InlineKeyboardMarkup(keyboard)
+    # await update.message.reply_text(f"✅ Folder '{folder_name}' berhasil dibuat di `{parent_path}`", 
+    #     reply_markup=reply_markup,
+    #     parse_mode="Markdown")
+
 
 
 async def search_command_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -651,7 +649,6 @@ async def create_folder_command(update: Update, context: ContextTypes.DEFAULT_TY
         await update.message.reply_text("Maaf, kamu belum bisa mengakses data center sebelum melakukan verifikasi nomor HP")
         return
     # check current directory
-    logger.info("user data %r", context.user_data)
     if "current_directory" not in context.user_data:
         await update.message.reply_text("Silahkan tentukan terlebih dahulu di mana kamu akan menyimpan folder-nya")
         return
@@ -673,11 +670,12 @@ async def do_create_folder(update: Update, context: ContextTypes.DEFAULT_TYPE):
     folder_path = os.path.join(current_dir, folder_name)
     try:
         os.makedirs(folder_path)
-        results = list_dir(current_dir)
-        context.user_data['search_results'] = results['results']
-        reply_markup = InlineKeyboardMarkup(results['keyboard'])
-        # await query.edit_message_text(f"📂 : {current_dir}. \n Gunakan perintah /buatfolder [nama folder] untuk membuat folder baru.", reply_markup=reply_markup)
-        await update.message.reply_text(f"✅ Folder '{folder_name}' berhasil dibuat", reply_markup=reply_markup)
+        reply_markup = list_dir(current_dir, context)
+        await update.message.reply_text(
+            f"✅ Folder '{folder_name}' berhasil dibuat di `{current_dir}`", 
+            reply_markup=reply_markup, 
+            parse_mode="Markdown"
+        )
     except FileExistsError:
         await update.message.reply_text(f"⚠️ Folder '{folder_name}' sudah ada.")
     except Exception as e:
