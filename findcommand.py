@@ -276,12 +276,6 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await query.edit_message_text(f"⚠️ Folder tidak ditemukan. Silahkan melakukan pencarian ulang.", parse_mode="Markdown")
         return
 
-    # file_no = int(data.split("_")[1])
-    # logger.info("Got hashed path key %s", file_no)
-
-    # index = int(file_no) - 1
-    # search_results = context.user_data['search_results']
-    # logger.info("attempting to find array with idx %d", index)
     current_dir = context.user_data[hashed_path]
     logger.info("current directory: %s", current_dir)
     # set current directory
@@ -291,26 +285,23 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # get home directory the user
         telegram_id = str(update.effective_user.id)
         curr_user = get_user_logged_in(telegram_id)
+        context.user_data.clear()
         if curr_user is None:
             await update.message.reply_text('Maaf, anda belum bisa mengakses data center. Silakan verifikasi nomor HP kamu')
         else:
             accounts = curr_user['accounts']
             keyboard = []
-            no = 1
-            results = []
             for account in accounts:
                 homedir = account['homedir'].lstrip("/")
                 fullpath = os.path.join(REPOSITORY_PATH, homedir)
-                results.append(fullpath)
+                key_path = hash_path(fullpath)
+                context.user_data[key_path] = fullpath
 
-                no_str = str(no)
                 button = InlineKeyboardButton(
                     text=f"📁 {homedir}",
-                    callback_data=f"info_{no_str}"
+                    callback_data=f"info|{key_path}"
                 )
                 keyboard.append([button])
-                no += 1
-            context.user_data['search_results'] = results
             reply_markup = InlineKeyboardMarkup(keyboard)
             await query.edit_message_text("Ini workspace kamu: ", reply_markup=reply_markup)
     else:
@@ -320,6 +311,7 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # context.user_data['current_directory'] = os.path.dirname(current_dir)
         if is_file:
             # summarize file
+            # fix me for info 0 replace with hashed_path
             button = [
                 InlineKeyboardButton(
                     text=f"<< Kembali ",
@@ -353,46 +345,45 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             dir_list = os.listdir(current_dir)
             keyboard = []
             no = 1
-            results = []
+            # results = []
+            context.user_data.clear()
             for dir in dir_list:
                 child_path = os.path.join(current_dir, dir)
-                results.append(child_path)
+                key_path = hash_path(child_path)
+                context.user_data[key_path] = child_path
 
-                no_str = str(no)
                 file = os.path.isfile(child_path)
                 if not file:
                     buttons = [
                         InlineKeyboardButton(
                             text=f"File {dir}",
-                            callback_data=f"info_{no_str}"
+                            callback_data=f"info|{key_path}"
                         ),
                         InlineKeyboardButton(
                             text=f"❌",
-                            callback_data=f"remove_{no_str}"
+                            callback_data=f"remove|{key_path}"
                         )
                     ]
                 else:
                     buttons = [
                         InlineKeyboardButton(
                             text=f"{dir}",
-                            callback_data=f"info_{no_str}"
+                            callback_data=f"info|{key_path}"
                         ),
                         InlineKeyboardButton(
                             text=f"❌",
-                            callback_data=f"remove_{no_str}"
+                            callback_data=f"remove|{key_path}"
                         )
                     ]
                 keyboard.append(buttons)
                 no += 1
             
             parent_dir = os.path.dirname(current_dir)
-            results.append(os.path.join(REPOSITORY_PATH, parent_dir))
-            context.user_data['search_results'] = results
-            
-            no_str = str(no)
+            key_path = hash_path(parent_dir)
+            context.user_data[key_path] = os.path.join(REPOSITORY_PATH, parent_dir)             
             button = InlineKeyboardButton(
                 text=f"<< Kembali ",
-                callback_data=f"info_{no_str}"
+                callback_data=f"info|{key_path}"
             )
             keyboard.append([button])
             reply_markup = InlineKeyboardMarkup(keyboard)
