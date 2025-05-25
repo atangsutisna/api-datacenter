@@ -268,13 +268,21 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
 
     data = query.data
-    file_no = int(data.split("_")[1])
-    logger.info("Got params with id %s", file_no)
+    # gunakan hashed_path as key
+    command, hashed_path = query.data.split("|", 1)
+    logger.info("hashed_path: %s", hashed_path)
 
-    index = int(file_no) - 1
-    search_results = context.user_data['search_results']
-    logger.info("attempting to find array with idx %d", index)
-    current_dir = search_results[index]
+    if hashed_path not in context.user_data:
+        await query.edit_message_text(f"⚠️ Folder tidak ditemukan. Silahkan melakukan pencarian ulang.", parse_mode="Markdown")
+        return
+
+    # file_no = int(data.split("_")[1])
+    # logger.info("Got hashed path key %s", file_no)
+
+    # index = int(file_no) - 1
+    # search_results = context.user_data['search_results']
+    # logger.info("attempting to find array with idx %d", index)
+    current_dir = context.user_data[hashed_path]
     logger.info("current directory: %s", current_dir)
     # set current directory
     context.user_data['current_directory'] = current_dir

@@ -91,11 +91,11 @@ async def ls_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             hashed_path = hash_path(fullpath)
             context.user_data[hashed_path] = fullpath    
 
-            no_str = str(no)
+            # no_str = str(no)
             button = [
                 InlineKeyboardButton(
                     text=f"📁 {homedir}",
-                    callback_data=f"info_{no_str}"
+                    callback_data=f"info|{hashed_path}"
                 )
             ]
             keyboard.append(button)
@@ -181,7 +181,7 @@ if __name__ == '__main__':
     app.add_handler(CallbackQueryHandler(findcommand.handle_download_btn_callback, pattern=r"^download\|"))
     
     # summarize command
-    app.add_handler(CallbackQueryHandler(findcommand.summarize_command, pattern=r"^info_\d+$"))
+    app.add_handler(CallbackQueryHandler(findcommand.summarize_command, pattern=r"^info\|"))
     
     # remove command
     app.add_handler(CallbackQueryHandler(findcommand.remove_command, pattern=r"^remove_\d+$"))
