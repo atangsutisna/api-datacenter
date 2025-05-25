@@ -152,16 +152,6 @@ async def list_dir(current_dir: str, update: Update, context: ContextTypes.DEFAU
             size = format_size(total_size)
             await update.message.reply_text(f"📂 `{file_path}` (`{size}`)", reply_markup=reply_markup, parse_mode="Markdown")
 
-    parent_dir = os.path.dirname(current_dir)
-    parent_path = os.path.join(REPOSITORY_PATH, parent_dir)
-    key_path = hash_path(parent_path)
-    context.user_data[key_path] = parent_path
-
-    button = InlineKeyboardButton(
-        text=f"<< Kembali ",
-        callback_data=f"info|{key_path}"
-    )
-    keyboard.append([button])
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("",reply_markup=reply_markup,parse_mode="Markdown")
 
