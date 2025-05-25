@@ -184,7 +184,7 @@ if __name__ == '__main__':
     app.add_handler(CallbackQueryHandler(findcommand.summarize_command, pattern=r"^info\|"))
     
     # remove command
-    app.add_handler(CallbackQueryHandler(findcommand.remove_command, pattern=r"^remove_\d+$"))
+    app.add_handler(CallbackQueryHandler(findcommand.remove_command, pattern=r"^remove\|"))
     
     # create folder command
     app.add_handler(findcommand.create_folder_handler)

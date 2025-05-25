@@ -436,74 +436,87 @@ async def remove_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.answer()
 
     data = query.data
-    file_no = int(data.split("_")[1])
-    logger.info("attempting to find file to be delete with no %s", file_no)
-    if 'search_results' not in context.user_data:
-        await query.message.reply_text("Mohon maaf, data gagal dihapus. Ada proses perbaikan sistem, sehingga saya lupa file apa yang akan kamu hapus. Silahkan diulang dari awal.")
-    else:
-        index = int(file_no) - 1
-        search_results = context.user_data['search_results']
-        if 0 <= index < len(search_results):
-            path = search_results[index]
-            # remove the folder or file
-            filename = os.path.basename(path)
-            
-            rep_path = path.split("/repository", 1)[1]
-            folder_path = os.path.dirname(rep_path)
-            filename_wpath = os.path.join(folder_path, filename)
-            os.remove(path)
-            # todo: reload all file
-            current_dir = context.user_data['current_directory']
-            dir_list = os.listdir(current_dir)
-            keyboard = []
-            no = 1
-            results = []
-            for dir in dir_list:
-                child_path = os.path.join(current_dir, dir)
-                results.append(child_path)
+    command, hashed_path = query.data.split("|", 1)
+    logger.info("get key path for remove: %s", hashed_path)
 
-                no_str = str(no)
-                file = os.path.isfile(child_path)
-                if not file:
-                    buttons = [
-                        InlineKeyboardButton(
-                            text=f"File {dir}",
-                            callback_data=f"info_{no_str}"
-                        ),
-                        InlineKeyboardButton(
-                            text=f"❌",
-                            callback_data=f"remove_{no_str}"
-                        )
-                    ]
-                else:
-                    buttons = [
-                        InlineKeyboardButton(
-                            text=f"{dir}",
-                            callback_data=f"info_{no_str}"
-                        ),
-                        InlineKeyboardButton(
-                            text=f"❌",
-                            callback_data=f"remove_{no_str}"
-                        )
-                    ]
-                keyboard.append(buttons)
-                no += 1
+    if hashed_path not in context.user_data:
+        await query.edit_message_text(f"⚠️ Folder atau file tidak ditemukan. Silahkan melakukan pencarian ulang.", parse_mode="Markdown")
+        return
+
+    path = context.user_data[hashed_path]
+    filename = os.path.basename(path)
+    
+    repository_path = path.split("/repository", 1)[1]
+    folder_path = os.path.dirname(repository_path)
+    # filename_wpath = os.path.join(folder_path, filename)
+    os.remove(path)
+    await query.edit_message_text(f"⚠️ File sudah dihapus")
+
+    # if 'search_results' not in context.user_data:
+    #     await query.message.reply_text("Mohon maaf, data gagal dihapus. Ada proses perbaikan sistem, sehingga saya lupa file apa yang akan kamu hapus. Silahkan diulang dari awal.")
+    # else:
+    #     index = int(file_no) - 1
+    #     search_results = context.user_data['search_results']
+    #     if 0 <= index < len(search_results):
+    #         path = search_results[index]
+    #         # remove the folder or file
+    #         filename = os.path.basename(path)
             
-            parent_dir = os.path.dirname(current_dir)
-            results.append(os.path.join(REPOSITORY_PATH, parent_dir))
-            context.user_data['search_results'] = results
+    #         rep_path = path.split("/repository", 1)[1]
+    #         folder_path = os.path.dirname(rep_path)
+    #         filename_wpath = os.path.join(folder_path, filename)
+    #         os.remove(path)
+    #         # todo: reload all file
+    #         current_dir = context.user_data['current_directory']
+    #         dir_list = os.listdir(current_dir)
+    #         keyboard = []
+    #         no = 1
+    #         results = []
+    #         for dir in dir_list:
+    #             child_path = os.path.join(current_dir, dir)
+    #             results.append(child_path)
+
+    #             no_str = str(no)
+    #             file = os.path.isfile(child_path)
+    #             if not file:
+    #                 buttons = [
+    #                     InlineKeyboardButton(
+    #                         text=f"File {dir}",
+    #                         callback_data=f"info_{no_str}"
+    #                     ),
+    #                     InlineKeyboardButton(
+    #                         text=f"❌",
+    #                         callback_data=f"remove_{no_str}"
+    #                     )
+    #                 ]
+    #             else:
+    #                 buttons = [
+    #                     InlineKeyboardButton(
+    #                         text=f"{dir}",
+    #                         callback_data=f"info_{no_str}"
+    #                     ),
+    #                     InlineKeyboardButton(
+    #                         text=f"❌",
+    #                         callback_data=f"remove_{no_str}"
+    #                     )
+    #                 ]
+    #             keyboard.append(buttons)
+    #             no += 1
             
-            no_str = str(no)
-            button = InlineKeyboardButton(
-                text=f"<< Kembali ",
-                callback_data=f"info_{no_str}"
-            )
-            keyboard.append([button])
-            reply_markup = InlineKeyboardMarkup(keyboard)
-            await query.edit_message_text(f"File sudah dihapus\n. 📂 : {current_dir} ", reply_markup=reply_markup)
-            # await query.message.reply_text(f"File {filename_wpath} telah dihapus")
-        else:
-            await query.message.reply_text(f"Ah, kamu ini bercanda!")
+    #         parent_dir = os.path.dirname(current_dir)
+    #         results.append(os.path.join(REPOSITORY_PATH, parent_dir))
+    #         context.user_data['search_results'] = results
+            
+    #         no_str = str(no)
+    #         button = InlineKeyboardButton(
+    #             text=f"<< Kembali ",
+    #             callback_data=f"info_{no_str}"
+    #         )
+    #         keyboard.append([button])
+    #         reply_markup = InlineKeyboardMarkup(keyboard)
+    #         await query.edit_message_text(f"File sudah dihapus\n. 📂 : {current_dir} ", reply_markup=reply_markup)
+    #     else:
+    #         await query.message.reply_text(f"Ah, kamu ini bercanda!")
     # args = context.args
     # if not args:
     #     await update.message.reply_text('Silakan balas dengan format /info nomor-file')
