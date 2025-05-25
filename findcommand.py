@@ -670,25 +670,38 @@ async def do_create_folder(update: Update, context: ContextTypes.DEFAULT_TYPE):
     current_dir = context.user_data['current_directory']
 
     # os.makedirs(current_dir, exist_ok=True)
-    folder_path = os.path.join(current_dir, folder_name)
-    os.makedirs(folder_path)
-    await update.message.reply_text(
-        f"✅ Folder '{folder_name}' berhasil dibuat di `{current_dir}`", 
-        parse_mode="Markdown"
-    )
-    await list_dir(current_dir, update, context)
+    # todo: fixme
+    try:
+        os.makedirs(folder_path)
 
-    # try:
-    #     os.makedirs(folder_path)
-    #     await update.message.reply_text(
-    #         f"✅ Folder '{folder_name}' berhasil dibuat di `{current_dir}`", 
-    #         parse_mode="Markdown"
-    #     )
-    #     await list_dir(current_dir, update, context)
-    # except FileExistsError:
-    #     await update.message.reply_text(f"⚠️ Folder '{folder_name}' sudah ada.")
-    # except Exception as e:
-    #     await update.message.reply_text(f"❌ Gagal membuat folder: {e}")
+        context.user_data.clear()
+        key_path = hash_path(child_path)
+        context.user_data[key_path] = child_path
+
+        keyboard = []
+        buttons = [
+            InlineKeyboardButton(
+                text="⬅️ Kembali",
+                callback_data=f"back|{key_path}"
+            ),
+            InlineKeyboardButton(
+                text="📂 Buka",
+                callback_data=f"open|{key_path}"
+            )
+        ]
+        keyboard.append(buttons)
+        reply_markup = InlineKeyboardMarkup(keyboard)
+
+        await update.message.reply_text(
+            f"✅ Folder '{folder_name}' berhasil dibuat di `{current_dir}`", 
+            parse_mode="Markdown"
+        )
+
+        # await list_dir(current_dir, update, context)
+    except FileExistsError:
+        await update.message.reply_text(f"⚠️ Folder '{folder_name}' sudah ada.")
+    except Exception as e:
+        await update.message.reply_text(f"❌ Gagal membuat folder: {e}")
 
     return ConversationHandler.END
 
