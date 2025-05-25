@@ -14,6 +14,7 @@ import assistant_file_reader, fileconverter;
 from userloggedin import get_user_logged_in
 from checkpermissions import is_permitted
 import shutil
+from myutils import simplified_path
 
 load_dotenv()
 
@@ -67,14 +68,6 @@ def get_folder_size_bytes(folder_path):
     return total_size    
 
 def get_folder_size(folder_path):
-    # total_size = 0
-    # for dirpath, dirnames, filenames in os.walk(folder_path):
-    #     for filename in filenames:
-    #         filepath = os.path.join(dirpath, filename)
-    #         if os.path.isfile(filepath):  # pastikan benar-benar file
-    #             total_size += os.path.getsize(filepath)
-    
-    # total_size = total_size / (1024 * 1024)
     total_size = 0
     for dirpath, _, filenames in os.walk(folder_path):
         for f in filenames:
@@ -95,47 +88,69 @@ def format_size(size_bytes):
         return f"{size_bytes / 1024**2:.2f} MB"
     else:
         return f"{size_bytes / 1024**3:.2f} GB"
-    # units = ['B', 'kB', 'MB', 'GB', 'TB']
-    # i = 0
-    # while size_bytes >= 1024 and i < len(units) - 1:
-    #     size_bytes /= 1024.0
-    #     i += 1
-    # return f"{size_bytes:,.2f} {units[i]}"
 
-def list_dir(current_dir: str, context: ContextTypes.DEFAULT_TYPE) -> InlineKeyboardMarkup:
+async def list_dir(current_dir: str, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    context.user_data.clear()
     logger.info("attempting to list all files in %s", current_dir)
     dir_list = os.listdir(current_dir)
 
-    keyboard = []
     for dir in dir_list:
         child_path = os.path.join(current_dir, dir)
         key_path = hash_path(child_path)
         context.user_data[key_path] = child_path
 
+        keyboard = []
         file = os.path.isfile(child_path)
         if not file:
             buttons = [
                 InlineKeyboardButton(
-                    text=f"Folder {dir}",
+                    text="\u2139 Info",
                     callback_data=f"info|{key_path}"
                 ),
                 InlineKeyboardButton(
-                    text=f"❌",
+                    text="⬇️ Zip & Unduh",
+                    callback_data=f"download|{key_path}"
+                ),
+                InlineKeyboardButton(
+                    text="❌ Hapus",
                     callback_data=f"remove|{key_path}"
                 )
             ]
+            keyboard.append(buttons)
+            reply_markup = InlineKeyboardMarkup(keyboard)
+
+            folder_path = simplified_path(child_path)
+
+            total_size = get_folder_size(dir)
+            formatted_size = format_size(total_size)
+            await update.message.reply_text(f"📂 `{folder_path}` (`{formatted_size}`)", reply_markup=reply_markup, parse_mode="Markdown")
         else:
+            total_size = get_file_size(dir)
+
+            file_name = os.path.basename(dir)
+            rep_path = dir.split("/repository", 1)[1]
+            parent_path = os.path.dirname(rep_path)
+            file_path = os.path.join(parent_path, file_name)
+
+            keyboard = []                
             buttons = [
                 InlineKeyboardButton(
-                    text=f"{dir}",
+                    text="\u2139 Info",
                     callback_data=f"info|{key_path}"
                 ),
                 InlineKeyboardButton(
-                    text=f"❌",
+                    text="⬇️ Unduh",
+                    callback_data=f"download|{key_path}"
+                ),
+                InlineKeyboardButton(
+                    text=f"❌ Hapus",
                     callback_data=f"remove|{key_path}"
                 )
             ]
-        keyboard.append(buttons)
+            keyboard.append(buttons)
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            size = format_size(total_size)
+            await update.message.reply_text(f"📂 `{file_path}` (`{size}`)", reply_markup=reply_markup, parse_mode="Markdown")
 
     parent_dir = os.path.dirname(current_dir)
     parent_path = os.path.join(REPOSITORY_PATH, parent_dir)
@@ -147,10 +162,8 @@ def list_dir(current_dir: str, context: ContextTypes.DEFAULT_TYPE) -> InlineKeyb
         callback_data=f"info|{key_path}"
     )
     keyboard.append([button])
-    return InlineKeyboardMarkup(keyboard)
-    # await update.message.reply_text(f"✅ Folder '{folder_name}' berhasil dibuat di `{parent_path}`", 
-    #     reply_markup=reply_markup,
-    #     parse_mode="Markdown")
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text("",reply_markup=reply_markup,parse_mode="Markdown")
 
 
 
@@ -668,18 +681,24 @@ async def do_create_folder(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     # os.makedirs(current_dir, exist_ok=True)
     folder_path = os.path.join(current_dir, folder_name)
-    try:
-        os.makedirs(folder_path)
-        reply_markup = list_dir(current_dir, context)
-        await update.message.reply_text(
-            f"✅ Folder '{folder_name}' berhasil dibuat di `{current_dir}`", 
-            reply_markup=reply_markup, 
-            parse_mode="Markdown"
-        )
-    except FileExistsError:
-        await update.message.reply_text(f"⚠️ Folder '{folder_name}' sudah ada.")
-    except Exception as e:
-        await update.message.reply_text(f"❌ Gagal membuat folder: {e}")
+    os.makedirs(folder_path)
+    await update.message.reply_text(
+        f"✅ Folder '{folder_name}' berhasil dibuat di `{current_dir}`", 
+        parse_mode="Markdown"
+    )
+    await list_dir(current_dir, update, context)
+
+    # try:
+    #     os.makedirs(folder_path)
+    #     await update.message.reply_text(
+    #         f"✅ Folder '{folder_name}' berhasil dibuat di `{current_dir}`", 
+    #         parse_mode="Markdown"
+    #     )
+    #     await list_dir(current_dir, update, context)
+    # except FileExistsError:
+    #     await update.message.reply_text(f"⚠️ Folder '{folder_name}' sudah ada.")
+    # except Exception as e:
+    #     await update.message.reply_text(f"❌ Gagal membuat folder: {e}")
 
     return ConversationHandler.END
 
