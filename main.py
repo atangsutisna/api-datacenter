@@ -7,6 +7,7 @@ import requests, json, bcrypt, os, re, logging
 import logincommand, forgotpasscommand, findcommand, uploadfilecommand
 from userloggedin import get_user_logged_in
 from mappinguser import verify_phone_number
+from myutils import hash_path
 
 # Enable logging
 logging.basicConfig(
@@ -72,7 +73,8 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # list all directory on user's home
 async def ls_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # get current telegram id
+    context.user_data.clear()
+
     telegram_id = str(update.effective_user.id)
     logger.info("attempting to find user with telegram id %s", telegram_id)
     curr_user = get_user_logged_in(telegram_id)
@@ -82,11 +84,12 @@ async def ls_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         accounts = curr_user['accounts']
         keyboard = []
         no = 1
-        results = []
         for account in accounts:
             homedir = account['homedir'].lstrip("/")
             fullpath = os.path.join(REPOSITORY_PATH, homedir)
-            results.append(fullpath)
+
+            hashed_path = hash_path(fullpath)
+            context.user_data[hashed_path] = fullpath    
 
             no_str = str(no)
             button = [
@@ -98,41 +101,8 @@ async def ls_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             keyboard.append(button)
             no += 1
         
-        context.user_data['search_results'] = results
         reply_markup = InlineKeyboardMarkup(keyboard)
         await update.message.reply_text("Ini workspace kamu: ", reply_markup=reply_markup)
-    # homedir = context.user_data['homedir']
-    # if is_logged_in:
-    #     dir_list = os.listdir(REPOSITORY_PATH + homedir)
-    #     no = 1
-    #     results = []
-    #     # message = "<b>Hasil Pencarian:</b>\n"
-    #     keyboard = []
-    #     for dir in dir_list:
-    #         full_path = os.path.join(REPOSITORY_PATH + homedir, dir)
-    #         results.append(full_path)
-    #         is_file = os.path.isfile(REPOSITORY_PATH + homedir + "/" + dir)
-    #         no_str = str(no)
-    #         if is_file:
-    #             button = InlineKeyboardButton(
-    #                 text=f"{no_str} - {dir}",
-    #                 callback_data=f"info_{no_str}"
-    #             )
-    #             keyboard.append([button])
-    #         else:
-    #             button = InlineKeyboardButton(
-    #                 text=f"{no_str} - Folder {dir}",
-    #                 callback_data=f"info_{no_str}"
-    #             )
-    #             keyboard.append([button])
-    #         no += 1
-    #     # message = (message)
-    #     context.user_data['search_results'] = results
-    #     # await update.message.reply_text(message, parse_mode="HTML")
-    #     reply_markup = InlineKeyboardMarkup(keyboard)
-    #     await update.message.reply_text("Hasil Pencarian: ", reply_markup=reply_markup)
-    # else:
-    #     await update.message.reply_text('Maaf, anda belum bisa mengakses data center. Klik /login untuk mulai')
 
 # handle responses
 def handle_response(update: Update, text: str) -> str:
