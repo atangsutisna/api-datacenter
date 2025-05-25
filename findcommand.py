@@ -108,7 +108,7 @@ async def list_dir(current_dir: str, update: Update, context: ContextTypes.DEFAU
                     callback_data=f"info|{key_path}"
                 ),
                 InlineKeyboardButton(
-                    text="⬇️ Zip & Unduh",
+                    text="⬇️ Unduh",
                     callback_data=f"download|{key_path}"
                 ),
                 InlineKeyboardButton(
@@ -220,7 +220,7 @@ async def search_command_handler(update: Update, context: ContextTypes.DEFAULT_T
                             callback_data=f"info_{no_str}"
                         ),
                         InlineKeyboardButton(
-                            text="⬇️ Zip & Unduh",
+                            text="⬇️ Unduh",
                             callback_data=f"download|{hashed_path}"
                         ),
                         InlineKeyboardButton(
@@ -361,7 +361,7 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                             callback_data=f"info|{key_path}"
                         ),
                         InlineKeyboardButton(
-                            text="⬇️ Zip & Unduh",
+                            text="⬇️ Unduh",
                             callback_data=f"download|{key_path}"
                         ),
                         InlineKeyboardButton(
@@ -432,6 +432,7 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
 
 async def remove_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # todo: fixme for confirmation
     query = update.callback_query
     await query.answer()
 
