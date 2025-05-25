@@ -670,7 +670,7 @@ async def do_create_folder(update: Update, context: ContextTypes.DEFAULT_TYPE):
     current_dir = context.user_data['current_directory']
 
     # os.makedirs(current_dir, exist_ok=True)
-    # todo: fixme
+    # todo: fixme: check duplicate file or folder
     folder_path = os.path.join(current_dir, folder_name)
     try:
         os.makedirs(folder_path)
