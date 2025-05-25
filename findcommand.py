@@ -340,13 +340,14 @@ async def summarize_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await query.edit_message_text(result, reply_markup=reply_markup)
                 os.remove(tmp_file_fullpath)
         else:
+            context.user_data.clear()
             # list of childs folder
-            logger.info("list all child of %s", current_dir)
+            logger.info("list all child of %s and set current directory to %s", current_dir, current_dir)
+            context.user_data['current_directory'] = current_dir
             dir_list = os.listdir(current_dir)
+            
             keyboard = []
             no = 1
-            # results = []
-            context.user_data.clear()
             for dir in dir_list:
                 child_path = os.path.join(current_dir, dir)
                 key_path = hash_path(child_path)
@@ -650,6 +651,7 @@ async def create_folder_command(update: Update, context: ContextTypes.DEFAULT_TY
         await update.message.reply_text("Maaf, kamu belum bisa mengakses data center sebelum melakukan verifikasi nomor HP")
         return
     # check current directory
+    logger.info("user data %r", context.user_data)
     if "current_directory" not in context.user_data:
         await update.message.reply_text("Silahkan tentukan terlebih dahulu di mana kamu akan menyimpan folder-nya")
         return
