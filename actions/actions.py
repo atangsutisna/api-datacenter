@@ -134,7 +134,22 @@ class ActionListWorkspace(Action):
                 fullpath = os.path.join(REPOSITORY_PATH, homedir)
                 user_workspaces.append(fullpath)
 
-            message = "Ini workspace kamu\n"
-            message += "\n".join(f"- {workspace}" for workspace in user_workspaces)
-            dispatcher.utter_message(text=message)
+            message = "Baik, ini *workspace kamu*:\n"
+            message += "\n".join(f"{no+1}. `{workspace}`" for no, workspace in enumerate(user_workspaces))
+            message += "\nSilahkan kamu bisa meng-ekplore dengan menekan button \"Buka Folder\""
+            dispatcher.utter_message(
+                text=message,
+                custom={
+                "data": {
+                    "teks": message,
+                    "search_results": user_workspaces,
+                    "reply_markup": {
+                        "inline_keyboard": [
+                            {"teks": "Buka Folder", "callback_data": "/open_folder"},
+                        ]
+                    }
+                }
+            }
+
+            )
             # dispatcher.utter_message(text="😊 Saya akan menampilkan workspacemu segera!! Fitur ini sedang dalam pengembangan")
