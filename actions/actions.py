@@ -31,6 +31,10 @@ from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.types import DomainDict
 from datetime import datetime
 from zoneinfo import ZoneInfo
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 class ActionGreeting(Action):
     def name(self) -> Text:
@@ -98,6 +102,10 @@ class ActionGuessingName(Action):
             dispatcher.utter_message(text="😊 Tentu saja! ID kamu sudah terdaftar di dalam sistem.\nBaik, ada yang bisa saya bantu terkait data center?")
 
 class ActionListWorkspace(Action):
+    def __init__(self):
+        from userloggedin import get_user_logged_in
+        self.get_user_logged_in = get_user_logged_in
+
     def name(self) -> Text:
         return "action_list_workspace"
     
@@ -112,10 +120,21 @@ class ActionListWorkspace(Action):
             Silahkan verifikasi nomor HP kamu dulu.
             """)
         else:
-            # get telegram id
+            # get telegram id 7272740693
             metadata = tracker.latest_message.get("metadata")
             fullname = metadata.get("fullname")
             telegram_id = metadata.get("telegram_id")
-            message = f"Halo, {fullname} ({telegram_id}). Maaf, untuk saat ini saya belum bisa menampilkannya."
+            
+            curr_user = self.get_user_logged_in(telegram_id)
+            accounts = curr_user['accounts']
+            user_workspaces = []
+            REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
+            for account in accounts:
+                homedir = account['homedir'].lstrip("/")
+                fullpath = os.path.join(REPOSITORY_PATH, homedir)
+                user_workspaces.append(fullpath)
+
+            message = "Ini workspace kamu\n"
+            message += "\n".join(f"- {workspace}" for workspace in user_workspaces)
             dispatcher.utter_message(text=message)
             # dispatcher.utter_message(text="😊 Saya akan menampilkan workspacemu segera!! Fitur ini sedang dalam pengembangan")
