@@ -96,7 +96,19 @@ class ActionGuessingName(Action):
             Silahkan verifikasi nomor HP kamu dulu.
             """)
         else:
-            dispatcher.utter_message(text="😊 Tentu saja! ID kamu sudah terdaftar di dalam sistem.\nBaik, ada yang bisa saya bantu terkait data center?")
+            dispatcher.utter_message(
+                text="😊 Tentu saja! ID kamu sudah terdaftar di dalam sistem.\nBaik, ada yang bisa saya bantu terkait data center?",
+                custom={
+                    "data": {
+                        "username": "atang gombal",
+                        "fullname": "Atang Sutisna, Ir",
+                        "teks": "Silahkan pilih salah satu opsi:",
+                        "reply_markup": {
+                            "inline_keyboard": []
+                        }
+                    }
+                }
+            )
 
 class ActionListWorkspace(Action):
     def __init__(self):
