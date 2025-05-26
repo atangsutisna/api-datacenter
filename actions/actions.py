@@ -164,6 +164,7 @@ class ActionListWorkspace(Action):
 
             message = "Baik, ini *workspace kamu*:"
             no = 1
+            # simplified workspace, use short path not fullpath
             for workspace in user_workspaces:
                 message += f"\n{no}. `{workspace}` (`{format_size(get_folder_size_bytes(workspace))}`)"
                 no += 1
