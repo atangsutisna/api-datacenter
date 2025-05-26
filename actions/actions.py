@@ -58,7 +58,7 @@ class ActionGreeting(Action):
                 message = f"Hai, selamat malam. Ada yang bisa saya bantu?"
         else:
             if 4 <= current_hour < 10:
-                message = f"Hai, selamat pagi *{fullname}*.\nAda yang bisa saya bantu?\nSaat ini, kamu punya dua akses folder utama:\n 1. atang\n 2. Spark \n"
+                message = f"Hai, selamat pagi *{fullname}*"
             elif 10 <= current_hour < 15:
                 message = f"Hai {fullname}, selamat siang. Ada yang bisa saya bantu?"
             elif 15 <= current_hour < 18:
@@ -74,10 +74,7 @@ class ActionGreeting(Action):
                     "fullname": "Atang Sutisna, Ir",
                     "teks": "Silahkan pilih salah satu opsi:",
                     "reply_markup": {
-                        "inline_keyboard": [
-                            {"teks": "Cek Status", "callback_data": "/cek_status"},
-                            {"teks": "Bantuan", "callback_data": "/bantuan"},
-                        ]
+                        "inline_keyboard": []
                     }
                 }
             }
