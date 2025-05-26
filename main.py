@@ -117,10 +117,10 @@ def handle_response(update: Update, text: str) -> str:
         "message": processed, 
         # "metadata": {
         #     "telegram_id": telegram_id,
-        #     "fullname": curr_user["fullname"]
         # }
     }
     response = requests.post(url, json=data)
+    # logger.info("response %r", response.json())
     return response.json()
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -136,8 +136,21 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
     else:
         response: str = handle_response(update, text)
-        logger.info('Bot: %s', response)
-        await update.message.reply_text(response[0]['text'])
+        logger.info('Bot: %r', response)
+
+        # custom_data = response[1]["custom"]["data"]
+        # buttons_data = custom_data["reply_markup"]["inline_keyboard"]
+        # create inline keyboard button
+        # keyboard = [
+        #     [InlineKeyboardButton(text=btn["teks"], callback_data=btn["callback_data"])]
+        #     for btn in buttons_data
+        # ] 
+        # reply_markup = InlineKeyboardMarkup(keyboard)
+        await update.message.reply_text(
+            response[0]['text'], 
+            parse_mode="Markdown", 
+            # reply_markup=reply_markup
+        )
     # url = "http://localhost:5005/webhooks/rest/webhook"
     # processed: str = text.lower()
     # data = {"sender": "user", "message": processed}
@@ -154,6 +167,12 @@ async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def fallback_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Perintah tidak dikenal. Gunakan /cancel untuk keluar.")
     return USERNAME  # Kembali ke state sebelumnya
+
+async def check_status_query_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    await query.message.reply_text("Cek status callback")
 
 if __name__ == '__main__':
     logger.info('Starting bot...')
@@ -185,6 +204,9 @@ if __name__ == '__main__':
     
     # remove command
     app.add_handler(CallbackQueryHandler(findcommand.remove_command, pattern=r"^remove\|"))
+
+    # just for test /cek_status handler
+    app.add_handler(CallbackQueryHandler(check_status_query_handler, pattern=r"/cek_status"))
     
     # create folder command
     app.add_handler(findcommand.create_folder_handler)

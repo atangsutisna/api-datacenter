@@ -54,7 +54,7 @@ class ActionGreeting(Action):
                 message = f"Hai, selamat malam. Ada yang bisa saya bantu?"
         else:
             if 4 <= current_hour < 10:
-                message = f"Hai {fullname}, selamat pagi. Ada yang bisa saya bantu?"
+                message = f"Hai, selamat pagi *{fullname}*.\nAda yang bisa saya bantu?\nSaat ini, kamu punya dua akses folder utama:\n 1. atang\n 2. Spark \n"
             elif 10 <= current_hour < 15:
                 message = f"Hai {fullname}, selamat siang. Ada yang bisa saya bantu?"
             elif 15 <= current_hour < 18:
@@ -62,7 +62,22 @@ class ActionGreeting(Action):
             else:
                 message = f"Hai {fullname}, selamat malam. Ada yang bisa saya bantu?"
         
-        dispatcher.utter_message(text=message)
+        dispatcher.utter_message(
+            text=message,
+            custom={
+                "data": {
+                    "username": "atang gombal",
+                    "fullname": "Atang Sutisna, Ir",
+                    "teks": "Silahkan pilih salah satu opsi:",
+                    "reply_markup": {
+                        "inline_keyboard": [
+                            {"teks": "Cek Status", "callback_data": "/cek_status"},
+                            {"teks": "Bantuan", "callback_data": "/bantuan"},
+                        ]
+                    }
+                }
+            }
+        )
         return []
 
 class ActionGuessingName(Action):
@@ -82,3 +97,25 @@ class ActionGuessingName(Action):
         else:
             dispatcher.utter_message(text="😊 Tentu saja! ID kamu sudah terdaftar di dalam sistem.\nBaik, ada yang bisa saya bantu terkait data center?")
 
+class ActionListWorkspace(Action):
+    def name(self) -> Text:
+        return "action_list_workspace"
+    
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        fullname = tracker.sender_id
+        if fullname == "user":
+            # belum login
+            dispatcher.utter_message(text="""
+            Maaf, saya belum mengenal kamu.
+            Silahkan verifikasi nomor HP kamu dulu.
+            """)
+        else:
+            # get telegram id
+            metadata = tracker.latest_message.get("metadata")
+            fullname = metadata.get("fullname")
+            telegram_id = metadata.get("telegram_id")
+            message = f"Halo, {fullname} ({telegram_id}). Maaf, untuk saat ini saya belum bisa menampilkannya."
+            dispatcher.utter_message(text=message)
+            # dispatcher.utter_message(text="😊 Saya akan menampilkan workspacemu segera!! Fitur ini sedang dalam pengembangan")

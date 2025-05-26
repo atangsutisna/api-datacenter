@@ -56,6 +56,8 @@ responses:
 actions:
   - action_greeting
   - action_guessing_name
+  - action_list_workspace
+
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

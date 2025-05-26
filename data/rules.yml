@@ -59,7 +59,8 @@ rules:
 - rule: How to list my files
   steps:
     - intent: ask_list_homedir
-    - action: utter_list_homedir
+    - action: action_list_workspace
+    # - action: utter_list_homedir
 
 - rule: How to login
   steps:
