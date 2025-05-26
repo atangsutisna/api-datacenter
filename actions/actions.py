@@ -36,6 +36,25 @@ import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+def get_folder_size_bytes(folder_path):
+    total_size = 0
+    for dirpath, _, filenames in os.walk(folder_path):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            if os.path.isfile(fp):
+                total_size += os.path.getsize(fp)
+    return total_size    
+
+def format_size(size_bytes):
+    if size_bytes < 1024:
+        return f"{size_bytes} B"
+    elif size_bytes < 1024**2:
+        return f"{size_bytes / 1024:.2f} KB"
+    elif size_bytes < 1024**3:
+        return f"{size_bytes / 1024**2:.2f} MB"
+    else:
+        return f"{size_bytes / 1024**3:.2f} GB"
+
 class ActionGreeting(Action):
     def name(self) -> Text:
         return "action_greeting"
@@ -143,8 +162,12 @@ class ActionListWorkspace(Action):
                 fullpath = os.path.join(REPOSITORY_PATH, homedir)
                 user_workspaces.append(fullpath)
 
-            message = "Baik, ini *workspace kamu*:\n"
-            message += "\n".join(f"{no+1}. `{workspace}`" for no, workspace in enumerate(user_workspaces))
+            message = "Baik, ini *workspace kamu*:"
+            no = 1
+            for workspace in user_workspaces:
+                message += f"\n{no}. `{workspace}` (`{format_size(get_folder_size_bytes(workspace))}`)"
+                no += 1
+            # message += "\n".join(f"{no+1}. `{workspace}` ({get_folder_size_bytes()})" for no, workspace in enumerate(user_workspaces))
             message += "\nSilahkan kamu bisa meng-ekplore dengan menekan button \"Buka Folder\""
             dispatcher.utter_message(
                 text=message,
@@ -153,9 +176,7 @@ class ActionListWorkspace(Action):
                     "teks": message,
                     "search_results": user_workspaces,
                     "reply_markup": {
-                        "inline_keyboard": [
-                            {"teks": "Buka Folder", "callback_data": "/open_folder"},
-                        ]
+                        "inline_keyboard": []
                     }
                 }
             }
