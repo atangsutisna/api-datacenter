@@ -279,9 +279,9 @@ class ActionAccessData(Action):
                     list_dir = os.listdir(selected_path)
                     if not list_dir:
                         messages = [
-                            f"Folder ini kosong. Tidak ada file atau folder di dalam folder {simple_root_path}",
-                            f"Saya sudah membuka folder {simple_root_path}, tapi sepertinya tidak ada isinya",
-                            f"Folder {simple_root_path} saat ini kosong. Tidak ada data yang bisa saya tampilkan"
+                            f"Folder ini kosong. Tidak ada file atau folder di dalam folder `{simple_root_path}`",
+                            f"Saya sudah membuka folder `{simple_root_path}`, tapi sepertinya tidak ada isinya",
+                            f"Folder `{simple_root_path}` saat ini kosong. Tidak ada data yang bisa saya tampilkan"
                         ]
                         message = random.choice(messages)
                         dispatcher.utter_message(text=message)
