@@ -214,9 +214,9 @@ class ActionKonfirmasiMenu(Action):
     async def run(self, dispatcher: CollectingDispatcher,
                   tracker: Tracker,
                   domain: dict):
-        menu = tracker.get_slot("menu")
+        nomor_file = tracker.get_slot("nomor_file")
         
-        # Contoh list menu
+        # Contoh list nomor_file
         daftar_menu = {
             "1": "Nasi Goreng",
             "2": "Nasi Uduk + Ayam Goreng",
@@ -224,6 +224,6 @@ class ActionKonfirmasiMenu(Action):
             "14": "Rendang Spesial"
         }
 
-        menu_terpilih = daftar_menu.get(menu, "Menu tidak ditemukan.")
-        dispatcher.utter_message(text=f"Kamu memilih menu nomor {menu}: {menu_terpilih}")
-        return [SlotSet("menu", menu)]
+        menu_terpilih = daftar_menu.get(nomor_file, "File tidak ditemukan.")
+        dispatcher.utter_message(text=f"Kamu memilih nomor {nomor_file}: {menu_terpilih}")
+        return [SlotSet("nomor_file", nomor_file)]

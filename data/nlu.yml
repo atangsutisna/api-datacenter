@@ -147,17 +147,17 @@ nlu:
     - saya [Doni](nama)
     - [Citra](nama) nama saya
 
-- intent: pilih_menu
+- intent: pilih_nomor
   examples: |
-    - saya pilih [14](menu)
-    - pilih nomor [25](menu)
-    - [78](menu)
-    - menu nomor [100](menu)
-    - saya pilih [7](menu)
-    - pilih [32](menu)
-    - [9](menu)
-    - nomor [45](menu)
+    - saya pilih [14](nomor_file)
+    - pilih nomor [25](nomor_file)
+    - [78](nomor_file)
+    - nomor [100](nomor_file)
+    - saya pilih [7](nomor_file)
+    - pilih [32](nomor_file)
+    - [9](nomor_file)
+    - nomor [45](nomor_file)
     
-- regex: menu
+- regex: nomor_file
   examples: |
     - \d{1,3}

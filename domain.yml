@@ -15,11 +15,11 @@ intents:
   - ask_login
   - ask_about_guess_name
   - beri_nama
-  - pilih_menu
+  - pilih_nomor
 
 entities:
   - nama
-  - menu
+  - nomor_file
 
 slots:
   nama:
@@ -27,11 +27,11 @@ slots:
     mappings:
       - type: from_entity
         entity: nama
-  menu:
+  nomor_file:
     type: text
     mappings:
       - type: from_entity
-        entity: menu
+        entity: nomor_file
 
 responses:
   utter_default:
