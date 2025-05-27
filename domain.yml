@@ -32,6 +32,9 @@ slots:
     mappings:
       - type: from_entity
         entity: nomor_file
+  search_results:
+    type: any
+    influence_conversation: false
 
 responses:
   utter_default:

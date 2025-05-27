@@ -36,6 +36,7 @@ import sys
 import os
 import random
 import logging
+import json
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -203,6 +204,7 @@ class ActionListWorkspace(Action):
             ]
             message = random.choice(opening_messages)
             no = 1
+            search_results = {}
             for path in user_workspaces:
                 file = os.path.isfile(path)
                 simple_path = simplified_path(path)
@@ -210,6 +212,7 @@ class ActionListWorkspace(Action):
                     message += f"\n{no}. `{simple_path}` (`{format_size(get_folder_size_bytes(path))}`)"
                 else:
                     message += f"\n{no}. `{simple_path}` (`{format_size(get_file_size_bytes(path))}`)"
+                search_results[no] = path
                 no += 1
             
             message += "\nAda yang ingin kamu akses?"
@@ -226,6 +229,10 @@ class ActionListWorkspace(Action):
                 }
 
             )
+
+            search_results_json = json.dumps(search_results)
+            logger.info("saving search result as json: %s", search_results_json)
+            return [SlotSet("hasil_pencarian", search_results_json)]
 
 class ActionSapaNama(Action):
     def name(self) -> Text:
