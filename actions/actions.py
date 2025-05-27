@@ -222,7 +222,7 @@ class ActionListWorkspace(Action):
                 search_results[no] = path
                 no += 1
             
-            message += "\nAda yang ingin kamu akses?"
+            message += "\nData mana yang kamu inginkan? sebutkan angkanya"
             dispatcher.utter_message(
                 text=message,
                 custom={
