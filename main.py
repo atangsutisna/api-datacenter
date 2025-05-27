@@ -112,6 +112,7 @@ def handle_response(update: Update, text: str) -> str:
     telegram_id = str(update.effective_user.id)
     curr_user = get_user_logged_in(telegram_id)
     sender = curr_user["fullname"] if curr_user is not None else "user"
+
     data = {
         "sender": sender, 
         "message": processed, 

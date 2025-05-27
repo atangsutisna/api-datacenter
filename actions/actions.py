@@ -34,6 +34,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 import sys
 import os
+import random
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -146,7 +147,7 @@ class ActionListWorkspace(Action):
         self.get_user_logged_in = get_user_logged_in
 
     def name(self) -> Text:
-        return "action_list_workspace"
+        return "action_list_data"
     
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
@@ -164,6 +165,7 @@ class ActionListWorkspace(Action):
             fullname = metadata.get("fullname")
             telegram_id = metadata.get("telegram_id")
             
+            # todo: jika user hanya punya satu folder, tampilkan saja langsung isinya
             curr_user = self.get_user_logged_in(telegram_id)
             accounts = curr_user['accounts']
             user_workspaces = []
@@ -173,14 +175,19 @@ class ActionListWorkspace(Action):
                 fullpath = os.path.join(REPOSITORY_PATH, homedir)
                 user_workspaces.append(fullpath)
 
-            message = "Baik, ini *workspace kamu*:"
+            opening_messages = [
+                "Baik, ini semua data yang kamu miliki:",
+                "Ini daftar data yang kamu miliki:",
+                "Kamu memiliki beberapa data yang tersimpan. Ini daftarnya:"
+            ]
+            message = random.choice(opening_messages)
             no = 1
             for workspace in user_workspaces:
                 simple_path = simplified_path(workspace)
                 message += f"\n{no}. `{simple_path}` (`{format_size(get_folder_size_bytes(workspace))}`)"
                 no += 1
             
-            message += "\nKamu mau buka folder nomor berapa?"
+            message += "\nAda yang ingin kamu akses?"
             dispatcher.utter_message(
                 text=message,
                 custom={

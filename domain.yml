@@ -11,7 +11,7 @@ intents:
   - ask_download
   - ask_search_file
   - ask_forgot_password
-  - ask_list_homedir
+  - displaying_data
   - ask_login
   - ask_about_guess_name
   - beri_nama
@@ -80,7 +80,7 @@ responses:
 actions:
   - action_greeting
   - action_guessing_name
-  - action_list_workspace
+  - action_list_data
   - action_simpan_nama
   - action_konfirmasi_menu
 

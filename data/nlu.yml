@@ -111,16 +111,22 @@ nlu:
     - saya kehilangan akses karena lupa password
     - bantu reset password saya dong
 
-- intent: ask_list_homedir
+- intent: displaying_data
   examples: |
+    - tampilkan semua data saya
+    - saya punya data apa saja?
+    - minta daftar data saya dong
+    - bisa tunjukan semua file dan folder saya?
+    - apa saja isi penyimpanan saya?
+    - perlihatkan semua data yang saya miliki
+    - tolong list data-data saya
+    - ada file dan folder apa saja di sini
     - tampilkan ada data apa saja
-    - tolong bantu list semua file saya
     - tolong tampilkan data saya
-    - ada file apa?
+    - ada file apa saja?
     - tolong tampilkan semua filenya
     - apa saja filenya?
     - datanya apa saja?
-    - minta data dong
 
 - intent: ask_login
   examples: |
@@ -161,3 +167,8 @@ nlu:
 - regex: nomor_file
   examples: |
     - \d{1,3}
+
+
+# bedakan intent untuk mencari data dengan menampilkan data
+# intent mencari data, user sudah mengetahui apa yang dia inginkan
+# sednagkan
