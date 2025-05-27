@@ -138,3 +138,11 @@ nlu:
     - ko bisa tahu nama saya?
     - dari mana tahu nama saya?
     - kamu tahu nama saya?
+# just for example how to use slot
+- intent: beri_nama
+  examples: |
+    - nama saya [Atang](nama)
+    - panggil saya [Budi](nama)
+    - aku [Rina](nama)
+    - saya [Doni](nama)
+    - [Citra](nama) nama saya

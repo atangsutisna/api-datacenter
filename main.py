@@ -139,19 +139,24 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         response: str = handle_response(update, text)
         logger.info('Bot: %r', response)
 
-        custom_data = response[1]["custom"]["data"]
-        buttons_data = custom_data["reply_markup"]["inline_keyboard"]
-        # create inline keyboard button
-        keyboard = [
-            [InlineKeyboardButton(text=btn["teks"], callback_data=btn["callback_data"])]
-            for btn in buttons_data
-        ] 
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await update.message.reply_text(
-            response[0]['text'], 
-            parse_mode="Markdown", 
-            reply_markup=reply_markup
-        )
+        if len(response) > 1:
+            custom_data = response[1]["custom"]["data"]
+            buttons_data = custom_data["reply_markup"]["inline_keyboard"]
+            # create inline keyboard button
+            keyboard = [
+                [InlineKeyboardButton(text=btn["teks"], callback_data=btn["callback_data"])]
+                for btn in buttons_data
+            ] 
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            await update.message.reply_text(
+                response[0]['text'], 
+                parse_mode="Markdown", 
+                reply_markup=reply_markup
+            )
+        else:
+            await update.message.reply_text(
+                response[0]['text']
+            )
     # url = "http://localhost:5005/webhooks/rest/webhook"
     # processed: str = text.lower()
     # data = {"sender": "user", "message": processed}
