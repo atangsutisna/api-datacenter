@@ -144,6 +144,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             custom_data = response[1]["custom"]["data"]
             buttons_data = custom_data["reply_markup"]["inline_keyboard"]
             # create inline keyboard button
+            # button ini sudah tidak diperlukan
             keyboard = [
                 [InlineKeyboardButton(text=btn["teks"], callback_data=btn["callback_data"])]
                 for btn in buttons_data
