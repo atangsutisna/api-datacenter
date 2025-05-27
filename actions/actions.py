@@ -56,6 +56,13 @@ def format_size(size_bytes):
     else:
         return f"{size_bytes / 1024**3:.2f} GB"
 
+def simplified_path(original_path: str) -> str:
+    folder_name = os.path.basename(original_path)
+    repository_path = original_path.split("/repository", 1)[1]
+    
+    parent_path = os.path.dirname(repository_path)
+    return os.path.join(parent_path, folder_name)
+
 class ActionGreeting(Action):
     def name(self) -> Text:
         return "action_greeting"
@@ -109,6 +116,9 @@ class ActionGuessingName(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         fullname = tracker.sender_id
+
+        metadata = tracker.latest_message.get("metadata")
+        telegram_id = metadata.get("telegram_id")
         if fullname == "user":
             # belum login
             dispatcher.utter_message(text="""
@@ -120,8 +130,8 @@ class ActionGuessingName(Action):
                 text="😊 Tentu saja! ID kamu sudah terdaftar di dalam sistem.\nBaik, ada yang bisa saya bantu terkait data center?",
                 custom={
                     "data": {
-                        "username": "atang gombal",
-                        "fullname": "Atang Sutisna, Ir",
+                        "username": telegram_id,
+                        "fullname": fullname,
                         "teks": "Silahkan pilih salah satu opsi:",
                         "reply_markup": {
                             "inline_keyboard": []
@@ -165,12 +175,10 @@ class ActionListWorkspace(Action):
 
             message = "Baik, ini *workspace kamu*:"
             no = 1
-            # simplified workspace, use short path not fullpath
             for workspace in user_workspaces:
-                message += f"\n{no}. `{workspace}` (`{format_size(get_folder_size_bytes(workspace))}`)"
-                no += 1
-            # message += "\n".join(f"{no+1}. `{workspace}` ({get_folder_size_bytes()})" for no, workspace in enumerate(user_workspaces))
-            message += "\nSilahkan kamu bisa meng-ekplore dengan menekan button \"Buka Folder\""
+                simple_path = simplified_path(workspace)
+                message += f"\n{no}. `{simple_path}` (`{format_size(get_folder_size_bytes(workspace))}`)"
+            message += "\nKamu mau buka folder nomor berapa?"
             dispatcher.utter_message(
                 text=message,
                 custom={
