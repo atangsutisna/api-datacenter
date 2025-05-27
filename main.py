@@ -157,7 +157,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
         else:
             await update.message.reply_text(
-                response[0]['text']
+                response[0]['text'],
+                parse_mode="Markdown"
             )
     # url = "http://localhost:5005/webhooks/rest/webhook"
     # processed: str = text.lower()

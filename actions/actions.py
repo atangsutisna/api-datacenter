@@ -48,6 +48,13 @@ logging.basicConfig(
 # logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
+def get_range_list(dictionary):
+    if not dictionary:
+        return "No data"
+    min_key = min(int(k) for k in dictionary.keys())
+    max_key = max(int(k) for k in dictionary.keys())
+    return f"{min_key}..{max_key}"
+
 def get_file_size_bytes(file_path):
     return os.path.getsize(file_path)
 
@@ -231,8 +238,8 @@ class ActionListWorkspace(Action):
             )
 
             search_results_json = json.dumps(search_results)
-            logger.info("saving search result as json: %s", search_results_json)
-            return [SlotSet("hasil_pencarian", search_results_json)]
+            # logger.info("saving search result as json: %s", search_results_json)
+            return [SlotSet("search_results", search_results_json)]
 
 class ActionSapaNama(Action):
     def name(self) -> Text:
@@ -246,23 +253,34 @@ class ActionSapaNama(Action):
         dispatcher.utter_message(text=f"Halo {nama_user}, senang bertemu kamu!")
         return []
     
-class ActionKonfirmasiMenu(Action):
+class ActionAccessData(Action):
     def name(self):
-        return "action_konfirmasi_menu"
+        return "action_access_data"
 
     async def run(self, dispatcher: CollectingDispatcher,
                   tracker: Tracker,
                   domain: dict):
-        nomor_file = tracker.get_slot("nomor_file")
-        
-        # Contoh list nomor_file
-        daftar_menu = {
-            "1": "Nasi Goreng",
-            "2": "Nasi Uduk + Ayam Goreng",
-            "3": "Nasi Uduk + Telor Dadar",
-            "14": "Rendang Spesial"
-        }
-
-        menu_terpilih = daftar_menu.get(nomor_file, "File tidak ditemukan.")
-        dispatcher.utter_message(text=f"Kamu memilih nomor {nomor_file}: {menu_terpilih}")
-        return [SlotSet("nomor_file", nomor_file)]
+        file_no = tracker.get_slot("file_no")
+        search_results = tracker.get_slot("search_results")
+        if search_results:
+            logger.info("attempting to load search results %s", search_results)
+            user_files = json.loads(search_results)
+            selected_path = user_files.get(file_no)
+            if selected_path:
+                simple_path = simplified_path(selected_path)
+                # menu_terpilih = daftar_menu.get(file_no, "File tidak ditemukan.")
+                dispatcher.utter_message(text=f"Kamu memilih nomor {file_no}: `{simple_path}`")
+                return [SlotSet("file_no", file_no)]
+            else:
+                range_list = get_range_list(user_files)
+                max_no = max(int(k) for k in user_files.keys())
+                messages = [
+                    f"Hmm, nomor {file_no} di luar rentang data yang saya miliki. Saya punya data {range_list}. Apakah ada nomor lain yang kamu maksud?",
+                    f"Maaf, saya tidak bisa menemukan data dengan nomor {file_no}. Data yang ada hanya sampai nomor {max_no}. Apakah ada nomor lain yang kamu maksud?",
+                    f"Saya tidak menemukan data di posisi ke-{file_no}. Daftar data kamu berakhir di nomor {max_no}. Mungkin kamu ingin melihat data lain?"
+                ]
+                response = random.choice(messages)
+                dispatcher.utter_message(text=response)
+        else:
+            dispatcher.utter_message(text=f"Data nomor {file_no} tidak ditemukan")
+            return []

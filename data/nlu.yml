@@ -153,18 +153,18 @@ nlu:
     - saya [Doni](nama)
     - [Citra](nama) nama saya
 
-- intent: pilih_nomor
+- intent: access_data
   examples: |
-    - saya pilih [14](nomor_file)
-    - pilih nomor [25](nomor_file)
-    - [78](nomor_file)
-    - nomor [100](nomor_file)
-    - saya pilih [7](nomor_file)
-    - pilih [32](nomor_file)
-    - [9](nomor_file)
-    - nomor [45](nomor_file)
+    - saya pilih [14](file_no)
+    - pilih nomor [25](file_no)
+    - [78](file_no)
+    - nomor [100](file_no)
+    - saya pilih [7](file_no)
+    - pilih [32](file_no)
+    - [9](file_no)
+    - nomor [45](file_no)
     
-- regex: nomor_file
+- regex: file_no
   examples: |
     - \d{1,3}
 

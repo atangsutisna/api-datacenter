@@ -15,11 +15,11 @@ intents:
   - ask_login
   - ask_about_guess_name
   - beri_nama
-  - pilih_nomor
+  - access_data
 
 entities:
   - nama
-  - nomor_file
+  - file_no
 
 slots:
   nama:
@@ -27,14 +27,16 @@ slots:
     mappings:
       - type: from_entity
         entity: nama
-  nomor_file:
+  file_no:
     type: text
     mappings:
       - type: from_entity
-        entity: nomor_file
+        entity: file_no
   search_results:
     type: any
     influence_conversation: false
+    mappings:
+      - type: custom
 
 responses:
   utter_default:
@@ -85,7 +87,7 @@ actions:
   - action_guessing_name
   - action_list_data
   - action_simpan_nama
-  - action_konfirmasi_menu
+  - action_access_data
 
 session_config:
   session_expiration_time: 60

@@ -69,5 +69,5 @@ rules:
 
 - rule: Respon setelah user pilih menu
   steps:
-    - intent: pilih_nomor
-    - action: action_konfirmasi_menu
+    - intent: access_data
+    - action: action_access_data
