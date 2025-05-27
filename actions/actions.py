@@ -47,6 +47,9 @@ logging.basicConfig(
 # logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
+def get_file_size_bytes(file_path):
+    return os.path.getsize(file_path)
+
 def get_folder_size_bytes(folder_path):
     total_size = 0
     for dirpath, _, filenames in os.walk(folder_path):
@@ -200,9 +203,13 @@ class ActionListWorkspace(Action):
             ]
             message = random.choice(opening_messages)
             no = 1
-            for workspace in user_workspaces:
-                simple_path = simplified_path(workspace)
-                message += f"\n{no}. `{simple_path}` (`{format_size(get_folder_size_bytes(workspace))}`)"
+            for path in user_workspaces:
+                file = os.path.isfile(path)
+                simple_path = simplified_path(path)
+                if not file:
+                    message += f"\n{no}. `{simple_path}` (`{format_size(get_folder_size_bytes(path))}`)"
+                else:
+                    message += f"\n{no}. `{simple_path}` (`{format_size(get_file_size_bytes(path))}`)"
                 no += 1
             
             message += "\nAda yang ingin kamu akses?"

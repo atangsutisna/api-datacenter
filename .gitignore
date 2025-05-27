@@ -5,6 +5,8 @@ usersloggedin.json
 __pycache__
 models
 db.json
+db1.json
+db2.json
 actions/__pycache__
 actions/__pycache__*
 __pycache__/
