@@ -46,6 +46,16 @@ Baik, ini semua data yang Anda miliki:
 5. file_video.avi
 6. file_peterpan.mp3
 7. file_perhitungan_anggaran.xls
+
 Anda sedang mencari apa dari daftar ini?
 
-#### Mencari Data
+#### Mencari Data dan Mengunduhnya
+1. User bertanya pada bot. Misal: tolong carikan data abc
+2. Baik, mohon tunggu.
+Berikut adalah file yang kamu cari, 
+
+Tipe user
+1. ada yang hanya ingin mengetahui punya data apa saja
+2. ada yang ingin mencari data kemudian mendownloadnya
+3. ada yang ingin mencari data kemudian menghapusnya
+4. ada yagn ingin mencari data kemudian membukanya (membuat summari)
