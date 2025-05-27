@@ -178,6 +178,8 @@ class ActionListWorkspace(Action):
             for workspace in user_workspaces:
                 simple_path = simplified_path(workspace)
                 message += f"\n{no}. `{simple_path}` (`{format_size(get_folder_size_bytes(workspace))}`)"
+                no += 1
+            
             message += "\nKamu mau buka folder nomor berapa?"
             dispatcher.utter_message(
                 text=message,
