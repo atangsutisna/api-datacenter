@@ -11,17 +11,9 @@ assistant_id: 20250501-222629-current-heel
 language: en
 
 pipeline:
-  # - name: WhitespaceTokenizer
-  # - name: CountVectorsFeaturizer
-  # - name: DIETClassifier
-  #   confidence_threshold: 0.4
-  #   fallback_label: "nlu_fallback"
-  # - name: FallbackClassifier
-  #   threshold: 0.4
-  #   ambiguity_threshold: 0.1
-# # No configuration for the NLU pipeline was provided. The following default pipeline was used to train your model.
-# # If you'd like to customize it, uncomment and adjust the pipeline.
-# # See https://rasa.com/docs/rasa/tuning-your-model for more information.
+# No configuration for the NLU pipeline was provided. The following default pipeline was used to train your model.
+# If you'd like to customize it, uncomment and adjust the pipeline.
+# See https://rasa.com/docs/rasa/tuning-your-model for more information.
   - name: WhitespaceTokenizer
   - name: RegexFeaturizer
   - name: LexicalSyntacticFeaturizer
@@ -35,13 +27,17 @@ pipeline:
     fallback_label: "nlu_fallback"
     epochs: 100
 #     constrain_similarities: true
-#   - name: EntitySynonymMapper
+  - name: EntitySynonymMapper
 #   - name: ResponseSelector
 #     epochs: 100
 #     constrain_similarities: true
   - name: FallbackClassifier
     threshold: 0.3
     ambiguity_threshold: 0.1
+  - name: RegexEntityExtractor
+    use_lookup_tables: false
+    use_regexes: true
+    use_word_boundaries: true
 
 # Configuration for Rasa Core.
 # https://rasa.com/docs/rasa/core/policies/

@@ -197,3 +197,23 @@ class ActionSapaNama(Action):
         dispatcher.utter_message(text=f"Halo {nama_user}, senang bertemu kamu!")
         return []
     
+class ActionKonfirmasiMenu(Action):
+    def name(self):
+        return "action_konfirmasi_menu"
+
+    async def run(self, dispatcher: CollectingDispatcher,
+                  tracker: Tracker,
+                  domain: dict):
+        menu = tracker.get_slot("menu")
+        
+        # Contoh list menu
+        daftar_menu = {
+            "1": "Nasi Goreng",
+            "2": "Nasi Uduk + Ayam Goreng",
+            "3": "Nasi Uduk + Telor Dadar",
+            "14": "Rendang Spesial"
+        }
+
+        menu_terpilih = daftar_menu.get(menu, "Menu tidak ditemukan.")
+        dispatcher.utter_message(text=f"Kamu memilih menu nomor {menu}: {menu_terpilih}")
+        return [SlotSet("menu", menu)]

@@ -15,9 +15,11 @@ intents:
   - ask_login
   - ask_about_guess_name
   - beri_nama
+  - pilih_menu
 
 entities:
   - nama
+  - menu
 
 slots:
   nama:
@@ -25,6 +27,11 @@ slots:
     mappings:
       - type: from_entity
         entity: nama
+  menu:
+    type: text
+    mappings:
+      - type: from_entity
+        entity: menu
 
 responses:
   utter_default:
@@ -67,11 +74,15 @@ responses:
   utter_sapa_nama:
   - text: "Halo {{ nama }}, senang bertemu kamu!"
 
+  utter_konfirmasi_menu:
+  - text: "Kamu memilih menu nomor {menu}"
+
 actions:
   - action_greeting
   - action_guessing_name
   - action_list_workspace
   - action_simpan_nama
+  - action_konfirmasi_menu
 
 session_config:
   session_expiration_time: 60

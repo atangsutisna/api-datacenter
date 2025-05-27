@@ -66,3 +66,8 @@ rules:
   steps:
     - intent: ask_login
     - action: utter_login
+
+- rule: Respon setelah user pilih menu
+  steps:
+    - intent: pilih_menu
+    - action: action_konfirmasi_menu
