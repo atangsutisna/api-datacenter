@@ -267,10 +267,53 @@ class ActionAccessData(Action):
             user_files = json.loads(search_results)
             selected_path = user_files.get(file_no)
             if selected_path:
-                simple_path = simplified_path(selected_path)
-                # menu_terpilih = daftar_menu.get(file_no, "File tidak ditemukan.")
-                dispatcher.utter_message(text=f"Kamu memilih nomor {file_no}: `{simple_path}`")
-                return [SlotSet("file_no", file_no)]
+                is_file = os.path.isfile(selected_path)
+                if is_file:
+                    # open the file using openai
+                    dispatcher.utter_message(text="Mohon ditunggu, saya sedang membuat rangkuman file tersebut")
+                    return []
+                else:
+                    # list all child of the path
+                    user_workspaces = []
+                    simple_root_path = simplified_path(selected_path)
+                    list_dir = os.listdir(selected_path)
+                    if not list_dir:
+                        messages = [
+                            f"Folder ini kosong. Tidak ada file atau folder di dalam folder {simple_root_path}",
+                            f"Saya sudah membuka folder {simple_root_path}, tapi sepertinya tidak ada isinya",
+                            f"Folder {simple_root_path} saat ini kosong. Tidak ada data yang bisa saya tampilkan"
+                        ]
+                        message = random.choice(messages)
+                        dispatcher.utter_message(text=message)
+                        return []
+                    
+                    for dir in list_dir:
+                        child_path = os.path.join(selected_path, dir)
+                        user_workspaces.append(child_path)
+
+                    # format user workspaces
+                    opening_messages = [
+                        f"Baik, ini isi dari folder *{simple_root_path}*:",
+                        f"Kamu sekarang berada di dalam folder *{simple_root_path}*. Ini semua yang ada di dalamnya:"
+                    ]
+                    message = random.choice(opening_messages)
+                    no = 1
+                    search_results = {}
+                    for path in user_workspaces:
+                        file = os.path.isfile(path)
+                        simple_path = simplified_path(path)
+                        if not file:
+                            message += f"\n{no}. `{simple_path}` (`{format_size(get_folder_size_bytes(path))}`)"
+                        else:
+                            message += f"\n{no}. `{simple_path}` (`{format_size(get_file_size_bytes(path))}`)"
+                        search_results[no] = path
+                        no += 1
+
+                message += "\nData mana yang kamu inginkan? sebutkan angkanya"
+                dispatcher.utter_message(text=message)
+
+                search_results_json = json.dumps(search_results)
+                return [SlotSet("search_results", search_results_json)]
             else:
                 range_list = get_range_list(user_files)
                 max_no = max(int(k) for k in user_files.keys())
