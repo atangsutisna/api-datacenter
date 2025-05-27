@@ -155,14 +155,25 @@ nlu:
 
 - intent: access_data
   examples: |
-    - saya pilih [14](file_no)
+    - nomor [3](file_no) dong
+    - saya mau yang [6](file_no)
     - pilih nomor [25](file_no)
+    - itu, yang angka [4](file_no)
+    - buka yang [7](file_no)
+    - yang nomor [9](file_no) itu
+    - saya mau yang dibaris [8](file_no)
+    - bisa buka yang nomor [17](file_no)
+    - yang nomor [90](file_no), tolong
+    - saya mau lihat yang [11](file_no)
+    - saya pilih [14](file_no)
     - [78](file_no)
     - nomor [100](file_no)
     - saya pilih [7](file_no)
     - pilih [32](file_no)
     - [9](file_no)
     - nomor [45](file_no)
+    - oh iya, maksud saya nomor [35](file_no)
+    - maksud saya [88](file_no)
     
 - regex: file_no
   examples: |
