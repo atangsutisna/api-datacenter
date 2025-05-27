@@ -35,8 +35,17 @@ from zoneinfo import ZoneInfo
 import sys
 import os
 import random
+import logging
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+# Enable logging
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.DEBUG
+)
+# set higher logging level for httpx to avoid all GET and POST requests being logged
+# logging.getLogger("httpx").setLevel(logging.WARNING)
+logger = logging.getLogger(__name__)
 
 def get_folder_size_bytes(folder_path):
     total_size = 0
@@ -170,10 +179,19 @@ class ActionListWorkspace(Action):
             accounts = curr_user['accounts']
             user_workspaces = []
             REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
-            for account in accounts:
-                homedir = account['homedir'].lstrip("/")
-                fullpath = os.path.join(REPOSITORY_PATH, homedir)
-                user_workspaces.append(fullpath)
+            if len(accounts) > 1:
+                for account in accounts:
+                    homedir = account['homedir'].lstrip("/")
+                    fullpath = os.path.join(REPOSITORY_PATH, homedir)
+                    user_workspaces.append(fullpath)
+            else:
+                dirname = accounts[0]['homedir'].lstrip("/")
+                logger.info("attempting to list all data in %s", dirname)
+                home_path = os.path.join(REPOSITORY_PATH, dirname)
+                list_dir = os.listdir(home_path)
+                for dir in list_dir:
+                    child_path = os.path.join(home_path, dir)
+                    user_workspaces.append(child_path)
 
             opening_messages = [
                 "Baik, ini semua data yang kamu miliki:",
