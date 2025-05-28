@@ -318,7 +318,7 @@ class ActionAccessData(Action):
                 range_list = get_range_list(user_files)
                 max_no = max(int(k) for k in user_files.keys())
                 messages = [
-                    f"Hmm, nomor {file_no} di luar rentang data yang saya miliki. Saya punya data {range_list}. Apakah ada nomor lain yang kamu maksud?",
+                    f"Hmm, nomor {file_no} di luar rentang data yang saya miliki 🤔. Saya punya data {range_list}. Apakah ada nomor lain yang kamu maksud?",
                     f"Maaf, saya tidak bisa menemukan data dengan nomor {file_no}. Data yang ada hanya sampai nomor {max_no}. Apakah ada nomor lain yang kamu maksud?",
                     f"Saya tidak menemukan data di posisi ke-{file_no}. Daftar data kamu berakhir di nomor {max_no}. Mungkin kamu ingin melihat data lain?"
                 ]
