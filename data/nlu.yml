@@ -10,15 +10,15 @@ nlu:
     - aneh
     - tolol
 
-# - intent: bertegur_sapa
-#   examples: |
-#     - hallo
-#     - hai
-#     - selamat pagi
-#     - selamat siang
-#     - selamat malam
-#     - halo
-#     - assalamualaikum
+- intent: bertegur_sapa
+  examples: |
+    - hallo
+    - hai
+    - selamat pagi
+    - selamat siang
+    - selamat malam
+    - halo
+    - assalamualaikum
 
 - intent: bot_challenge
   examples: |
@@ -98,18 +98,6 @@ nlu:
     - bantu saya cari file
     - bantuin cariin file dong
     - tolong bantuin saya nyari file
-
-- intent: ask_forgot_password
-  examples: |
-    - saya lupa password
-    - bagaimana kalo saya lupa password?
-    - tolong bantu saya reset password
-    - saya tidak masuk, lupa password
-    - bisa bantu ulang atur kata sandi?
-    - lupa login
-    - gimana cara reset password
-    - saya kehilangan akses karena lupa password
-    - bantu reset password saya dong
 
 - intent: i_want_to_see_my_data
   examples: |

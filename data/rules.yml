@@ -6,10 +6,10 @@ rules:
   - intent: nlu_fallback
   - action: utter_default
 
-# - rule: Bertegur sapa
-#   steps:
-#     - intent: bertegur_sapa
-#     - action: action_greeting
+- rule: Bertegur sapa
+  steps:
+    - intent: bertegur_sapa
+    - action: action_greeting
 
 - rule: Ask about guessing name
   steps:
@@ -51,11 +51,6 @@ rules:
     - intent: ask_search_file
     - action: utter_search_command
 
-- rule: How to reset password
-  steps:
-    - intent: ask_forgot_password
-    - action: utter_forgot_password_command
-
 # - rule: How to list my files
 #   steps:
 #     - intent: i_want_to_see_my_data
@@ -65,57 +60,3 @@ rules:
 #   steps:
 #     - intent: choose_file_no
 #     - action: action_access_data
-
-- rule: Open user workspaces
-  steps:
-    - intent: i_want_to_see_my_data
-    - action: action_list_workspace
-    - action: file_selection_form # mengaktifkan form
-    - active_loop: file_selection_form
-
-- rule: Handle open folder or file
-  condition:
-    - active_loop: file_selection_form
-  steps:
-    - action: file_selection_form
-    - active_loop: null
-    - slot_was_set:
-      - file_no
-    - action: action_open_selected_data
-
-- rule: Reactivate file_select_form after opening file
-  steps:
-    - action: action_open_selected_data
-    - action: file_selection_form
-    - active_loop: file_selection_form
-
-# - rule: Handle invalid number and ask to retry
-#   steps:
-#     - action: file_selection_form
-#     - active_loop: null
-#     - slot_was_set:
-#       - valid_selection: false
-#     - action: utter_invalid_number
-#     - action: utter_ask_selected_number
-#     - action: file_selection_form # mengaktifkan form
-#     - active_loop: file_selection_form
-
-# - rule: User say no to reply
-#   steps: 
-#     - intent: deny
-#     - action: utter_thanks
-
-# - rule: start user info form
-#   steps:
-#     - intent: greet
-#     - action: user_info_form
-#     - active_loop: user_info_form
-
-# - rule: submit user info form
-#   condition:
-#     - active_loop: user_info_form
-#   steps:
-#     - action: user_info_form
-#     - active_loop: null
-#     - action: utter_thanks
-#     - action: action_open_selected_data

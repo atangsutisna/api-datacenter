@@ -46,9 +46,6 @@ responses:
   - text: "Maaf, saya tidak mengerti."
   - text: "Maaf, saya tidak mengerti maksud kamu. Bisa dijelaskan ulang?"
 
-  utter_bertegur_sapa:
-  - text: "Halo, saya Bot data center."
-
   utter_iamabot:
   - text: "Saya Bot data center."
 
@@ -69,9 +66,6 @@ responses:
 
   utter_search_command:
   - text: "Baik, silakan kirim perintah /list. Nanti kamu bisa mencarinya secara manual dengan membuka satu persatu setiap folder. Atau, bila kamu ingin saya mencarikannya untukmu, silakan kirim perintah /cari."
-
-  utter_forgot_password_command:
-  - text: "Gunakan perintah /lupa-password"
 
   utter_list_homedir:
   - text: "Silakan kirim perintah /list. Atau, bila kamu ingin saya mencarikannya untukmu, silakan kirim perintah /cari."
