@@ -50,6 +50,9 @@ logging.basicConfig(
 # logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
+# REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
+# OPENAI_APIKEY = os.getenv('OPENAI_APIKEY')
+
 def get_range_list(dictionary):
     if not dictionary:
         return "No data"
@@ -340,52 +343,112 @@ class ActionAccessData(Action):
             return []
 
 class ActionBackToPrevious(Action):
+    def __init__(self):
+        from userloggedin import get_user_logged_in
+        self.get_user_logged_in = get_user_logged_in
+
     def name(self):
         return "action_back_to_previous"
+
+    def ls_root(self, telegram_id: str):
+        curr_user = self.get_user_logged_in(telegram_id)
+        accounts = curr_user['accounts']
+        root_path = os.getenv('REPOSITORY_PATH')
+        user_workspaces = []
+        if len(accounts) > 1:
+            for account in accounts:
+                homedir = account['homedir'].lstrip("/")
+                fullpath = os.path.join(root_path, homedir)
+                user_workspaces.append(fullpath)
+        else:
+            dirname = accounts[0]['homedir'].lstrip("/")
+            logger.info("attempting to list all data in %s", dirname)
+            home_path = os.path.join(root_path, dirname)
+            list_dir = os.listdir(home_path)
+            for dir in list_dir:
+                child_path = os.path.join(home_path, dir)
+                user_workspaces.append(child_path)
+        
+        return user_workspaces
 
     async def run(self, dispatcher: CollectingDispatcher,
                   tracker: Tracker,
                   domain: dict):
-        logger.info("attempting to back")
-        current_path = tracker.get_slot("current_path")
-        logger.info("Got current path %s", current_path)
-
-        parent_path = os.path.dirname(current_path)
-        list_dir = os.listdir(parent_path)
-        user_workspaces = []
-        for dir in list_dir:
-            child_path = os.path.join(parent_path, dir)
-            user_workspaces.append(child_path)
-
-        simple_root_path = simplified_path(parent_path)
+        # get telegram id 7272740693
+        metadata = tracker.latest_message.get("metadata")
+        fullname = metadata.get("fullname")
+        telegram_id = metadata.get("telegram_id")
 
         opening_messages = [
-            f"Baik, ini isi dari folder *{simple_root_path}*:",
-            f"Kamu sekarang berada di dalam folder *{simple_root_path}*. Ini semua yang ada di dalamnya:"
+            "Ini adalah folder utama Anda.",
+            "Anda sedang berada di direktori utama Anda.",
+            "Selamat datang di folder utama Anda.",
+            "Ini area utama penyimpanan Anda.",
+            "Anda telah kembali ke folder utama Anda."
         ]
-        message = random.choice(opening_messages)
 
-        no = 1
-        search_results = {}
-        for path in user_workspaces:
-            file = os.path.isfile(path)
-            simple_path = simplified_path(path)
-            if not file:
-                message += f"\n{no}. `{simple_path}` (`{format_size(get_folder_size_bytes(path))}`)"
-            else:
-                message += f"\n{no}. `{simple_path}` (`{format_size(get_file_size_bytes(path))}`)"
-            search_results[no] = path
-            no += 1
+        current_path = tracker.get_slot("current_path")
+        logger.info("Got current path %s", current_path)
+        root_path = os.getenv('REPOSITORY_PATH')
+        if current_path is None or current_path == root_path:
+            # tampilkan root path setiap user
+            user_workspaces = self.ls_root(telegram_id)
+            message = random.choice(opening_messages)
+            no = 1
+            search_results = {}
+            for path in user_workspaces:
+                file = os.path.isfile(path)
+                simple_path = simplified_path(path)
+                if not file:
+                    message += f"\n{no}. `{simple_path}` (`{format_size(get_folder_size_bytes(path))}`)"
+                else:
+                    message += f"\n{no}. `{simple_path}` (`{format_size(get_file_size_bytes(path))}`)"
+                search_results[no] = path
+                no += 1
 
-        message += "\n"+ get_ask_to_open_remove_or_download()
-        dispatcher.utter_message(text=message)
+            additional_response = get_ask_to_open_remove_or_download()
+            message += "\n"+ additional_response
 
-        search_results_json = json.dumps(search_results)
-        return [
-            SlotSet("search_results", search_results_json), 
-            SlotSet("file_no", None),
-            SlotSet("current_path", parent_path)
-        ]
+            dispatcher.utter_message(text=message)
+            search_results_json = json.dumps(search_results)
+            return [
+                SlotSet("search_results", search_results_json),
+            ]
+        else:
+            # list child of current path
+            parent_path = os.path.dirname(current_path)
+            list_dir = os.listdir(parent_path)
+            user_workspaces = []
+            for dir in list_dir:
+                child_path = os.path.join(parent_path, dir)
+                user_workspaces.append(child_path)
+
+            simple_root_path = simplified_path(parent_path)
+            opening_messages = [
+                f"Baik, ini isi dari folder *{simple_root_path}*:",
+                f"Kamu sekarang berada di dalam folder *{simple_root_path}*. Ini semua yang ada di dalamnya:"
+            ]
+            message = random.choice(opening_messages)
+
+            no = 1
+            search_results = {}
+            for path in user_workspaces:
+                file = os.path.isfile(path)
+                simple_path = simplified_path(path)
+                if not file:
+                    message += f"\n{no}. `{simple_path}` (`{format_size(get_folder_size_bytes(path))}`)"
+                else:
+                    message += f"\n{no}. `{simple_path}` (`{format_size(get_file_size_bytes(path))}`)"
+                search_results[no] = path
+                no += 1
+            message += "\n"+ get_ask_to_open_remove_or_download()
+            dispatcher.utter_message(text=message)
+            search_results_json = json.dumps(search_results)
+            return [
+                SlotSet("search_results", search_results_json), 
+                SlotSet("file_no", None),
+                SlotSet("current_path", parent_path)
+            ]
 
 
 
