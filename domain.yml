@@ -13,6 +13,7 @@ intents:
 - ask_to_show
 - nlu_fallback
 - open_file_or_folder
+- ask_to_back
 
 entities:
 - file_no
@@ -24,16 +25,17 @@ slots:
     mappings:
     - type: from_entity
       entity: file_no
-  valid_selection:
-    type: bool
-    influence_conversation: false
-    mappings:
-    - type: custom
   search_results:
     type: any
     influence_conversation: false
     mappings:
     - type: custom
+  current_path:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: custom
+
 forms:
   file_selection_form:
     required_slots:
@@ -64,6 +66,7 @@ actions:
 - action_show_data
 - validate_file_selection_form
 - action_to_open_data
+- action_back_to_previous
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

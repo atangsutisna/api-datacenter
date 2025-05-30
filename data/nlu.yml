@@ -126,6 +126,14 @@ nlu:
     - saya mau lihat yang [11](file_no)
     - bukan nomor [78](file_no)
     - nomor [100](file_no) buka
+- intent: ask_to_back
+  examples: |
+    - coba balik lagi
+    - balik lagi
+    - back
+    - balik lagi dong
+    - tolong balik lagi
+
 - regex: file_no
   examples: |
     - \d{1,3}

@@ -86,6 +86,16 @@ def simplified_path(original_path: str) -> str:
     parent_path = os.path.dirname(repository_path)
     return os.path.join(parent_path, folder_name)
 
+def get_ask_to_open_remove_or_download() -> str:
+    additional_responses = [
+        "Ada hal lain yang perlu saya bantu dengan data ini? Misalnya, Anda ingin menghapus, mengunduh, atau membuka folder lain? Anda bisa sebutkan angkanya.",
+        "Perlu bantuan lanjutan? Saya bisa bantu hapus, unduh, atau masuk ke folder lain. Cukup beritahu nomor yang Anda inginkan.",
+        "Apa lagi yang bisa saya lakukan untuk Anda? Ada pilihan hapus, unduh, atau jelajahi folder. Silakan ketik angkanya.",
+        "Apakah ada tindakan lain yang ingin Anda lakukan? Misalnya, menghapus, mengunduh, atau membuka folder? Anda bisa memilih dengan menyebutkan angkanya.",
+        "Sudah selesai dengan ini, atau ada lagi yang bisa saya bantu? Mungkin menghapus, mengunduh, atau membuka folder lain? Sebutkan saja nomornya."
+    ]
+    return random.choice(additional_responses)
+
 class ActionGreeting(Action):
     def name(self) -> Text:
         return "action_greeting"
@@ -229,14 +239,17 @@ class ActionListWorkspace(Action):
                 search_results[no] = path
                 no += 1
 
-            message += "\nBila kamu mau membuka, menghapus, atau mendownload, sebutkan saja angkanya."
+            additional_response = get_ask_to_open_remove_or_download()
+            message += "\n"+ additional_response
+
             dispatcher.utter_message(
                 text=message
             )
 
             search_results_json = json.dumps(search_results)
             return [
-                SlotSet("search_results", search_results_json)
+                SlotSet("search_results", search_results_json),
+                SlotSet("current_path", None)
             ]
     
 class ActionAccessData(Action):
@@ -299,15 +312,16 @@ class ActionAccessData(Action):
                         search_results[no] = path
                         no += 1
 
-                # message += "\nData mana yang kamu inginkan? sebutkan angkanya"
-                message += "\nAda yang perlu saya bantu lagi? misal menghapus, mendownload, atau membuka folder. sebutkan saja angkanya"
+                additional_response = get_ask_to_open_remove_or_download()
+                message += "\n"+ additional_response
+                # message += "\nAda yang perlu saya bantu lagi? misal menghapus, mendownload, atau membuka folder. sebutkan saja angkanya"
                 dispatcher.utter_message(text=message)
 
                 search_results_json = json.dumps(search_results)
                 return [
                     SlotSet("search_results", search_results_json), 
                     SlotSet("file_no", None),
-                    ActiveLoop(None)
+                    SlotSet("current_path", selected_path),
                 ]
                 # return []
             else:
@@ -324,6 +338,57 @@ class ActionAccessData(Action):
         else:
             dispatcher.utter_message(text=f"Data nomor {file_no} tidak ditemukan")
             return []
+
+class ActionBackToPrevious(Action):
+    def name(self):
+        return "action_back_to_previous"
+
+    async def run(self, dispatcher: CollectingDispatcher,
+                  tracker: Tracker,
+                  domain: dict):
+        logger.info("attempting to back")
+        current_path = tracker.get_slot("current_path")
+        logger.info("Got current path %s", current_path)
+
+        parent_path = os.path.dirname(current_path)
+        list_dir = os.listdir(parent_path)
+        user_workspaces = []
+        for dir in list_dir:
+            child_path = os.path.join(parent_path, dir)
+            user_workspaces.append(child_path)
+
+        simple_root_path = simplified_path(parent_path)
+
+        opening_messages = [
+            f"Baik, ini isi dari folder *{simple_root_path}*:",
+            f"Kamu sekarang berada di dalam folder *{simple_root_path}*. Ini semua yang ada di dalamnya:"
+        ]
+        message = random.choice(opening_messages)
+
+        no = 1
+        search_results = {}
+        for path in user_workspaces:
+            file = os.path.isfile(path)
+            simple_path = simplified_path(path)
+            if not file:
+                message += f"\n{no}. `{simple_path}` (`{format_size(get_folder_size_bytes(path))}`)"
+            else:
+                message += f"\n{no}. `{simple_path}` (`{format_size(get_file_size_bytes(path))}`)"
+            search_results[no] = path
+            no += 1
+
+        # message += "\nAda yang perlu saya bantu lagi? misal menghapus, mendownload, atau membuka folder. sebutkan saja angkanya"
+        message += "\n"+ get_ask_to_open_remove_or_download()
+        dispatcher.utter_message(text=message)
+
+        search_results_json = json.dumps(search_results)
+        return [
+            SlotSet("search_results", search_results_json), 
+            SlotSet("file_no", None),
+            SlotSet("current_path", parent_path)
+        ]
+
+
 
 class ValidateFileSelectionForm(FormValidationAction):
     def name(self) -> Text:

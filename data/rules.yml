@@ -64,6 +64,14 @@ rules:
     - intent: ask_to_open
     - action: action_to_open_data
 
+- rule: User meminta untuk balik ke lagi ke path sebelumnya
+  condition:
+    - slot_was_set:
+        - current_path: not null
+  steps:
+    - intent: ask_to_back
+    - action: action_back_to_previous
+
 # - rule: Respon setelah user pilih menu
 #   steps:
 #     - intent: choose_file_no
