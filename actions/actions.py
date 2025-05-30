@@ -299,8 +299,8 @@ class ActionAccessData(Action):
 
                     # format user workspaces
                     opening_messages = [
-                        f"Baik, ini isi dari folder *{simple_root_path}*:",
-                        f"Kamu sekarang berada di dalam folder *{simple_root_path}*. Ini semua yang ada di dalamnya:"
+                        f"Baik, ini isi dari folder `{simple_root_path}`:",
+                        f"Kamu sekarang berada di dalam folder `{simple_root_path}`. Ini semua yang ada di dalamnya:"
                     ]
                     message = random.choice(opening_messages)
                     no = 1
@@ -390,6 +390,7 @@ class ActionBackToPrevious(Action):
         current_path = tracker.get_slot("current_path")
         logger.info("Got current path %s", current_path)
         root_path = os.getenv('REPOSITORY_PATH')
+        # fixme: jangan sampai root_path
         if current_path is None or current_path == root_path:
             # tampilkan root path setiap user
             user_workspaces = self.ls_root(telegram_id)
@@ -425,8 +426,8 @@ class ActionBackToPrevious(Action):
 
             simple_root_path = simplified_path(parent_path)
             opening_messages = [
-                f"Baik, ini isi dari folder *{simple_root_path}*:",
-                f"Kamu sekarang berada di dalam folder *{simple_root_path}*. Ini semua yang ada di dalamnya:"
+                f"Baik, ini isi dari folder `{simple_root_path}`:",
+                f"Kamu sekarang berada di dalam folder `{simple_root_path}`. Ini semua yang ada di dalamnya:"
             ]
             message = random.choice(opening_messages)
 
