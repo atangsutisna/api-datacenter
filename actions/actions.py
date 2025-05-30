@@ -95,8 +95,8 @@ class ActionGreeting(Action):
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         tz = datetime.now(ZoneInfo("Asia/Jakarta"))
         current_hour = tz.hour
-        fullname = tracker.sender_id
-        if fullname == "user":
+        sender_id = tracker.sender_id
+        if sender_id == "user":
             # hallo biasa.
             if 4 <= current_hour < 10:
                 message = f"Hai, selamat pagi. Ada yang bisa saya bantu?"
@@ -107,6 +107,9 @@ class ActionGreeting(Action):
             else:
                 message = f"Hai, selamat malam. Ada yang bisa saya bantu?"
         else:
+            metadata = tracker.latest_message.get("metadata")
+            telegram_id = metadata.get("telegram_id")
+            fullname = metadata.get("fullname")
             if 4 <= current_hour < 10:
                 message = f"Hai, selamat pagi *{fullname}*"
             elif 10 <= current_hour < 15:
@@ -239,24 +242,11 @@ class ActionListWorkspace(Action):
             )
 
             search_results_json = json.dumps(search_results)
-            # logger.info("saving search result as json: %s", search_results_json)
             return [SlotSet("search_results", search_results_json)]
-
-class ActionSapaNama(Action):
-    def name(self) -> Text:
-        return "action_simpan_nama"
-
-    def run(self, dispatcher: CollectingDispatcher,
-            tracker: Tracker,
-            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        nama_user = tracker.get_slot("nama")
-        print(f"[DEBUG] Nama user yang disimpan: {nama_user}")
-        dispatcher.utter_message(text=f"Halo {nama_user}, senang bertemu kamu!")
-        return []
     
 class ActionAccessData(Action):
     def name(self):
-        return "action_open_selected_data"
+        return "action_access_data"
 
     async def run(self, dispatcher: CollectingDispatcher,
                   tracker: Tracker,
