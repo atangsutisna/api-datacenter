@@ -377,7 +377,6 @@ class ActionBackToPrevious(Action):
             search_results[no] = path
             no += 1
 
-        # message += "\nAda yang perlu saya bantu lagi? misal menghapus, mendownload, atau membuka folder. sebutkan saja angkanya"
         message += "\n"+ get_ask_to_open_remove_or_download()
         dispatcher.utter_message(text=message)
 
