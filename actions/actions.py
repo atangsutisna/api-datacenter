@@ -172,28 +172,20 @@ class ActionListWorkspace(Action):
         self.get_user_logged_in = get_user_logged_in
 
     def name(self) -> Text:
-        return "action_list_workspace"
+        return "action_show_data"
     
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         fullname = tracker.sender_id
-        # dispatcher.utter_message(text="action list workspace di jalankan")
-
-        # search_results = {}
-        # search_results[1] = "/home/kangatang/git/filegator/repository/spark"
-        # search_results[2] = "/home/kangatang/git/filegator/repository/atang"
-
-        # search_results_json = json.dumps(search_results)
-        # logger.info("saving search result as json: %s", search_results_json)
-        # return [SlotSet("search_results", search_results_json)]
-
         if fullname == "user":
             # belum login
             dispatcher.utter_message(text="""
             Maaf, saya belum mengenal kamu.
             Silahkan verifikasi nomor HP kamu dulu.
             """)
+
+            return []
         else:
             # get telegram id 7272740693
             metadata = tracker.latest_message.get("metadata")
@@ -237,16 +229,19 @@ class ActionListWorkspace(Action):
                 search_results[no] = path
                 no += 1
 
+            message += "\nBila kamu mau membuka, menghapus, atau mendownload, sebutkan saja angkanya."
             dispatcher.utter_message(
                 text=message
             )
 
             search_results_json = json.dumps(search_results)
-            return [SlotSet("search_results", search_results_json)]
+            return [
+                SlotSet("search_results", search_results_json)
+            ]
     
 class ActionAccessData(Action):
     def name(self):
-        return "action_access_data"
+        return "action_to_open_data"
 
     async def run(self, dispatcher: CollectingDispatcher,
                   tracker: Tracker,
@@ -255,6 +250,8 @@ class ActionAccessData(Action):
         file_no = tracker.get_slot("file_no")
         logger.info("Get file no from slot %s", file_no)
         search_results = tracker.get_slot("search_results")
+        # dispatcher.utter_message(text=f"Kamu memilih file no {file_no}")
+        # return []
         if search_results:
             logger.info("attempting to load search results %s", search_results)
             user_files = json.loads(search_results)
@@ -303,6 +300,7 @@ class ActionAccessData(Action):
                         no += 1
 
                 # message += "\nData mana yang kamu inginkan? sebutkan angkanya"
+                message += "\nAda yang perlu saya bantu lagi? misal menghapus, mendownload, atau membuka folder. sebutkan saja angkanya"
                 dispatcher.utter_message(text=message)
 
                 search_results_json = json.dumps(search_results)

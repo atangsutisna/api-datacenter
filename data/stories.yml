@@ -47,3 +47,33 @@ stories:
 #   steps:
 #     - intent: beri_nama
 #     - action: action_simpan_nama
+# - story: pengguna meminta menampilkan data yang ada di workspacenya
+#   steps:
+#     - intent: ask_to_show
+#     - action: action_show_data
+
+# - story: user ask to show data
+#   steps:
+#   - intent: ask_to_show
+#   - action: action_show_data
+#   - slot_was_set:
+#     - search_results
+#   - action: file_selection_form
+#   - active_loop: file_selection_form
+
+#   - slot_was_set:
+#     - requested_slot: file_no
+#   - intent: choose_file_no
+#     entities:
+#     - file_no: '1'
+#     - file_no: '1'
+#   - slot_was_set:
+#     - file_no: '1'
+#   - action: file_selection_form
+#   - slot_was_set:
+#     - file_no: '1'
+#   - slot_was_set:
+#     - requested_slot: null
+#   - active_loop: null
+#   - action: action_to_open_data
+#   - intent: bertegur_sapa

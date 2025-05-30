@@ -1,96 +1,69 @@
-version: "3.1"
-
+version: '3.1'
 intents:
-  - bot_challenge
-  - ask_datacenter
-  - ask_admin_datacenter
-  - ask_about_insi
-  # - bertegur_sapa
-  - nlu_fallback
-  - ask_upload
-  - ask_download
-  - ask_search_file
-  - ask_forgot_password
-  - i_want_to_see_my_data
-  - ask_about_guess_name
-  - choose_file_no
+- ask_about_guess_name
+- ask_about_insi
+- ask_admin_datacenter
+- ask_datacenter
+- ask_download
+- ask_search_file
+- ask_upload
+- bertegur_sapa
+- bot_challenge
+- ask_to_open
+- ask_to_show
+- nlu_fallback
+- open_file_or_folder
 
 entities:
-  - file_no
+- file_no
 
 slots:
   file_no:
     type: text
     influence_conversation: false
     mappings:
-      - type: from_entity
-        entity: file_no
+    - type: from_entity
+      entity: file_no
   valid_selection:
     type: bool
     influence_conversation: false
     mappings:
-      - type: custom
+    - type: custom
   search_results:
     type: any
     influence_conversation: false
     mappings:
-      - type: custom
-
+    - type: custom
 forms:
   file_selection_form:
     required_slots:
-      - file_no
-
+    - file_no
 responses:
   utter_default:
-  - text: "Maaf, saya tidak mengerti."
-  - text: "Maaf, saya tidak mengerti maksud kamu. Bisa dijelaskan ulang?"
-
+  - text: Maaf, saya tidak mengerti.
+  - text: Maaf, saya tidak mengerti maksud kamu. Bisa dijelaskan ulang?
   utter_iamabot:
-  - text: "Saya Bot data center."
-
+  - text: Saya Bot data center.
   utter_ask_datacenter:
-  - text: "Fasilitas yang digunakan untuk menyimpan data (cloud untuk penyimpanan data perkumpulan inisiatif)."
-
+  - text: Fasilitas yang digunakan untuk menyimpan data (cloud untuk penyimpanan data perkumpulan inisiatif).
   utter_ask_admin_datacenter:
-  - text: "Maaf, saya tidak dapat memberikan informasi tersebut."
-
+  - text: Maaf, saya tidak dapat memberikan informasi tersebut.
   utter_ask_about_insi:
-  - text: "Baik, untuk mengetahui lebih jauh mengenai perkumpulan inisiatif silahkan anda mengunjungi website https://www.inisiatif.org"
-
+  - text: Baik, untuk mengetahui lebih jauh mengenai perkumpulan inisiatif silahkan anda mengunjungi website https://www.inisiatif.org
   utter_upload_command:
-  - text: "Gunakan perintah /upload."
-
+  - text: Gunakan perintah /upload.
   utter_download_command:
-  - text: "Gunakan perintah /download [no]. Sebelum mengetikan perintah itu, kamu harus cari dulu filenya dengan mengetikan /cari [nama file]"
-
+  - text: Gunakan perintah /download [no]. Sebelum mengetikan perintah itu, kamu harus cari dulu filenya dengan mengetikan /cari [nama file]
   utter_search_command:
-  - text: "Baik, silakan kirim perintah /list. Nanti kamu bisa mencarinya secara manual dengan membuka satu persatu setiap folder. Atau, bila kamu ingin saya mencarikannya untukmu, silakan kirim perintah /cari."
-
-  utter_list_homedir:
-  - text: "Silakan kirim perintah /list. Atau, bila kamu ingin saya mencarikannya untukmu, silakan kirim perintah /cari."
-
-  utter_konfirmasi_menu:
-  - text: "Kamu memilih menu nomor {menu}"
-
-  utter_invalid_number:
-  - text: "Nomor {file_no} tidak ada, adakah nomor lain yang kamu maksud?"
-
+  - text: Baik, silakan kirim perintah /list. Nanti kamu bisa mencarinya secara manual dengan membuka satu persatu setiap folder. Atau, bila kamu ingin saya mencarikannya untukmu, silakan kirim perintah /cari.
   utter_ask_file_no:
-  - text: "Mau akses nomor berapa?"
-
-  # utter_thanks:
-  # - text: "Terima kasih."
-
+  - text: Mau akses nomor berapa?
 actions:
-  - action_greeting
-  - action_guessing_name
-  - action_list_workspace
-  - action_open_selected_data
-  - action_simpan_nama
-  - action_access_data,
-  - validate_file_selection_form
-
+- action_greeting
+- action_guessing_name
+- action_show_data
+- validate_file_selection_form
+- action_to_open_data
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

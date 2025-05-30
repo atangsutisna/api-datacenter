@@ -51,12 +51,20 @@ rules:
     - intent: ask_search_file
     - action: utter_search_command
 
-# - rule: How to list my files
-#   steps:
-#     - intent: i_want_to_see_my_data
-#     - action: action_open_selected_data
+- rule: User meminta untuk menimpilkan data yang ada di workspacenya
+  steps:
+    - intent: ask_to_show
+    - action: action_show_data
+
+- rule: User meminta untuk membuka file atau folder
+  condition:
+    - slot_was_set:
+        - search_results: not null
+  steps:
+    - intent: ask_to_open
+    - action: action_to_open_data
 
 # - rule: Respon setelah user pilih menu
 #   steps:
 #     - intent: choose_file_no
-#     - action: action_access_data
+#     - action: action_to_open_data

@@ -1,5 +1,4 @@
 version: "3.1"
-
 nlu:
 - intent: nlu_fallback
   examples: |
@@ -9,7 +8,6 @@ nlu:
     - asdfasdf
     - aneh
     - tolol
-
 - intent: bertegur_sapa
   examples: |
     - hallo
@@ -19,7 +17,6 @@ nlu:
     - selamat malam
     - halo
     - assalamualaikum
-
 - intent: bot_challenge
   examples: |
     - kamu bot, bukan?
@@ -32,7 +29,6 @@ nlu:
     - dengan siapa saya bicara?
     - kamu bot atau orang?
     - kamu orang, bukan?
-
 - intent: ask_datacenter
   examples: |
     - apa itu data center?
@@ -40,7 +36,6 @@ nlu:
     - apaan sih data center?
     - apa yang dimaksud dengan data center?
     - data center itu apa?
-
 - intent: ask_admin_datacenter
   examples: |
     - siapa sih adminnya?
@@ -48,17 +43,14 @@ nlu:
     - adminnya siapa?
     - tolong infokan adminnya
     - bisa kasih tau adminnya?
-
 - intent: ask_about_insi
   examples: |
     - inisiatif itu apa ya?
     - apa itu inisiatif?
     - tolong jelaskan, inisiatif itu apa?
-    - apa itu inisiatif?
     - perkumpulan inisiatif itu apa?
     - perkumpulan inisiatif itu ngapain aja?
     - pekerjaan inisiatif itu apa?
-
 - intent: ask_upload
   examples: |
     - saya mau upload data, gimana caranya?
@@ -69,7 +61,6 @@ nlu:
     - tolong bagaimana cara upload data.
     - upload data gimana caranya ya?
     - saya bingung, gimana caranya upload data?
-
 - intent: ask_download
   examples: |
     - bagaimana cara download-nya?
@@ -81,7 +72,6 @@ nlu:
     - langkah-langkah untuk download gimana ya?
     - saya tidak tahu cara download
     - bisa bantu saya download?
-
 - intent: ask_search_file
   examples: |
     - saya ingin mencari file
@@ -98,8 +88,7 @@ nlu:
     - bantu saya cari file
     - bantuin cariin file dong
     - tolong bantuin saya nyari file
-
-- intent: i_want_to_see_my_data
+- intent: ask_to_show
   examples: |
     - tampilkan semua data saya
     - saya punya data apa saja?
@@ -115,7 +104,6 @@ nlu:
     - tolong tampilkan semua filenya
     - apa saja filenya?
     - datanya apa saja?
-
 - intent: ask_about_guess_name
   examples: |
     - naha apal nama saya?
@@ -123,57 +111,21 @@ nlu:
     - ko bisa tahu nama saya?
     - dari mana tahu nama saya?
     - kamu tahu nama saya?
-# just for example how to use slot
-- intent: beri_nama
+- intent: ask_to_open
   examples: |
-    - nama saya [Atang](nama)
-    - panggil saya [Budi](nama)
-    - aku [Rina](nama)
-    - saya [Doni](nama)
-    - [Citra](nama) nama saya
-
-- intent: choose_file_no
-  examples: |
-    - nomor [3](file_no) dong
-    - saya mau yang [6](file_no)
-    - pilih nomor [25](file_no)
-    - itu, yang angka [4](file_no)
+    - tolong buka nomor [3](file_no) dong
+    - buka yang nomor [6](file_no)
+    - buka yang angka [4](file_no)
+    - buka baris [9](file_no)
     - buka yang [7](file_no)
-    - yang nomor [9](file_no) itu
-    - saya mau yang dibaris [8](file_no)
-    - bisa buka yang nomor [17](file_no)
-    - yang nomor [90](file_no), tolong
+    - coba buka yang nomor [9](file_no) 
+    - tolong buka baris [8](file_no)
+    - bisa buka nomor [17](file_no)
+    - yang nomor [90](file_no), tolong buka
+    - bukain nomor [90](file_no)
     - saya mau lihat yang [11](file_no)
-    - saya pilih [14](file_no)
-    - [78](file_no)
-    - nomor [100](file_no)
-    - saya pilih [7](file_no)
-    - pilih [32](file_no)
-    - [9](file_no)
-    - nomor [45](file_no)
-    - oh iya, maksud saya nomor [35](file_no)
-    - maksud saya [88](file_no)
-
-# - intent: confirm_retry
-#   examples: |
-#     - ya
-#     - tentu
-#     - saya ingin coba lagi
-#     - iya
-#     - yes
-
-# - intent: deny
-#   examples: |
-#     - tidak
-#     - tidak perlu
-#     - tidak usah
-#     - nggak
-
+    - bukan nomor [78](file_no)
+    - nomor [100](file_no) buka
 - regex: file_no
   examples: |
     - \d{1,3}
-
-
-# bedakan intent untuk mencari data dengan menampilkan data
-# intent mencari data, user sudah mengetahui apa yang dia inginkan
-# sednagkan
