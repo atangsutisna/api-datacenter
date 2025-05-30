@@ -5,38 +5,41 @@ intents:
   - ask_datacenter
   - ask_admin_datacenter
   - ask_about_insi
-  - bertegur_sapa
+  # - bertegur_sapa
   - nlu_fallback
   - ask_upload
   - ask_download
   - ask_search_file
   - ask_forgot_password
-  - displaying_data
-  - ask_login
+  - i_want_to_see_my_data
   - ask_about_guess_name
-  - beri_nama
-  - access_data
+  - choose_file_no
 
 entities:
-  - nama
   - file_no
 
 slots:
-  nama:
-    type: text
-    mappings:
-      - type: from_entity
-        entity: nama
   file_no:
     type: text
+    influence_conversation: false
     mappings:
       - type: from_entity
         entity: file_no
+  valid_selection:
+    type: bool
+    influence_conversation: false
+    mappings:
+      - type: custom
   search_results:
     type: any
     influence_conversation: false
     mappings:
       - type: custom
+
+forms:
+  file_selection_form:
+    required_slots:
+      - file_no
 
 responses:
   utter_default:
@@ -73,21 +76,26 @@ responses:
   utter_list_homedir:
   - text: "Silakan kirim perintah /list. Atau, bila kamu ingin saya mencarikannya untukmu, silakan kirim perintah /cari."
 
-  utter_login:
-  - text: "Baik. Ketik perintah /login atau cukup klik link ini /login"
-
-  utter_sapa_nama:
-  - text: "Halo {{ nama }}, senang bertemu kamu!"
-
   utter_konfirmasi_menu:
   - text: "Kamu memilih menu nomor {menu}"
+
+  utter_invalid_number:
+  - text: "Nomor {file_no} tidak ada, adakah nomor lain yang kamu maksud?"
+
+  utter_ask_file_no:
+  - text: "Mau akses nomor berapa?"
+
+  # utter_thanks:
+  # - text: "Terima kasih."
 
 actions:
   - action_greeting
   - action_guessing_name
-  - action_list_data
+  - action_list_workspace
+  - action_open_selected_data
   - action_simpan_nama
-  - action_access_data
+  - action_access_data,
+  - validate_file_selection_form
 
 session_config:
   session_expiration_time: 60

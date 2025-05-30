@@ -10,15 +10,15 @@ nlu:
     - aneh
     - tolol
 
-- intent: bertegur_sapa
-  examples: |
-    - hallo
-    - hai
-    - selamat pagi
-    - selamat siang
-    - selamat malam
-    - halo
-    - assalamualaikum
+# - intent: bertegur_sapa
+#   examples: |
+#     - hallo
+#     - hai
+#     - selamat pagi
+#     - selamat siang
+#     - selamat malam
+#     - halo
+#     - assalamualaikum
 
 - intent: bot_challenge
   examples: |
@@ -111,7 +111,7 @@ nlu:
     - saya kehilangan akses karena lupa password
     - bantu reset password saya dong
 
-- intent: displaying_data
+- intent: i_want_to_see_my_data
   examples: |
     - tampilkan semua data saya
     - saya punya data apa saja?
@@ -127,15 +127,6 @@ nlu:
     - tolong tampilkan semua filenya
     - apa saja filenya?
     - datanya apa saja?
-
-- intent: ask_login
-  examples: |
-    - saya mau login
-    - cara login, gimana?
-    - bagaimana caranya login?
-    - login gimana caranya?
-    - bantu saya login
-    - apa perintah login
 
 - intent: ask_about_guess_name
   examples: |
@@ -153,7 +144,7 @@ nlu:
     - saya [Doni](nama)
     - [Citra](nama) nama saya
 
-- intent: access_data
+- intent: choose_file_no
   examples: |
     - nomor [3](file_no) dong
     - saya mau yang [6](file_no)
@@ -174,7 +165,22 @@ nlu:
     - nomor [45](file_no)
     - oh iya, maksud saya nomor [35](file_no)
     - maksud saya [88](file_no)
-    
+
+# - intent: confirm_retry
+#   examples: |
+#     - ya
+#     - tentu
+#     - saya ingin coba lagi
+#     - iya
+#     - yes
+
+# - intent: deny
+#   examples: |
+#     - tidak
+#     - tidak perlu
+#     - tidak usah
+#     - nggak
+
 - regex: file_no
   examples: |
     - \d{1,3}

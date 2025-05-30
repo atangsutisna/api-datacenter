@@ -43,7 +43,7 @@ stories:
 #   steps:
 #     - intent: ask_about_insi
 #     - action: utter_ask_about_insi
-- story: terima nama
-  steps:
-    - intent: beri_nama
-    - action: action_simpan_nama
+# - story: terima nama
+#   steps:
+#     - intent: beri_nama
+#     - action: action_simpan_nama

@@ -137,29 +137,34 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         else:
             return
     else:
-        response: str = handle_response(update, text)
-        logger.info('Bot: %r', response)
-
-        if len(response) > 1:
-            custom_data = response[1]["custom"]["data"]
-            buttons_data = custom_data["reply_markup"]["inline_keyboard"]
-            # create inline keyboard button
-            # button ini sudah tidak diperlukan
-            keyboard = [
-                [InlineKeyboardButton(text=btn["teks"], callback_data=btn["callback_data"])]
-                for btn in buttons_data
-            ] 
-            reply_markup = InlineKeyboardMarkup(keyboard)
+        responses: str = handle_response(update, text)
+        # logger.info('Bot: %r', responses)
+        for response in responses:
+            logger.info("response %r", response)
             await update.message.reply_text(
-                response[0]['text'], 
-                parse_mode="Markdown", 
-                reply_markup=reply_markup
-            )
-        else:
-            await update.message.reply_text(
-                response[0]['text'],
+                response['text'],
                 parse_mode="Markdown"
             )
+        # if len(response) > 1:
+        #     custom_data = response[1]["custom"]["data"]
+        #     buttons_data = custom_data["reply_markup"]["inline_keyboard"]
+        #     # create inline keyboard button
+        #     # button ini sudah tidak diperlukan
+        #     keyboard = [
+        #         [InlineKeyboardButton(text=btn["teks"], callback_data=btn["callback_data"])]
+        #         for btn in buttons_data
+        #     ] 
+        #     reply_markup = InlineKeyboardMarkup(keyboard)
+        #     await update.message.reply_text(
+        #         response[0]['text'], 
+        #         parse_mode="Markdown", 
+        #         reply_markup=reply_markup
+        #     )
+        # else:
+        #     await update.message.reply_text(
+        #         response[0]['text'],
+        #         parse_mode="Markdown"
+        #     )
     # url = "http://localhost:5005/webhooks/rest/webhook"
     # processed: str = text.lower()
     # data = {"sender": "user", "message": processed}

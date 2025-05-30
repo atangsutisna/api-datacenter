@@ -30,6 +30,8 @@ from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.types import DomainDict
 from rasa_sdk.events import SlotSet
+from rasa_sdk.forms import FormValidationAction
+from rasa_sdk.events import AllSlotsReset, ActiveLoop
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import sys
@@ -167,12 +169,22 @@ class ActionListWorkspace(Action):
         self.get_user_logged_in = get_user_logged_in
 
     def name(self) -> Text:
-        return "action_list_data"
+        return "action_list_workspace"
     
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         fullname = tracker.sender_id
+        # dispatcher.utter_message(text="action list workspace di jalankan")
+
+        # search_results = {}
+        # search_results[1] = "/home/kangatang/git/filegator/repository/spark"
+        # search_results[2] = "/home/kangatang/git/filegator/repository/atang"
+
+        # search_results_json = json.dumps(search_results)
+        # logger.info("saving search result as json: %s", search_results_json)
+        # return [SlotSet("search_results", search_results_json)]
+
         if fullname == "user":
             # belum login
             dispatcher.utter_message(text="""
@@ -221,20 +233,9 @@ class ActionListWorkspace(Action):
                     message += f"\n{no}. `{simple_path}` (`{format_size(get_file_size_bytes(path))}`)"
                 search_results[no] = path
                 no += 1
-            
-            message += "\nData mana yang kamu inginkan? sebutkan angkanya"
-            dispatcher.utter_message(
-                text=message,
-                custom={
-                    "data": {
-                        "teks": message,
-                        "search_results": user_workspaces,
-                        "reply_markup": {
-                            "inline_keyboard": []
-                        }
-                    }
-                }
 
+            dispatcher.utter_message(
+                text=message
             )
 
             search_results_json = json.dumps(search_results)
@@ -255,12 +256,14 @@ class ActionSapaNama(Action):
     
 class ActionAccessData(Action):
     def name(self):
-        return "action_access_data"
+        return "action_open_selected_data"
 
     async def run(self, dispatcher: CollectingDispatcher,
                   tracker: Tracker,
                   domain: dict):
+        logger.info("starting to run access data")
         file_no = tracker.get_slot("file_no")
+        logger.info("Get file no from slot %s", file_no)
         search_results = tracker.get_slot("search_results")
         if search_results:
             logger.info("attempting to load search results %s", search_results)
@@ -309,11 +312,16 @@ class ActionAccessData(Action):
                         search_results[no] = path
                         no += 1
 
-                message += "\nData mana yang kamu inginkan? sebutkan angkanya"
+                # message += "\nData mana yang kamu inginkan? sebutkan angkanya"
                 dispatcher.utter_message(text=message)
 
                 search_results_json = json.dumps(search_results)
-                return [SlotSet("search_results", search_results_json)]
+                return [
+                    SlotSet("search_results", search_results_json), 
+                    SlotSet("file_no", None),
+                    ActiveLoop(None)
+                ]
+                # return []
             else:
                 range_list = get_range_list(user_files)
                 max_no = max(int(k) for k in user_files.keys())
@@ -324,6 +332,27 @@ class ActionAccessData(Action):
                 ]
                 response = random.choice(messages)
                 dispatcher.utter_message(text=response)
+                return []
         else:
             dispatcher.utter_message(text=f"Data nomor {file_no} tidak ditemukan")
             return []
+
+class ValidateFileSelectionForm(FormValidationAction):
+    def name(self) -> Text:
+        return "validate_file_selection_form"
+
+    async def validate_file_no(
+        self,
+        slot_value: Any,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: Dict[Text, Any]
+    ) -> Dict[Text, Any]:
+        logger.info("validate file no %s", slot_value)
+        search_results = tracker.get_slot("search_results")
+        user_files = json.loads(search_results)
+        if slot_value in user_files:
+            selected_path = user_files.get(slot_value)
+            return {"file_no": slot_value}
+        else:
+            return {"file_no": None}
