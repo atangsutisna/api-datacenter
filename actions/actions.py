@@ -209,19 +209,22 @@ class ActionListWorkspace(Action):
             curr_user = self.get_user_logged_in(telegram_id)
             accounts = curr_user['accounts']
             user_workspaces = []
+            root_paths = []
             REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
             if len(accounts) > 1:
                 for account in accounts:
                     homedir = account['homedir'].lstrip("/")
-                    fullpath = os.path.join(REPOSITORY_PATH, homedir)
-                    user_workspaces.append(fullpath)
+                    root_path = os.path.join(REPOSITORY_PATH, homedir)
+                    root_paths.append(root_path)
+                    user_workspaces.append(root_path)
             else:
                 dirname = accounts[0]['homedir'].lstrip("/")
                 logger.info("attempting to list all data in %s", dirname)
-                home_path = os.path.join(REPOSITORY_PATH, dirname)
-                list_dir = os.listdir(home_path)
+                root_path = os.path.join(REPOSITORY_PATH, dirname)
+                list_dir = os.listdir(root_path)
                 for dir in list_dir:
-                    child_path = os.path.join(home_path, dir)
+                    child_path = os.path.join(root_path, dir)
+                    root_path.append(root_path)
                     user_workspaces.append(child_path)
 
             opening_messages = [
@@ -249,8 +252,10 @@ class ActionListWorkspace(Action):
                 text=message
             )
 
+            root_paths_json = json.dumps(root_paths)
             search_results_json = json.dumps(search_results)
             return [
+                SlotSet("root_paths", root_paths_json),
                 SlotSet("search_results", search_results_json),
                 SlotSet("current_path", None)
             ]
@@ -388,10 +393,14 @@ class ActionBackToPrevious(Action):
         ]
 
         current_path = tracker.get_slot("current_path")
+        root_paths = tracker.get_slot("root_paths")
+        logger.info("root paths %r", root_paths)
+        root_paths = json.loads(root_paths)
+
         logger.info("Got current path %s", current_path)
-        root_path = os.getenv('REPOSITORY_PATH')
+        # root_path = os.getenv('REPOSITORY_PATH')
         # fixme: jangan sampai root_path
-        if current_path is None or current_path == root_path:
+        if current_path in root_paths:
             # tampilkan root path setiap user
             user_workspaces = self.ls_root(telegram_id)
             message = random.choice(opening_messages)

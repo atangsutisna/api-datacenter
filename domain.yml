@@ -35,6 +35,11 @@ slots:
     influence_conversation: false
     mappings:
     - type: custom
+  root_paths:
+    type: any
+    influence_conversation: false
+    mappings:
+    - type: custom
 
 forms:
   file_selection_form:
