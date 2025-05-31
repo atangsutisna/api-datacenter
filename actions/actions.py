@@ -91,10 +91,10 @@ def simplified_path(original_path: str) -> str:
 
 def get_ask_to_open_remove_or_download() -> str:
     additional_responses = [
-        "Ada hal lain yang perlu saya bantu dengan data ini? Misalnya, Anda ingin menghapus, mengunduh, atau membuka folder lain? Anda bisa sebutkan angkanya.",
-        "Perlu bantuan lanjutan? Saya bisa bantu hapus, unduh, atau masuk ke folder lain. Cukup beritahu nomor yang Anda inginkan.",
-        "Apa lagi yang bisa saya lakukan untuk Anda? Ada pilihan hapus, unduh, atau jelajahi folder. Silakan ketik angkanya.",
-        "Apakah ada tindakan lain yang ingin Anda lakukan? Misalnya, menghapus, mengunduh, atau membuka folder? Anda bisa memilih dengan menyebutkan angkanya.",
+        "Ada hal lain yang perlu saya bantu dengan data ini? Misalnya, Kamu ingin menghapus, mengunduh, atau membuka folder lain? Kamu bisa sebutkan angkanya.",
+        "Perlu bantuan lanjutan? Saya bisa bantu hapus, unduh, atau masuk ke folder lain. Cukup beritahu nomor yang Kamu inginkan.",
+        "Apa lagi yang bisa saya lakukan untuk Kamu? Ada pilihan hapus, unduh, atau jelajahi folder. Silakan ketik angkanya.",
+        "Apakah ada tindakan lain yang ingin Kamu lakukan? Misalnya, menghapus, mengunduh, atau membuka folder? Kamu bisa memilih dengan menyebutkan angkanya.",
         "Sudah selesai dengan ini, atau ada lagi yang bisa saya bantu? Mungkin menghapus, mengunduh, atau membuka folder lain? Sebutkan saja nomornya."
     ]
     return random.choice(additional_responses)
@@ -385,11 +385,11 @@ class ActionBackToPrevious(Action):
         telegram_id = metadata.get("telegram_id")
 
         opening_messages = [
-            "Ini adalah folder utama Anda.",
-            "Anda sedang berada di direktori utama Anda.",
-            "Selamat datang di folder utama Anda.",
-            "Ini area utama penyimpanan Anda.",
-            "Anda telah kembali ke folder utama Anda."
+            "Ini adalah folder utama Kamu.",
+            "Kamu sedang berada di direktori utama Kamu.",
+            "Selamat datang di folder utama Kamu.",
+            "Ini area utama penyimpanan Kamu.",
+            "Kamu telah kembali ke folder utama Kamu."
         ]
 
         current_path = tracker.get_slot("current_path")
