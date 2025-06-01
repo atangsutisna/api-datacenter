@@ -139,6 +139,15 @@ nlu:
     - hapus nomor [78](file_no)
     - nomor [100](file_no) hapus
     - tolong dihapus baris [8](file_no)
+- intent: ask_to_remove_current_path
+  examples: |
+    - tolong dihapus
+    - hapus dong
+    - dihapus saja
+    - hapus dong
+    - hapuslah
+    - hapus sajalah
+    - dihapus dong 
 - intent: confirm_remove_data
   examples: |
     - iya, hapus saja

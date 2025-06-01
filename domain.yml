@@ -15,6 +15,7 @@ intents:
 - open_file_or_folder
 - ask_to_back
 - ask_remove_data
+- ask_to_remove_current_path
 - confirm_remove_data
 - deny
 
@@ -54,9 +55,6 @@ forms:
   file_selection_form:
     required_slots:
     - file_no
-  form_remove_data:
-    required_slots:
-    - line_no_to_removed
 responses:
   utter_default:
   - text: Maaf, saya tidak mengerti.
@@ -94,6 +92,7 @@ actions:
 - action_to_open_data
 - action_back_to_previous
 - action_remove_data
+- action_to_remove_current_path
 - action_check_permission_remove_data
 session_config:
   session_expiration_time: 60

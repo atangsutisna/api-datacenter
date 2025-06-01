@@ -300,7 +300,9 @@ class ActionAccessData(Action):
                         ]
                         message = random.choice(messages)
                         dispatcher.utter_message(text=message)
-                        return []
+                        return [
+                            SlotSet("current_path", selected_path),
+                        ]
                     
                     for dir in list_dir:
                         child_path = os.path.join(selected_path, dir)
@@ -563,3 +565,29 @@ class ActionCheckPermissionRemoveData(Action):
             return [
                 SlotSet("remove_permitted", False)
             ]
+
+class ActionRemoveCurrentPath(Action):
+    def __init__(self):
+        from checkpermissions import is_permitted
+        from myutils import list_dir, build_response, to_dict
+        self.is_permitted = is_permitted
+        self.list_dir = list_dir
+        self.build_response = build_response
+        self.to_dict = to_dict
+    
+    def name(self):
+        return "action_to_remove_current_path"
+
+    async def run(self, dispatcher: CollectingDispatcher,
+                  tracker: Tracker,
+                  domain: dict):
+        current_path = tracker.get_slot("current_path")
+        simplified_path = simplified_path(current_path)
+        logger.info("attempting to remove current path %s", current_path)
+        dispatcher.utter_message(text=f"Kamu akan menghapus data `{simplified_path}`")
+        # re-list lagi 
+        # ini hanya berlaku untuk folder
+        return []
+
+
+
