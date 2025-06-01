@@ -207,10 +207,12 @@ class ActionListWorkspace(Action):
             
             # todo: jika user hanya punya satu folder, tampilkan saja langsung isinya
             curr_user = self.get_user_logged_in(telegram_id)
+            # todo: check sudah konfirmasi nomor atau belum
             accounts = curr_user['accounts']
             user_workspaces = []
             root_paths = []
             REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
+            current_path = None
             if len(accounts) > 1:
                 for account in accounts:
                     homedir = account['homedir'].lstrip("/")
@@ -221,10 +223,11 @@ class ActionListWorkspace(Action):
                 dirname = accounts[0]['homedir'].lstrip("/")
                 logger.info("attempting to list all data in %s", dirname)
                 root_path = os.path.join(REPOSITORY_PATH, dirname)
+                current_path = root_path
                 list_dir = os.listdir(root_path)
                 for dir in list_dir:
                     child_path = os.path.join(root_path, dir)
-                    root_path.append(root_path)
+                    root_paths.append(root_path)
                     user_workspaces.append(child_path)
 
             opening_messages = [
@@ -257,7 +260,7 @@ class ActionListWorkspace(Action):
             return [
                 SlotSet("root_paths", root_paths_json),
                 SlotSet("search_results", search_results_json),
-                SlotSet("current_path", None)
+                SlotSet("current_path", current_path)
             ]
     
 class ActionAccessData(Action):
@@ -480,6 +483,10 @@ class ActionBackToPrevious(Action):
 #         else:
 #             return {"file_no": None}
 class ActionRemoveData(Action):
+    def __init__(self):
+        from checkpermissions import is_permitted
+        self.is_permitted = is_permitted
+
     def name(self):
         return "action_remove_data"
 
@@ -488,5 +495,55 @@ class ActionRemoveData(Action):
                   domain: dict):
         logger.info("starting to remove data")
         file_no = tracker.get_slot("file_no")
+        current_path = tracker.get_slot("current_path")
+
+        metadata = tracker.latest_message.get("metadata")
+        fullname = metadata.get("fullname")
+        telegram_id = metadata.get("telegram_id")
+
         # hapus, terus tampilkan list datanya
-        dispatcher.utter_message(text=f"Data nomor {file_no} sudah dihapus")
+        # hapus dulu datanya, 
+        logger.info("Got current path %s", current_path)
+        chmod_permitted = self.is_permitted(telegram_id, current_path, "chmod")
+        if chmod_permitted:
+            # check file or folder?
+            search_results = tracker.get_slot("search_results")
+            user_files = json.loads(search_results)
+            selected_path = user_files.get(file_no)
+            if selected_path:
+                removed_path = simplified_path(selected_path)
+                os.remove(selected_path)
+                dispatcher.utter_message(text=f"Data nomor {removed_path} sudah dihapus")
+            else:
+                # data tidak ditemukan
+                dispatcher.utter_message(text=f"Data dengan nomor {file_no} tidak ditemukan")
+        else:
+            dispatcher.utter_message(text=f"Maaf, kamu nggak ada ijin menghapus")
+
+        return []
+
+class ActionCheckPermissionRemoveData(Action):
+    def __init__(self):
+        from checkpermissions import is_permitted
+        self.is_permitted = is_permitted
+
+    def name(self):
+        return "action_check_permission_remove_data"
+
+    async def run(self, dispatcher: CollectingDispatcher,
+                  tracker: Tracker,
+                  domain: dict):
+        logger.info("starting to check permission")
+        file_no = tracker.get_slot("file_no")
+        # hapus, terus tampilkan list datanya
+        # hapus dulu datanya, 
+        chmod_permitted = is_permitted(telegram_id, path, "chmod")
+        if chmod_permitted:
+            return [
+                SlotSet("remove_permitted", True)
+            ]
+        else:
+            dispatcher.utter_message(text=f"Mohon maaf, kamu nggak punya akses untuk menghapus data")
+            return [
+                SlotSet("remove_permitted", False)
+            ]

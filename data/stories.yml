@@ -53,7 +53,7 @@ stories:
 - story: User mengkonfirmasi untuk menghapus data
   steps:
     - slot_was_set:
-      - current_path: not null
+      - current_path: not null # pastikan current path bukan folder utama
     - intent: ask_remove_data
     - action: utter_ask_confirm_remove_data
     - intent: confirm_remove_data
@@ -61,7 +61,7 @@ stories:
 - story: User membatalkan untuk menghapus data
   steps:
     - slot_was_set:
-      - current_path: not null
+      - current_path: not null # pastikan current path bukan folder utama
     - intent: ask_remove_data
     - action: utter_ask_confirm_remove_data
     - intent: deny

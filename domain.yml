@@ -43,6 +43,12 @@ slots:
     influence_conversation: false
     mappings:
     - type: custom
+  remove_permitted:
+    type: bool
+    influence_conversation: false
+    initial_value: false
+    mappings:
+    - type: custom
 
 forms:
   file_selection_form:
@@ -85,6 +91,7 @@ actions:
 - action_to_open_data
 - action_back_to_previous
 - action_remove_data
+- action_check_permission_remove_data
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
