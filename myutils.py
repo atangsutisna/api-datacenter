@@ -1,4 +1,5 @@
 import hashlib, os
+from userloggedin import get_user_logged_in
 
 def hash_path(path):
     return hashlib.sha1(path.encode()).hexdigest()[:10]
@@ -79,6 +80,27 @@ def build_response(opening_message: str, lspaths: list[str], ending_message):
 def get_root_path(fullpath: str) -> str:
     parent_dir = os.path.dirname(fullpath)
     return parent_dir
+
+def get_workspaces(telegram_id: str):
+    curr_user = get_user_logged_in(telegram_id)
+    accounts = curr_user['accounts']
+    root_path = os.getenv('REPOSITORY_PATH')
+    user_workspaces = []
+    if len(accounts) > 1:
+        for account in accounts:
+            homedir = account['homedir'].lstrip("/")
+            fullpath = os.path.join(root_path, homedir)
+            user_workspaces.append(fullpath)
+    else:
+        dirname = accounts[0]['homedir'].lstrip("/")
+        logger.info("attempting to list all data in %s", dirname)
+        home_path = os.path.join(root_path, dirname)
+        list_dir = os.listdir(home_path)
+        for dir in list_dir:
+            child_path = os.path.join(home_path, dir)
+            user_workspaces.append(child_path)
+    
+    return user_workspaces
 
 # path = "/home/kangatang/git/filegator/repository/spark"
 # lspaths = list_dir(path)

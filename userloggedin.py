@@ -12,7 +12,7 @@ load_dotenv()
 DB_PATH = os.getenv('DB_PATH')
 # load user logged in
 def get_user_logged_in(telegram_id: str):
-    logger.info("attempting to find user with telegram id %s", telegram_id)
+    logger.info("attempting to find user with telegram id %s on %s", telegram_id, DB_PATH)
     with open(DB_PATH, 'r', encoding='utf-8') as file:
         users_loggedin = json.load(file)
     user = None

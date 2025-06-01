@@ -214,6 +214,7 @@ class ActionListWorkspace(Action):
             root_paths = []
             REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
             current_path = None
+            logger.info("total account for user %s : %d", telegram_id, len(accounts))
             if len(accounts) > 1:
                 for account in accounts:
                     homedir = account['homedir'].lstrip("/")
@@ -569,12 +570,13 @@ class ActionCheckPermissionRemoveData(Action):
 class ActionRemoveCurrentPath(Action):
     def __init__(self):
         from checkpermissions import is_permitted
-        from myutils import list_dir, build_response, to_dict, get_root_path
+        from myutils import list_dir, build_response, to_dict, get_root_path, get_workspaces
         self.is_permitted = is_permitted
         self.list_dir = list_dir
         self.build_response = build_response
         self.to_dict = to_dict
         self.get_root_path = get_root_path
+        self.get_workspaces = get_workspaces
     
     def name(self):
         return "action_to_remove_current_path"
@@ -593,8 +595,14 @@ class ActionRemoveCurrentPath(Action):
         if not chmod_permitted:
             dispatcher.utter_message(text=f"Maaf, kamu tidak dijinkan untuk menghapus data")
             return []
-            
+        
+        user_workspaces = self.get_workspaces(telegram_id)
+        if current_path in user_workspaces:
+            dispatcher.utter_message(text=f"Folder utama (`{simple_path}`) tidak diijinkan dihapus")
+            return []
+
         logger.info("attempting to remove current path %s", current_path)
+        # todo: jangan sampai menghapus root path -nya user
         shutil.rmtree(current_path)
 
         # re-list lagi 
