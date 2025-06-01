@@ -460,24 +460,33 @@ class ActionBackToPrevious(Action):
                 SlotSet("current_path", parent_path)
             ]
 
+# class ValidateFileSelectionForm(FormValidationAction):
+#     def name(self) -> Text:
+#         return "validate_file_selection_form"
 
+#     async def validate_file_no(
+#         self,
+#         slot_value: Any,
+#         dispatcher: CollectingDispatcher,
+#         tracker: Tracker,
+#         domain: Dict[Text, Any]
+#     ) -> Dict[Text, Any]:
+#         logger.info("validate file no %s", slot_value)
+#         search_results = tracker.get_slot("search_results")
+#         user_files = json.loads(search_results)
+#         if slot_value in user_files:
+#             selected_path = user_files.get(slot_value)
+#             return {"file_no": slot_value}
+#         else:
+#             return {"file_no": None}
+class ActionRemoveData(Action):
+    def name(self):
+        return "action_remove_data"
 
-class ValidateFileSelectionForm(FormValidationAction):
-    def name(self) -> Text:
-        return "validate_file_selection_form"
-
-    async def validate_file_no(
-        self,
-        slot_value: Any,
-        dispatcher: CollectingDispatcher,
-        tracker: Tracker,
-        domain: Dict[Text, Any]
-    ) -> Dict[Text, Any]:
-        logger.info("validate file no %s", slot_value)
-        search_results = tracker.get_slot("search_results")
-        user_files = json.loads(search_results)
-        if slot_value in user_files:
-            selected_path = user_files.get(slot_value)
-            return {"file_no": slot_value}
-        else:
-            return {"file_no": None}
+    async def run(self, dispatcher: CollectingDispatcher,
+                  tracker: Tracker,
+                  domain: dict):
+        logger.info("starting to remove data")
+        file_no = tracker.get_slot("file_no")
+        # hapus, terus tampilkan list datanya
+        dispatcher.utter_message(text=f"Data nomor {file_no} sudah dihapus")

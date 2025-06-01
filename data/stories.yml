@@ -1,7 +1,6 @@
 version: "3.1"
 
 stories:
-
 # - story: happy path
 #   steps:
 #   - intent: greet
@@ -51,3 +50,19 @@ stories:
 #   steps:
 #     - intent: ask_to_show
 #     - action: action_show_data
+- story: User mengkonfirmasi untuk menghapus data
+  steps:
+    - slot_was_set:
+      - current_path: not null
+    - intent: ask_remove_data
+    - action: utter_ask_confirm_remove_data
+    - intent: confirm_remove_data
+    - action: action_remove_data
+- story: User membatalkan untuk menghapus data
+  steps:
+    - slot_was_set:
+      - current_path: not null
+    - intent: ask_remove_data
+    - action: utter_ask_confirm_remove_data
+    - intent: deny
+    - action: utter_ask_deny_remove_data

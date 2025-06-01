@@ -71,7 +71,6 @@ rules:
   steps:
     - intent: ask_to_back
     - action: action_back_to_previous
-
 # - rule: Respon setelah user pilih menu
 #   steps:
 #     - intent: choose_file_no

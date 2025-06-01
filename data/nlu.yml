@@ -124,8 +124,36 @@ nlu:
     - yang nomor [90](file_no), tolong buka
     - bukain nomor [90](file_no)
     - saya mau lihat yang [11](file_no)
-    - bukan nomor [78](file_no)
+    - buka nomor [78](file_no)
     - nomor [100](file_no) buka
+- intent: ask_remove_data
+  examples: |
+    - tolong hapus nomor [3](file_no) dong
+    - hapus yang nomor [6](file_no)
+    - hapus yang angka [4](file_no)
+    - hapus baris [9](file_no)
+    - hapus yang [7](file_no)
+    - tolong hapus baris [8](file_no)
+    - yang nomor [90](file_no), tolong dihapus
+    - nomor [90](file_no) dihapus
+    - hapus nomor [78](file_no)
+    - nomor [100](file_no) hapus
+    - tolong dihapus baris [8](file_no)
+- intent: confirm_remove_data
+  examples: |
+    - iya, hapus saja
+    - y hapus
+    - beneran, hapus aja
+    - ya
+    - yakin
+    - lanjut
+- intent: deny
+  examples: |
+    - nggak
+    - jangan deh
+    - tidak
+    - nggak jadi
+    - jangan
 - intent: ask_to_back
   examples: |
     - coba balik lagi

@@ -14,6 +14,9 @@ intents:
 - nlu_fallback
 - open_file_or_folder
 - ask_to_back
+- ask_remove_data
+- confirm_remove_data
+- deny
 
 entities:
 - file_no
@@ -65,6 +68,14 @@ responses:
   - text: Baik, silakan kirim perintah /list. Nanti kamu bisa mencarinya secara manual dengan membuka satu persatu setiap folder. Atau, bila kamu ingin saya mencarikannya untukmu, silakan kirim perintah /cari.
   utter_ask_file_no:
   - text: Mau akses nomor berapa?
+  utter_ask_confirm_remove_data:
+  - text: Apakah kamu sudah yakin untuk menghapus?
+  - text: Yakin mau dihapus?
+  - text: Beneran nih mau dihapus?
+  utter_ask_deny_remove_data:
+  - text: Ok,
+  - text: Okeh
+  - text: Siap! 
 actions:
 - action_greeting
 - action_guessing_name
@@ -72,6 +83,7 @@ actions:
 - validate_file_selection_form
 - action_to_open_data
 - action_back_to_previous
+- action_remove_data
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
