@@ -75,7 +75,8 @@ responses:
   utter_ask_deny_remove_data:
   - text: Ok,
   - text: Okeh
-  - text: Siap! 
+  - text: Siap!
+  - text: Siap komandan! 
 actions:
 - action_greeting
 - action_guessing_name
