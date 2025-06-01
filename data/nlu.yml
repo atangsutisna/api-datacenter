@@ -157,6 +157,7 @@ nlu:
     - ya
     - yakin
     - lanjut
+    - ya hapus aja
 - intent: deny
   examples: |
     - nggak
