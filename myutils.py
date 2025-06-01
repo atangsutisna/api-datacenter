@@ -19,6 +19,9 @@ def get_folder_size_bytes(folder_path):
                 total_size += os.path.getsize(fp)
     return total_size    
 
+def get_file_size_bytes(file_path):
+    return os.path.getsize(file_path)
+
 def format_size(size_bytes):
     if size_bytes < 1024:
         return f"{size_bytes} B"

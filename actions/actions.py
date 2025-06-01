@@ -83,37 +83,6 @@ def format_size(size_bytes):
     else:
         return f"{size_bytes / 1024**3:.2f} GB"
 
-def list_dir(target_path: str, current_path: str) -> list[str]:
-    """
-    Fungsi ini untuk menampilkan daftar folder dan file.
-    Nilai yang dikembalikan adalah daftar directory dan file. Disertai dengan 
-    """
-    ls_dir = os.listdir(target_path)
-    ls_dir_fullpath = []
-    if not ls_dir:
-        return ls_dir_fullpath
-    
-    for dir in ls_dir:
-        child_path = os.path.join(current_path, dir)
-        ls_dir_fullpath.append(child_path)
-
-    return ls_dir_fullpath
-
-def format_lspaths(lspaths: list[str]) -> dict[str, str]:
-    no = 1
-    formatted_results: dict[str, str] = {}
-    for path in lspaths:
-        file = os.path.isfile(path)
-        simple_path = simplified_path(path)
-        if not file:
-            message += f"\n{no}. `{simple_path}` (`{format_size(get_folder_size_bytes(path))}`)"
-        else:
-            message += f"\n{no}. `{simple_path}` (`{format_size(get_file_size_bytes(path))}`)"
-        formatted_results[no] = path
-        no += 1
-    return formatted_results
-
-
 def simplified_path(original_path: str) -> str:
     folder_name = os.path.basename(original_path)
     repository_path = original_path.split("/repository", 1)[1]
@@ -495,33 +464,14 @@ class ActionBackToPrevious(Action):
                 SlotSet("current_path", parent_path)
             ]
 
-# class ValidateFileSelectionForm(FormValidationAction):
-#     def name(self) -> Text:
-#         return "validate_file_selection_form"
-
-#     async def validate_file_no(
-#         self,
-#         slot_value: Any,
-#         dispatcher: CollectingDispatcher,
-#         tracker: Tracker,
-#         domain: Dict[Text, Any]
-#     ) -> Dict[Text, Any]:
-#         logger.info("validate file no %s", slot_value)
-#         search_results = tracker.get_slot("search_results")
-#         user_files = json.loads(search_results)
-#         if slot_value in user_files:
-#             selected_path = user_files.get(slot_value)
-#             return {"file_no": slot_value}
-#         else:
-#             return {"file_no": None}
 class ActionRemoveData(Action):
     def __init__(self):
         from checkpermissions import is_permitted
-        from myutils import list_dir
+        from myutils import list_dir, build_response
         self.is_permitted = is_permitted
         self.list_dir = list_dir
+        self.build_response = build_response
         
-
     def name(self):
         return "action_remove_data"
 
@@ -543,47 +493,25 @@ class ActionRemoveData(Action):
             search_results = tracker.get_slot("search_results")
             user_files = json.loads(search_results)
             selected_path = user_files.get(file_no)
-            if selected_path:
-                # check file is exists?
-                # file_exists = os.path.exists(selected_path)
-                # lspaths = list_dir(selected_path, current_path)
-                # formatted_lspaths = format_lspaths(lspaths)
-                # if not file_exists:
-                #     message = f"Data `{removed_path}` sudah tidak ditemukan\n"+ formatted_lspaths
-                #     dispatcher.utter_message(text=message)
-                #     lspaths_json = json.dumps(lspaths)
-                #     return [
-                #         SlotSet("search_results", lspaths_json), 
-                #         SlotSet("file_no", None)
-                #     ]
-                # check is file or not
-                removed_path = simplified_path(selected_path)
+            file_exists = os.path.exists(selected_path)
+            removed_path = simplified_path(selected_path)
+            if selected_path and file_exists:
                 is_file = os.path.isfile(selected_path)
-                if is_file:
-                    file_exists = os.path.exists(selected_path)
-                    if not file_exists:
-                        # response data tidak ditemukan
-                        lstpaths = self.lspaths(current_path)
-                        formatted_lspaths = format_lspaths(lspaths)
-                        message = f"Data `{removed_path}` sudah tidak ditemukan\n"+ formatted_lspaths
-                        dispatcher.utter_message(text=message)
-                        lspaths_json = json.dumps(lspaths)
-                        return [
-                            SlotSet("search_results", lspaths_json), 
-                            SlotSet("file_no", None)
-                        ]
-                        # re-list data
-                    else:
-                        os.remove(selected_path)
+                if is_file:         
+                    # just remove the file    
+                    os.remove(selected_path)
                 else:
-                    # hapus folder beserta isinya
+                    # remove the folder and it's childs
                     shutil.rmtree(selected_path)
+                
+                lspaths = self.list_dir(current_path)
+                response = self.build_response(
+                    opening_message=f"Data sudah `{removed_path}` dihapus",
+                    ending_message=get_ask_to_open_remove_or_download(),
+                    lspaths=lspaths
+                )
                 # prepare for response
-                message = f"Data `{removed_path}` sudah dihapus\n"+ format_lspaths                
-                additional_response = get_ask_to_open_remove_or_download()
-                message += "\n"+ additional_response
-                dispatcher.utter_message(text=message)
-
+                dispatcher.utter_message(text=response)
                 lspaths_json = json.dumps(lspaths)
                 return [
                     SlotSet("search_results", lspaths_json), 
@@ -591,11 +519,22 @@ class ActionRemoveData(Action):
                 ]
             else:
                 # data tidak ditemukan
-                dispatcher.utter_message(text=f"Datanya {file_no} nggak ketemu")
+                lspaths = self.list_dir(current_path)
+                response = self.build_response(
+                    opening_message=f"Data `{removed_path}` nggak ketemu",
+                    ending_message=get_ask_to_open_remove_or_download(),
+                    lspaths=lspaths
+                )
+                # prepare for response
+                dispatcher.utter_message(text=response)
+                lspaths_json = json.dumps(lspaths)
+                return [
+                    SlotSet("search_results", lspaths_json), 
+                    SlotSet("file_no", None)
+                ]
         else:
             dispatcher.utter_message(text=f"Maaf, kamu nggak ada ijin menghapus")
-
-        return []
+            return []
 
 class ActionCheckPermissionRemoveData(Action):
     def __init__(self):
