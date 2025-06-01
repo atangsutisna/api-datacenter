@@ -54,6 +54,9 @@ forms:
   file_selection_form:
     required_slots:
     - file_no
+  form_remove_data:
+    required_slots:
+    - line_no_to_removed
 responses:
   utter_default:
   - text: Maaf, saya tidak mengerti.

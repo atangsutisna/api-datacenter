@@ -45,7 +45,10 @@ def list_dir(target_path: str) -> list[str]:
 
     return ls_dir_fullpath
 
-def format_lspaths(opening_message: str, lspaths: list[str]) -> str:
+def to_dict(lspaths: list[str]) -> dict[str, str]:
+    return {str(no): path for no, path in enumerate(lspaths, 1)}
+
+def format_lspaths(lspaths: list[str]) -> str:
     """
     Fungsi ini untuk menampilkan list_dir dalam format:
     1. Dir 1
@@ -55,20 +58,29 @@ def format_lspaths(opening_message: str, lspaths: list[str]) -> str:
     5. File 2
     6. Dst
     """
-    no = 1
     message: str = ""
-    message += opening_message + "\n"
-    for path in lspaths:
+    for no, path in enumerate(lspaths, 1):
         file = os.path.isfile(path)
         simple_path = simplified_path(path)
-        if not file:
-            message += f"\n{no}. `{simple_path}` (`{format_size(get_folder_size_bytes(path))}`)"
-        else:
-            message += f"\n{no}. `{simple_path}` (`{format_size(get_file_size_bytes(path))}`)"
-        no += 1
+        size_func = get_file_size_bytes if os.path.isfile(path) else get_folder_size_bytes
+        message += f"\n{no}. `{simple_path}` (`{format_size(size_func(path))}`)"
+    return message.strip()
+
+def build_response(opening_message: str, lspaths: list[str], ending_message):
+    message = opening_message + "\n"
+    formatted_lspaths = format_lspaths(lspaths)
+    message += formatted_lspaths
+    message += "\n" + ending_message
     return message
 
-path = "/home/kangatang/git/filegator/repository/spark"
-lspaths = list_dir(path)
-formatted_lspaths = format_lspaths(opening_message="Ini daftarnya:", lspaths=lspaths)
-print(formatted_lspaths)
+# path = "/home/kangatang/git/filegator/repository/spark"
+# lspaths = list_dir(path)
+# formatted_lspaths = format_lspaths(lspaths=lspaths)
+# print(formatted_lspaths)
+# print(to_dict(lspaths))
+# response = build_response(
+#     opening_message="Ini daftarnya: ", 
+#     ending_message="apakah ada yang bisa saya bantu lagi", 
+#     lspaths=lspaths
+# )
+# print(response)

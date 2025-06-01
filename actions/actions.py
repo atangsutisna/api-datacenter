@@ -83,6 +83,37 @@ def format_size(size_bytes):
     else:
         return f"{size_bytes / 1024**3:.2f} GB"
 
+def list_dir(target_path: str, current_path: str) -> list[str]:
+    """
+    Fungsi ini untuk menampilkan daftar folder dan file.
+    Nilai yang dikembalikan adalah daftar directory dan file. Disertai dengan 
+    """
+    ls_dir = os.listdir(target_path)
+    ls_dir_fullpath = []
+    if not ls_dir:
+        return ls_dir_fullpath
+    
+    for dir in ls_dir:
+        child_path = os.path.join(current_path, dir)
+        ls_dir_fullpath.append(child_path)
+
+    return ls_dir_fullpath
+
+def format_lspaths(lspaths: list[str]) -> dict[str, str]:
+    no = 1
+    formatted_results: dict[str, str] = {}
+    for path in lspaths:
+        file = os.path.isfile(path)
+        simple_path = simplified_path(path)
+        if not file:
+            message += f"\n{no}. `{simple_path}` (`{format_size(get_folder_size_bytes(path))}`)"
+        else:
+            message += f"\n{no}. `{simple_path}` (`{format_size(get_file_size_bytes(path))}`)"
+        formatted_results[no] = path
+        no += 1
+    return formatted_results
+
+
 def simplified_path(original_path: str) -> str:
     folder_name = os.path.basename(original_path)
     repository_path = original_path.split("/repository", 1)[1]
@@ -486,7 +517,10 @@ class ActionBackToPrevious(Action):
 class ActionRemoveData(Action):
     def __init__(self):
         from checkpermissions import is_permitted
+        from myutils import list_dir
         self.is_permitted = is_permitted
+        self.list_dir = list_dir
+        
 
     def name(self):
         return "action_remove_data"
@@ -502,8 +536,6 @@ class ActionRemoveData(Action):
         fullname = metadata.get("fullname")
         telegram_id = metadata.get("telegram_id")
 
-        # hapus, terus tampilkan list datanya
-        # hapus dulu datanya, 
         logger.info("Got current path %s", current_path)
         chmod_permitted = self.is_permitted(telegram_id, current_path, "chmod")
         if chmod_permitted:
@@ -512,15 +544,51 @@ class ActionRemoveData(Action):
             user_files = json.loads(search_results)
             selected_path = user_files.get(file_no)
             if selected_path:
+                # check file is exists?
+                # file_exists = os.path.exists(selected_path)
+                # lspaths = list_dir(selected_path, current_path)
+                # formatted_lspaths = format_lspaths(lspaths)
+                # if not file_exists:
+                #     message = f"Data `{removed_path}` sudah tidak ditemukan\n"+ formatted_lspaths
+                #     dispatcher.utter_message(text=message)
+                #     lspaths_json = json.dumps(lspaths)
+                #     return [
+                #         SlotSet("search_results", lspaths_json), 
+                #         SlotSet("file_no", None)
+                #     ]
                 # check is file or not
                 removed_path = simplified_path(selected_path)
                 is_file = os.path.isfile(selected_path)
                 if is_file:
-                    os.remove(selected_path)
+                    file_exists = os.path.exists(selected_path)
+                    if not file_exists:
+                        # response data tidak ditemukan
+                        lstpaths = self.lspaths(current_path)
+                        formatted_lspaths = format_lspaths(lspaths)
+                        message = f"Data `{removed_path}` sudah tidak ditemukan\n"+ formatted_lspaths
+                        dispatcher.utter_message(text=message)
+                        lspaths_json = json.dumps(lspaths)
+                        return [
+                            SlotSet("search_results", lspaths_json), 
+                            SlotSet("file_no", None)
+                        ]
+                        # re-list data
+                    else:
+                        os.remove(selected_path)
                 else:
                     # hapus folder beserta isinya
                     shutil.rmtree(selected_path)
-                dispatcher.utter_message(text=f"Data `{removed_path}` sudah dihapus")
+                # prepare for response
+                message = f"Data `{removed_path}` sudah dihapus\n"+ format_lspaths                
+                additional_response = get_ask_to_open_remove_or_download()
+                message += "\n"+ additional_response
+                dispatcher.utter_message(text=message)
+
+                lspaths_json = json.dumps(lspaths)
+                return [
+                    SlotSet("search_results", lspaths_json), 
+                    SlotSet("file_no", None)
+                ]
             else:
                 # data tidak ditemukan
                 dispatcher.utter_message(text=f"Datanya {file_no} nggak ketemu")
