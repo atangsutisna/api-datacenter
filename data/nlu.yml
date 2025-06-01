@@ -161,6 +161,7 @@ nlu:
     - back
     - balik lagi dong
     - tolong balik lagi
+# tanyakan soal ijin
 
 - regex: file_no
   examples: |

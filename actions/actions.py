@@ -39,6 +39,7 @@ import os
 import random
 import logging
 import json
+import shutil
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -511,12 +512,18 @@ class ActionRemoveData(Action):
             user_files = json.loads(search_results)
             selected_path = user_files.get(file_no)
             if selected_path:
+                # check is file or not
                 removed_path = simplified_path(selected_path)
-                os.remove(selected_path)
-                dispatcher.utter_message(text=f"Data nomor {removed_path} sudah dihapus")
+                is_file = os.path.isfile(selected_path)
+                if is_file:
+                    os.remove(selected_path)
+                else:
+                    # hapus folder beserta isinya
+                    shutil.rmtree(selected_path)
+                dispatcher.utter_message(text=f"Data `{removed_path}` sudah dihapus")
             else:
                 # data tidak ditemukan
-                dispatcher.utter_message(text=f"Data dengan nomor {file_no} tidak ditemukan")
+                dispatcher.utter_message(text=f"Datanya {file_no} nggak ketemu")
         else:
             dispatcher.utter_message(text=f"Maaf, kamu nggak ada ijin menghapus")
 
