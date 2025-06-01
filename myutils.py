@@ -81,6 +81,7 @@ def build_response(opening_message: str, lspaths: list[str], ending_message):
 # formatted_lspaths = format_lspaths(lspaths=lspaths)
 # print(formatted_lspaths)
 # print(to_dict(lspaths))
+# print(lspaths)
 # response = build_response(
 #     opening_message="Ini daftarnya: ", 
 #     ending_message="apakah ada yang bisa saya bantu lagi", 

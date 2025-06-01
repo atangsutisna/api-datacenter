@@ -467,10 +467,11 @@ class ActionBackToPrevious(Action):
 class ActionRemoveData(Action):
     def __init__(self):
         from checkpermissions import is_permitted
-        from myutils import list_dir, build_response
+        from myutils import list_dir, build_response, to_dict
         self.is_permitted = is_permitted
         self.list_dir = list_dir
         self.build_response = build_response
+        self.to_dict = to_dict
         
     def name(self):
         return "action_remove_data"
@@ -492,6 +493,7 @@ class ActionRemoveData(Action):
             # check file or folder?
             search_results = tracker.get_slot("search_results")
             user_files = json.loads(search_results)
+            logger.info("current user files %r", user_files)
             selected_path = user_files.get(file_no)
             file_exists = os.path.exists(selected_path)
             removed_path = simplified_path(selected_path)
@@ -512,7 +514,7 @@ class ActionRemoveData(Action):
                 )
                 # prepare for response
                 dispatcher.utter_message(text=response)
-                lspaths_json = json.dumps(lspaths)
+                lspaths_json = json.dumps(self.to_dict(lspaths))
                 return [
                     SlotSet("search_results", lspaths_json), 
                     SlotSet("file_no", None)
@@ -527,7 +529,7 @@ class ActionRemoveData(Action):
                 )
                 # prepare for response
                 dispatcher.utter_message(text=response)
-                lspaths_json = json.dumps(lspaths)
+                lspaths_json = json.dumps(self.to_dict(lspaths))
                 return [
                     SlotSet("search_results", lspaths_json), 
                     SlotSet("file_no", None)
