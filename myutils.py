@@ -76,6 +76,10 @@ def build_response(opening_message: str, lspaths: list[str], ending_message):
     message += "\n" + ending_message
     return message
 
+def get_root_path(fullpath: str) -> str:
+    parent_dir = os.path.dirname(fullpath)
+    return parent_dir
+
 # path = "/home/kangatang/git/filegator/repository/spark"
 # lspaths = list_dir(path)
 # formatted_lspaths = format_lspaths(lspaths=lspaths)
@@ -88,3 +92,4 @@ def build_response(opening_message: str, lspaths: list[str], ending_message):
 #     lspaths=lspaths
 # )
 # print(response)
+# print(get_root_path(path))

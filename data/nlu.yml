@@ -147,7 +147,8 @@ nlu:
     - hapus dong
     - hapuslah
     - hapus sajalah
-    - dihapus dong 
+    - dihapus dong
+    - dihapus aja 
 - intent: confirm_remove_data
   examples: |
     - iya, hapus saja

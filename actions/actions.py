@@ -569,11 +569,12 @@ class ActionCheckPermissionRemoveData(Action):
 class ActionRemoveCurrentPath(Action):
     def __init__(self):
         from checkpermissions import is_permitted
-        from myutils import list_dir, build_response, to_dict
+        from myutils import list_dir, build_response, to_dict, get_root_path
         self.is_permitted = is_permitted
         self.list_dir = list_dir
         self.build_response = build_response
         self.to_dict = to_dict
+        self.get_root_path = get_root_path
     
     def name(self):
         return "action_to_remove_current_path"
@@ -581,13 +582,32 @@ class ActionRemoveCurrentPath(Action):
     async def run(self, dispatcher: CollectingDispatcher,
                   tracker: Tracker,
                   domain: dict):
+        metadata = tracker.latest_message.get("metadata")
+        telegram_id = metadata.get("telegram_id")
         current_path = tracker.get_slot("current_path")
-        simplified_path = simplified_path(current_path)
+        root_path = self.get_root_path(current_path)
+        simple_path = simplified_path(current_path)
+
+        logger.info("Got current path %s", current_path)
+        chmod_permitted = self.is_permitted(telegram_id, current_path, "chmod")
+        if not chmod_permitted:
+            dispatcher.utter_message(text=f"Maaf, kamu tidak dijinkan untuk menghapus data")
+            return []
+            
         logger.info("attempting to remove current path %s", current_path)
-        dispatcher.utter_message(text=f"Kamu akan menghapus data `{simplified_path}`")
+        shutil.rmtree(current_path)
+
         # re-list lagi 
-        # ini hanya berlaku untuk folder
-        return []
-
-
+        lspaths = self.list_dir(root_path)
+        response = self.build_response(
+            opening_message=f"Data sudah `{simple_path}` dihapus",
+            ending_message=get_ask_to_open_remove_or_download(),
+            lspaths=lspaths
+        )
+        # prepare for response
+        dispatcher.utter_message(text=response)
+        lspaths_json = json.dumps(self.to_dict(lspaths))
+        return [
+            SlotSet("search_results", lspaths_json), 
+        ]
 
