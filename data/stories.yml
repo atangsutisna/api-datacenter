@@ -82,3 +82,19 @@ stories:
     - action: utter_ask_confirm_remove_data
     - intent: deny
     - action: utter_ask_deny_remove_data
+# just for testing
+- story: welcome message, premium user
+  steps:
+    - intent: greet_in_english
+    - action: action_check_user_profile
+    - slot_was_set:
+      - premium_account: true
+    - action: utter_premium_account
+- story: welcome message, basic user
+  steps:
+    - intent: greet_in_english
+    - action: action_check_user_profile
+    - slot_was_set:
+      - premium_account: false
+    - action: utter_basic_account
+    - action: utter_when_to_upgrade

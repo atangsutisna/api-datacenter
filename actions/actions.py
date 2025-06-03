@@ -619,3 +619,28 @@ class ActionRemoveCurrentPath(Action):
             SlotSet("search_results", lspaths_json), 
         ]
 
+class ActionCreateFolderFormSumbit(Action):
+    def name(self):
+        return "action_create_folder_form_submit"
+
+    async def run(self, dispatcher: CollectingDispatcher,
+                  tracker: Tracker,
+                  domain: dict):
+        logger.info("action create folder form submit")
+        folder_name = tracker.get_slot("folder_name")
+        dispatcher.utter_message(text=f"Folder baru dengan nama {folder_name} sudah dibuat")
+        return [
+            SlotSet("folder_name", None)
+        ]
+#  just for testing
+class ActionCheckUserProfile(Action):
+    def name(self):
+        return "action_check_user_profile"
+
+    async def run(self, dispatcher: CollectingDispatcher,
+                  tracker: Tracker,
+                  domain: dict):
+        logger.info("action check user profile is called")
+        return [
+            SlotSet("premium_account", False)
+        ]

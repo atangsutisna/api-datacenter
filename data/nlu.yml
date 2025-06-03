@@ -173,7 +173,28 @@ nlu:
     - balik lagi dong
     - tolong balik lagi
 # tanyakan soal ijin
-
+- intent: greet_in_english
+  examples: |
+    - good night
+    - good evening
+    - good afternoon
+    - good morning
+    - morning sir
+    - morning madam
+- intent: create_new_folder
+  examples: |
+    - tolong buatin folder
+    - buatin folder baru
+    - saya ingin folder baru
+    - tolong siapkan folder untuk saya
+    - saya perlu folder kosong
+    - bagaimana cara membuat folder
+- intent: show_slots
+  examples: |
+    - tampilkan semua slot
+    - debug slot
+    - tampilkan semua informasi
+    - tunjukan semua isi slow
 - regex: file_no
   examples: |
     - \d{1,3}

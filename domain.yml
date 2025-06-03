@@ -18,7 +18,9 @@ intents:
 - ask_to_remove_current_path
 - confirm_remove_data
 - deny
-
+- greet_in_english # just for testing
+- create_new_folder # just for testing
+- show_slots
 entities:
 - file_no
 
@@ -50,11 +52,26 @@ slots:
     initial_value: false
     mappings:
     - type: custom
+  folder_name: # just for testing
+    type: text
+    influence_conversation: false
+    mappings:
+      - type: from_text
+        not_intent: create_new_folder
+  premium_account: # just for testing
+    type: bool
+    influence_conversation: true
+    mappings:
+    - type: custom
+
 
 forms:
   file_selection_form:
     required_slots:
     - file_no
+  create_folder_form:
+    required_slots:
+    - folder_name
 responses:
   utter_default:
   - text: Maaf, saya tidak mengerti.
@@ -83,7 +100,20 @@ responses:
   - text: Ok,
   - text: Okeh
   - text: Siap!
-  - text: Siap komandan! 
+  - text: Siap komandan!
+  # just for testing
+  utter_premium_account:
+    - text: Hallo premium account
+  utter_basic_account:
+    - text: Hallo basic account
+  utter_when_to_upgrade:
+    - text: Kapan kamu akan upgrade account?
+  utter_ask_folder_name:
+    - text: Apa nama foldernya?
+  utter_submit: 
+    - text: Baik form telah selesai.
+  utter_slots_values:
+    - text: "Berikut adalah nilai slot Anda saat ini:\n{slot_values}"
 actions:
 - action_greeting
 - action_guessing_name
@@ -94,6 +124,8 @@ actions:
 - action_remove_data
 - action_to_remove_current_path
 - action_check_permission_remove_data
+- action_check_user_profile # just for testing
+- action_create_folder_form_submit
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
