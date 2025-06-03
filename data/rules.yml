@@ -88,7 +88,7 @@ rules:
   - active_loop: null
   - slot_was_set:
       - folder_name: null
-  - action: action_create_folder_form_submit
+  - action: action_create_folder
 - rule: show all slot values
   steps:
   - intent: show_slots

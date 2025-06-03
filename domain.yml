@@ -58,6 +58,12 @@ slots:
     mappings:
       - type: from_text
         not_intent: create_new_folder
+  creation_permitted:
+    type: bool
+    influence_conversation: true
+    initial_value: null
+    mappings:
+      - type: custom
   premium_account: # just for testing
     type: bool
     influence_conversation: true
@@ -110,6 +116,14 @@ responses:
     - text: Kapan kamu akan upgrade account?
   utter_ask_folder_name:
     - text: Apa nama foldernya?
+  utter_folder_exists:
+    - text: "Maaf, folder dengan nama '{folder_name}' sudah ada di lokasi saat ini. Mohon berikan nama yang berbeda."
+  utter_permission_denied_create_folder:
+    - text: "Maaf, kamu tidak memiliki izin membuat folder di lokasi ini : current_path"
+  utter_folder_created_success:
+    - text: "Folder '{folder_name}' berhasil dibuat di '{current_path}'"
+  utter_create_folder_failed:
+    - text: "Gagal membuat '{folder_name}'. Terjadi kesalahan."
   utter_submit: 
     - text: Baik form telah selesai.
   utter_slots_values:
@@ -125,7 +139,8 @@ actions:
 - action_to_remove_current_path
 - action_check_permission_remove_data
 - action_check_user_profile # just for testing
-- action_create_folder_form_submit
+- action_create_folder
+- validate_create_folder_form
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

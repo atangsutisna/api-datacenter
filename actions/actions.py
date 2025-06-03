@@ -621,17 +621,92 @@ class ActionRemoveCurrentPath(Action):
 
 class ActionCreateFolderFormSumbit(Action):
     def name(self):
-        return "action_create_folder_form_submit"
+        return "action_create_folder"
 
     async def run(self, dispatcher: CollectingDispatcher,
                   tracker: Tracker,
                   domain: dict):
         logger.info("action create folder form submit")
+        current_path = "/home/kangatang/git/filegator/repository/spark"
         folder_name = tracker.get_slot("folder_name")
-        dispatcher.utter_message(text=f"Folder baru dengan nama {folder_name} sudah dibuat")
+        creation_permitted = tracker.get_slot("creation_permitted")
+        # fixme: check current path before creating new folder
+        if creation_permitted is False:
+            logger.info("Failed to create new Folder. Access denined...")
+            dispatcher.utter_message(response="utter_permission_denied_create_folder")
+        
+        full_path = os.path.join(current_path, folder_name)
+        # dispatcher.utter_message(text=f"Folder baru dengan nama {folder_name} sudah dibuat")
+        try:
+            os.makedirs(full_path) # Membuat folder
+            dispatcher.utter_message(response="utter_folder_created_success", folder_name=folder_name, current_path=current_path)
+        except OSError as e: # Tangani error jika terjadi masalah saat membuat folder
+            dispatcher.utter_message(response="utter_create_folder_failed", folder_name=folder_name)
+            print(f"Error creating folder '{full_path}': {e}")
+        except Exception as e:
+            dispatcher.utter_message(response="utter_create_folder_failed", folder_name=folder_name)
+            print(f"Unexpected error creating folder: {e}")
+        
         return [
             SlotSet("folder_name", None)
         ]
+
+class ValidateCreateFolderForm(FormValidationAction):
+    def __init__(self):
+        from checkpermissions import is_permitted
+        self.is_permitted = is_permitted
+
+    def name(self) -> Text:
+        """ 
+        Nama validasi harus seperti ini 'validate_<form_name>'
+        AI menyarankan untuk membuat nama seperti ini 'action_validate_<form_name>'. Saran seperti itu tidak bekerja.
+        Gunakan pendekatan seperti ini: 'validate_<form_name>'
+        """ 
+        return "validate_create_folder_form"
+    
+    def validate_folder_name(
+        self,
+        slot_value: Any,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: DomainDict
+    ) -> Dict[Text, Any]:
+        """ 
+        validate folder name 
+        - current path is exists
+        - ensure folder name doest not exists
+        """
+        logger.info("attempting to validate folder name")
+        current_path = "/home/kangatang/git/filegator/repository/spark"
+        proposed_folder_path = os.path.join(current_path, slot_value)
+        if os.path.exists(proposed_folder_path):
+            logger.info("Failed to create folder, %s exists", slot_value)
+            dispatcher.utter_message(response="utter_folder_exists")
+            return {"folder_name": None}
+        else:
+            logger.info("Folder name is valid")
+            return {"folder_name": slot_value}
+
+    def validate_creation_permitted(
+        self,
+        slot_value: Any,
+        dispatcher: CollectingDispatcher,
+        tracker: Tracker,
+        domain: DomainDict
+    ) -> Dict[Text, Any]:
+        """ validasi slot creation_permitted """
+        logger.info("attempting to validate permission...")
+        # fixme: do not hard code
+        current_path = "/home/kangatang/git/filegator/repository/spark"
+        telegram_id = ""
+        write_permitted = self.is_permitted(telegram_id, current_path, "write")
+        if write_permitted is False:
+            dispatcher.utter_message(response="utter_permission_denied_create_folder")
+            return {"creation_permitted": False}
+        else:
+            return {"creation_permitted": True}
+
+
 #  just for testing
 class ActionCheckUserProfile(Action):
     def name(self):
