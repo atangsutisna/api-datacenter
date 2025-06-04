@@ -89,6 +89,14 @@ rules:
   - slot_was_set:
       - folder_name: null
   - action: action_create_folder
+# - rule: user has not permission to write folder
+#   condition:
+#     - slot_was_set:
+#       - creation_permitted: false
+#   steps:
+#     - action: create_folder_form
+#     - active_loop: null
+#     - action: utter_permission_denied_create_folder
 - rule: show all slot values
   steps:
   - intent: show_slots
