@@ -631,14 +631,9 @@ class ActionCreateFolder(Action):
                   tracker: Tracker,
                   domain: dict):
         logger.info("action create folder form submit")
-        current_path = "/home/kangatang/git/filegator/repository/spark"
+        current_path = tracker.get_slot("current_path")
         folder_name = tracker.get_slot("folder_name")
         creation_permitted = tracker.get_slot("creation_permitted")
-
-        # fixme: check current path before creating new folder
-        # if creation_permitted is False:
-        #     logger.info("Failed to create new Folder. Access denined...")
-        #     dispatcher.utter_message(response="utter_permission_denied_create_folder")
 
         if creation_permitted:
             full_path = os.path.join(current_path, folder_name)
@@ -684,9 +679,12 @@ class ValidateCreateFolderForm(FormValidationAction):
         - ensure folder name doest not exists
         """
         logger.info("attempting to validate folder name")
-        current_path = "/home/kangatang/git/filegator/repository/spark"
+        current_path = tracker.get_slot("current_path")
         
-        telegram_id = "7272740693"
+        metadata = tracker.latest_message.get("metadata")
+        fullname = metadata.get("fullname")
+        telegram_id = metadata.get("telegram_id")
+        # telegram_id = "7272740693"
         write_permitted = self.is_permitted(telegram_id, current_path, "write")
         logger.info("Is telegram id %s has write permission: %s", telegram_id, write_permitted)
         if write_permitted is False:
