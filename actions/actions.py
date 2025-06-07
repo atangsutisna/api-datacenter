@@ -648,6 +648,7 @@ class ActionCreateFolder(Action):
             dispatcher.utter_message(response="utter_permission_denied_create_folder")
             return []
 
+        """ Ketika nama folder tidak didefinisikan, maka sistem akan membuat folder defautl"""
         if folder_name is None:
             counter = 0
             folder_name = "New Folder"
@@ -664,6 +665,7 @@ class ActionCreateFolder(Action):
                 except Exception:
                     dispatcher.utter_message(response="utter_create_folder_failed", folder_name=folder_name)
                     break
+            # TODO: sebelum direturn, tolong update search_result, agar folder baru masuk di dalamnya
             return []
         
         if creation_permitted:
