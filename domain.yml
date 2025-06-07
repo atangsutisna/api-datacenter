@@ -23,6 +23,7 @@ intents:
 - show_slots
 entities:
 - file_no
+- folder_name
 
 slots:
   file_no:
@@ -56,8 +57,8 @@ slots:
     type: text
     influence_conversation: false
     mappings:
-      - type: from_text
-        not_intent: create_new_folder
+      - type: from_entity
+        entity: folder_name
   creation_permitted:
     type: bool
     influence_conversation: true

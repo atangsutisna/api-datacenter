@@ -633,11 +633,41 @@ class ActionCreateFolder(Action):
         logger.info("action create folder form submit")
         current_path = tracker.get_slot("current_path")
         folder_name = tracker.get_slot("folder_name")
-        creation_permitted = tracker.get_slot("creation_permitted")
 
+        if current_path is None:
+            dispatcher.utter_message(text="Silahkan kamu pilih dulu lokasi folder-nya")
+            return []
+
+        metadata = tracker.latest_message.get("metadata")
+        fullname = metadata.get("fullname")
+        telegram_id = metadata.get("telegram_id")
+        # telegram_id = "7272740693"
+        creation_permitted = self.is_permitted(telegram_id, current_path, "write")
+        logger.info("Is telegram id %s has creation permission: %s", telegram_id, creation_permitted)
+        if creation_permitted is False:
+            dispatcher.utter_message(response="utter_permission_denied_create_folder")
+            return []
+
+        if folder_name is None:
+            counter = 0
+            folder_name = "New Folder"
+            while True:
+                try:
+                    full_path = os.path.join(current_path, folder_name)
+                    logger.info("attempting to create new folder with name %s", folder_name)
+                    os.makedirs(full_path)
+                    dispatcher.utter_message(response="utter_folder_created_success", folder_name=folder_name, current_path=current_path)
+                    break
+                except FileExistsError:
+                    counter += 1
+                    folder_name = f"New Folder {counter}"
+                except Exception:
+                    dispatcher.utter_message(response="utter_create_folder_failed", folder_name=folder_name)
+                    break
+            return []
+        
         if creation_permitted:
             full_path = os.path.join(current_path, folder_name)
-            # dispatcher.utter_message(text=f"Folder baru dengan nama {folder_name} sudah dibuat")
             try:
                 os.makedirs(full_path) # Membuat folder
                 dispatcher.utter_message(response="utter_folder_created_success", folder_name=folder_name, current_path=current_path)
@@ -646,8 +676,6 @@ class ActionCreateFolder(Action):
                 print(f"Error creating folder '{full_path}': {e}")
             except Exception as e:
                 dispatcher.utter_message(response="utter_create_folder_failed", folder_name=folder_name)
-                print(f"Unexpected error creating folder: {e}")
-        
         return [
             SlotSet("folder_name", None),
             SlotSet("creation_permitted", None)

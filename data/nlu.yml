@@ -184,7 +184,8 @@ nlu:
 - intent: create_new_folder
   examples: |
     - tolong buatin folder
-    - buatin folder baru
+    - buatkan saya folder baru
+    - buatin folder baru dong
     - saya ingin folder baru
     - tolong siapkan folder untuk saya
     - saya perlu folder kosong

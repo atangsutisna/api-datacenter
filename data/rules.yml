@@ -75,20 +75,20 @@ rules:
 #   steps:
 #     - intent: choose_file_no
 #     - action: action_to_open_data
-- rule: create new folder
-  steps:
-    - intent: create_new_folder
-    - action: create_folder_form
-    - active_loop: create_folder_form
-- rule: submit create folder
-  condition:
-    - active_loop: create_folder_form
-  steps:
-  - action: create_folder_form
-  - active_loop: null
-  - slot_was_set:
-      - folder_name: null
-  - action: action_create_folder
+# - rule: create new folder
+#   steps:
+#     - intent: create_new_folder
+#     - action: create_folder_form
+#     - active_loop: create_folder_form
+# - rule: submit create folder
+#   condition:
+#     - active_loop: create_folder_form
+#   steps:
+#   - action: create_folder_form
+#   - active_loop: null
+#   - slot_was_set:
+#       - folder_name: null
+#   - action: action_create_folder
 # - rule: user has not permission to write folder
 #   condition:
 #     - slot_was_set:
@@ -97,6 +97,10 @@ rules:
 #     - action: create_folder_form
 #     - active_loop: null
 #     - action: utter_permission_denied_create_folder
+- rule: user want to an empty folder
+  steps:
+  - intent: create_new_folder
+  - action: action_create_folder
 - rule: show all slot values
   steps:
   - intent: show_slots
