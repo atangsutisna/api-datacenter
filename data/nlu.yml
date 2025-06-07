@@ -172,6 +172,7 @@ nlu:
     - back
     - balik lagi dong
     - tolong balik lagi
+    - kembali
 # tanyakan soal ijin
 - intent: greet_in_english
   examples: |

@@ -40,6 +40,7 @@ import random
 import logging
 import json
 import shutil
+import traceback
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -622,7 +623,12 @@ class ActionRemoveCurrentPath(Action):
 class ActionCreateFolder(Action):
     def __init__(self):
         from checkpermissions import is_permitted
+        from myutils import get_root_path, list_dir, to_dict, build_response
         self.is_permitted = is_permitted
+        self.get_root_path = get_root_path
+        self.list_dir = list_dir
+        self.to_dict = to_dict
+        self.build_response = build_response
 
     def name(self):
         return "action_create_folder"
@@ -649,6 +655,8 @@ class ActionCreateFolder(Action):
             return []
 
         """ Ketika nama folder tidak didefinisikan, maka sistem akan membuat folder defautl"""
+        # root_path = self.get_root_path(current_path)
+        lspaths = self.list_dir(current_path)
         if folder_name is None:
             counter = 0
             folder_name = "New Folder"
@@ -657,16 +665,28 @@ class ActionCreateFolder(Action):
                     full_path = os.path.join(current_path, folder_name)
                     logger.info("attempting to create new folder with name %s", folder_name)
                     os.makedirs(full_path)
-                    dispatcher.utter_message(response="utter_folder_created_success", folder_name=folder_name, current_path=current_path)
+
+                    lspaths = self.list_dir(current_path)
+                    response = self.build_response(
+                        opening_message=f"Folder baru dengan nama '{folder_name}' sudah dibuat",
+                        ending_message=get_ask_to_open_remove_or_download(),
+                        lspaths=lspaths
+                    )
+                    # dispatcher.utter_message(response="utter_folder_created_success", folder_name=folder_name, current_path=current_path)
+                    dispatcher.utter_message(text=response)
                     break
                 except FileExistsError:
                     counter += 1
                     folder_name = f"New Folder {counter}"
-                except Exception:
+                except Exception as e:
                     dispatcher.utter_message(response="utter_create_folder_failed", folder_name=folder_name)
+                    traceback.print_exc()
                     break
             # TODO: sebelum direturn, tolong update search_result, agar folder baru masuk di dalamnya
-            return []
+            lspaths_json = json.dumps(self.to_dict(lspaths))
+            return [
+                SlotSet("search_results", lspaths_json)
+            ]
         
         if creation_permitted:
             full_path = os.path.join(current_path, folder_name)
