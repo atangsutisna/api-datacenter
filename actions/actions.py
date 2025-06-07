@@ -655,7 +655,7 @@ class ActionCreateFolder(Action):
             return []
 
         """ Ketika nama folder tidak didefinisikan, maka sistem akan membuat folder defautl"""
-        # root_path = self.get_root_path(current_path)
+        # TODO: check the permissions
         lspaths = self.list_dir(current_path)
         if folder_name is None:
             counter = 0
