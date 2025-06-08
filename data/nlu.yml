@@ -191,6 +191,16 @@ nlu:
     - tolong siapkan folder untuk saya
     - saya perlu folder kosong
     - bagaimana cara membuat folder
+    - tolong buatkan folder bernama (ikki)[folder_name]
+    - saya ingin membuat folder (data apbn)[folder_name]
+    - tolong buatkan direktori (keuangan)[folder_name]
+    - bikin folder yang namanya (projek)[folder_name]
+    - saya mau folder baru dengan nama (kesekretariatan)[folder_name]
+    - tolong buat folder (kp tls)[folder_name]
+    - saya butuh folder bernama (call for proposal)[folder_name]
+    - buat folder bernama (usaid erat)[folder_name]
+    - saya mau folder dengan nama (final proposal)[folder_name]
+
 - intent: show_slots
   examples: |
     - tampilkan semua slot
