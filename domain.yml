@@ -120,7 +120,7 @@ responses:
   utter_folder_exists:
     - text: "Maaf, folder dengan nama '{folder_name}' sudah ada di lokasi saat ini. Mohon berikan nama yang berbeda."
   utter_permission_denied_create_folder:
-    - text: "Maaf, kamu tidak memiliki izin membuat folder di lokasi ini : current_path"
+    - text: "Maaf, kamu tidak memiliki izin membuat folder di lokasi ini : '{current_path}'"
   utter_folder_created_success:
     - text: "Folder '{folder_name}' berhasil dibuat di '{current_path}'"
   utter_create_folder_failed:
