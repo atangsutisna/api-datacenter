@@ -775,25 +775,6 @@ class ValidateCreateFolderForm(FormValidationAction):
             logger.info("Folder name is valid")
             return {"folder_name": slot_value, "creation_permitted": True}
 
-    # def validate_creation_permitted(
-    #     self,
-    #     slot_value: Any,
-    #     dispatcher: CollectingDispatcher,
-    #     tracker: Tracker,
-    #     domain: DomainDict
-    # ) -> Dict[Text, Any]:
-    #     """ validasi slot creation_permitted """
-    #     logger.info("attempting to validate permission...")
-    #     # fixme: do not hard code
-    #     current_path = "/home/kangatang/git/filegator/repository/spark"
-    #     telegram_id = ""
-    #     write_permitted = self.is_permitted(telegram_id, current_path, "write")
-    #     if write_permitted is False:
-    #         dispatcher.utter_message(response="utter_permission_denied_create_folder")
-    #         return {"creation_permitted": False}
-    #     else:
-    #         return {"creation_permitted": True}
-
 #  just for testing
 class ActionCheckUserProfile(Action):
     def name(self):
@@ -803,6 +784,29 @@ class ActionCheckUserProfile(Action):
                   tracker: Tracker,
                   domain: dict):
         logger.info("action check user profile is called")
+        return [
+            SlotSet("premium_account", False)
+        ]
+
+""" action perform search """
+class ActionPerformSearch(Action):
+    def __init__(self):
+        from checkpermissions import is_permitted
+        from myutils import get_root_path, list_dir, to_dict, build_response
+        self.is_permitted = is_permitted
+        self.get_root_path = get_root_path
+        self.list_dir = list_dir
+        self.to_dict = to_dict
+        self.build_response = build_response
+
+    def name(self):
+        return "action_perform_search"
+
+    async def run(self, dispatcher: CollectingDispatcher,
+                  tracker: Tracker,
+                  domain: dict):
+        search_query = tracker.get_slot("search_query")
+        dispatcher.utter_message(text=f"Oke, saya akan mencari: '{search_query}'.")
         return [
             SlotSet("premium_account", False)
         ]

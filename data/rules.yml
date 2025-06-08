@@ -46,11 +46,16 @@ rules:
     - intent: ask_upload
     - action: utter_upload_command
 
-- rule: How to search file
+- rule: User want to search a file or data
   steps:
     - intent: ask_search_file
-    - action: utter_search_command
-
+    - slot_was_set:
+      - search_query: not null
+    - action: action_perform_search
+- rule: setelah bot menyelesaikan pencarian
+  steps:
+    - action: action_perform_search
+    - action: action_listen
 - rule: User meminta untuk menimpilkan data yang ada di workspacenya
   steps:
     - intent: ask_to_show

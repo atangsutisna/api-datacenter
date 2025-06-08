@@ -24,7 +24,7 @@ intents:
 entities:
 - file_no
 - folder_name
-
+- search_query
 slots:
   file_no:
     type: text
@@ -53,7 +53,7 @@ slots:
     initial_value: false
     mappings:
     - type: custom
-  folder_name: # just for testing
+  folder_name:
     type: text
     influence_conversation: true
     mappings:
@@ -70,7 +70,12 @@ slots:
     influence_conversation: true
     mappings:
     - type: custom
-
+  search_query:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: search_query
 
 forms:
   file_selection_form:
@@ -142,6 +147,7 @@ actions:
 - action_check_user_profile # just for testing
 - action_create_folder
 - validate_create_folder_form
+- action_perform_search
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
