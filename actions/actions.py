@@ -796,10 +796,10 @@ class ActionPerformSearch(Action):
                   domain: dict):
         REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
         search_query = tracker.get_slot("search_query")
-        # metadata = tracker.latest_message.get("metadata")
-        # fullname = metadata.get("fullname")
-        # telegram_id = metadata.get("telegram_id")
-        telegram_id = "7272740693"
+        metadata = tracker.latest_message.get("metadata")
+        fullname = metadata.get("fullname")
+        telegram_id = metadata.get("telegram_id")
+        # telegram_id = "7272740693"
         curr_user = self.get_user_logged_in(telegram_id)
         if curr_user is None:
             dispatcher.utter_message('Maaf, anda belum bisa mengakses data center. Silakan verifikasi nomor HP kamu')
@@ -835,7 +835,15 @@ class ActionPerformSearch(Action):
             ]
 
         logger.info("attempting to find file or data with keyword: %s", search_query)
-        dispatcher.utter_message(text=f"Oke, saya sudah menemukan file atau data dengan kata kunci: '{search_query}'.")
+        response = self.build_response(
+            opening_message=f"Saya menemukan beberapa data yang mengandung kata: `{search_query}`",
+            ending_message=get_ask_to_open_remove_or_download(),
+            lspaths=results
+        )
+        dispatcher.utter_message(text=response)
+        search_results_json = json.dumps(results)
         return [
-            SlotSet("search_query", None)
+            SlotSet("search_query", None),
+            SlotSet("search_results", search_results_json),
+            SlotSet("current_path", None)
         ]
