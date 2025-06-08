@@ -8,7 +8,7 @@ assistant_id: 20250501-222629-current-heel
 
 # Configuration for Rasa NLU.
 # https://rasa.com/docs/rasa/nlu/components/
-language: en
+language: id
 
 pipeline:
 # No configuration for the NLU pipeline was provided. The following default pipeline was used to train your model.
@@ -26,7 +26,7 @@ pipeline:
     confidence_threshold: 0.2
     fallback_label: "nlu_fallback"
     epochs: 100
-#     constrain_similarities: true
+    constrain_similarities: true
   - name: EntitySynonymMapper
 #   - name: ResponseSelector
 #     epochs: 100

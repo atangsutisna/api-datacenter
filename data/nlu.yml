@@ -182,25 +182,48 @@ nlu:
     - good morning
     - morning sir
     - morning madam
-- intent: create_new_folder
+# - intent: create_new_folder
+#   examples: |
+#     - tolong buatin folder
+#     - buatkan saya folder baru
+#     - buatin folder baru dong
+#     - saya ingin folder baru
+#     - tolong siapkan folder untuk saya
+#     - saya perlu folder kosong
+#     - bagaimana cara membuat folder
+- intent: create_new_folder_with_name
   examples: |
-    - tolong buatin folder
-    - buatkan saya folder baru
-    - buatin folder baru dong
-    - saya ingin folder baru
-    - tolong siapkan folder untuk saya
-    - saya perlu folder kosong
-    - bagaimana cara membuat folder
-    - tolong buatkan folder bernama (ikki)[folder_name]
-    - saya ingin membuat folder (data apbn)[folder_name]
-    - tolong buatkan direktori (keuangan)[folder_name]
-    - bikin folder yang namanya (projek)[folder_name]
-    - saya mau folder baru dengan nama (kesekretariatan)[folder_name]
-    - tolong buat folder (kp tls)[folder_name]
-    - saya butuh folder bernama (call for proposal)[folder_name]
-    - buat folder bernama (usaid erat)[folder_name]
-    - saya mau folder dengan nama (final proposal)[folder_name]
-
+    - tolong buatkan folder [data apbn](folder_name)
+    - saya ingin membuat folder [file laporan penjualan](folder_name)
+    - tolong buatkan direktori [berkas keuangan](folder_name)
+    - bikin folder yang namanya [projek tahunan](folder_name)
+    - saya mau folder baru dengan nama [arsip kesekretariatan](folder_name)
+    - tolong buat folder [laporan kp tls](folder_name)
+    - saya butuh folder bernama [call for proposal terbaru](folder_name)
+    - buat folder bernama [usaid erat program](folder_name)
+    - saya mau folder dengan nama [final proposal proyek](folder_name)
+    - bisakah saya membuat folder bernama [dokumen penting 2024](folder_name)
+    - tolong sediakan direktori untuk [gambar liburan keluarga](folder_name)
+    - saya mau buat tempat penyimpanan dengan nama [catatan rapat bulanan](folder_name)
+    - bikin folder baru namanya [rencana anggaran 2025](folder_name)
+    - tolong siapkan folder untuk [backup data sistem](folder_name)
+    - saya perlu direktori [arsip lama proyek A](folder_name)
+    - buatkan saya folder [my personal files](folder_name)
+    - bisa buatkan folder bernama [tutorial rasa dasar](folder_name)
+    - sediakan folder [video proyek akhir](folder_name)
+    - saya ingin membuat folder untuk [berkas kontrak kerja](folder_name)
+    - sediakan folder [buku novel](folder_name)
+    - buatkan folder [catatan harian](folder_name)
+    - saya mau folder [gambar pemandangan](folder_name)
+    - bikin folder [musik favorit](folder_name)
+    - tolong buatkan [surat penting](folder_name)
+    - buat folder [download aplikasi](folder_name)
+    - saya butuh folder [proyek baru](folder_name)
+    - bikin [folder kerja kantor](folder_name)
+    - buatkan direktori [dokumen pribadi](folder_name)
+    - saya ingin folder [data perusahaan](folder_name)
+    - folder [aplikasi sistem](folder_name)
+    - buatlah folder [film action](folder_name)
 - intent: show_slots
   examples: |
     - tampilkan semua slot

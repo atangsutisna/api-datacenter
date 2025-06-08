@@ -19,8 +19,8 @@ intents:
 - confirm_remove_data
 - deny
 - greet_in_english # just for testing
-- create_new_folder # just for testing
 - show_slots
+- create_new_folder_with_name
 entities:
 - file_no
 - folder_name
@@ -55,7 +55,7 @@ slots:
     - type: custom
   folder_name: # just for testing
     type: text
-    influence_conversation: false
+    influence_conversation: true
     mappings:
       - type: from_entity
         entity: folder_name
@@ -76,9 +76,9 @@ forms:
   file_selection_form:
     required_slots:
     - file_no
-  create_folder_form:
-    required_slots:
-    - folder_name
+  # create_folder_form:
+  #   required_slots:
+  #   - folder_name
 responses:
   utter_default:
   - text: Maaf, saya tidak mengerti.
