@@ -45,7 +45,7 @@ rules:
   steps:
     - intent: ask_upload
     - action: utter_upload_command
-
+# search a file with keyword
 - rule: User want to search a file or data
   steps:
     - intent: ask_search_file
@@ -56,6 +56,7 @@ rules:
   steps:
     - action: action_perform_search
     - action: action_listen
+
 - rule: User meminta untuk menimpilkan data yang ada di workspacenya
   steps:
     - intent: ask_to_show
