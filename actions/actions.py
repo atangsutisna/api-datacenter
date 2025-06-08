@@ -657,7 +657,9 @@ class ActionCreateFolder(Action):
         logger.info("Is telegram id %s has creation permission: %s", telegram_id, creation_permitted)
         if creation_permitted is False:
             logger.info("User with id %s is not permitted to write", telegram_id)
-            dispatcher.utter_message(response="utter_permission_denied_create_folder", current_path=current_path)
+            simple_path = simplified_path(current_path)
+            message = f"Maaf, kamu tidak memiliki izin membuat folder di lokasi ini : `{simple_path}`"
+            dispatcher.utter_message(text=message)
             return [
                 SlotSet("folder_name", None),
                 SlotSet("creation_permitted", None)
@@ -676,7 +678,7 @@ class ActionCreateFolder(Action):
 
                     lspaths = self.list_dir(current_path)
                     response = self.build_response(
-                        opening_message=f"Folder baru dengan nama '{folder_name}' sudah dibuat",
+                        opening_message=f"Folder baru dengan nama `{folder_name}` sudah dibuat",
                         ending_message=get_ask_to_open_remove_or_download(),
                         lspaths=lspaths
                     )
