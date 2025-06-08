@@ -65,11 +65,11 @@ slots:
     initial_value: null
     mappings:
       - type: custom
-  premium_account: # just for testing
-    type: bool
-    influence_conversation: true
-    mappings:
-    - type: custom
+  # premium_account: # just for testing
+  #   type: bool
+  #   influence_conversation: true
+  #   mappings:
+  #   - type: custom
   search_query:
     type: text
     influence_conversation: true

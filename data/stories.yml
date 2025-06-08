@@ -87,14 +87,14 @@ stories:
   steps:
     - intent: greet_in_english
     - action: action_check_user_profile
-    - slot_was_set:
-      - premium_account: true
+    # - slot_was_set:
+    #   - premium_account: true has been removed
     - action: utter_premium_account
 - story: welcome message, basic user
   steps:
     - intent: greet_in_english
     - action: action_check_user_profile
-    - slot_was_set:
-      - premium_account: false
+    # - slot_was_set:
+    #   - premium_account: false has been removed
     - action: utter_basic_account
     - action: utter_when_to_upgrade

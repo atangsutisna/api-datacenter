@@ -775,19 +775,6 @@ class ValidateCreateFolderForm(FormValidationAction):
             logger.info("Folder name is valid")
             return {"folder_name": slot_value, "creation_permitted": True}
 
-#  just for testing
-class ActionCheckUserProfile(Action):
-    def name(self):
-        return "action_check_user_profile"
-
-    async def run(self, dispatcher: CollectingDispatcher,
-                  tracker: Tracker,
-                  domain: dict):
-        logger.info("action check user profile is called")
-        return [
-            SlotSet("premium_account", False)
-        ]
-
 """ action perform search """
 class ActionPerformSearch(Action):
     def __init__(self):
@@ -806,7 +793,8 @@ class ActionPerformSearch(Action):
                   tracker: Tracker,
                   domain: dict):
         search_query = tracker.get_slot("search_query")
+        logger.info("attempting to find file or data with keyword: %s", search_query)
         dispatcher.utter_message(text=f"Oke, saya akan mencari: '{search_query}'.")
         return [
-            SlotSet("premium_account", False)
+            SlotSet("search_query", None)
         ]
