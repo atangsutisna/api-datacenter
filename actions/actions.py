@@ -847,3 +847,28 @@ class ActionPerformSearch(Action):
             SlotSet("search_results", search_results_json),
             SlotSet("current_path", None)
         ]
+""" action perform to download """
+class ActionPerformDownload(Action):
+    def __init__(self):
+        from userloggedin import get_user_logged_in
+        from checkpermissions import is_permitted
+        from myutils import get_root_path, list_dir, to_dict, build_response
+        self.is_permitted = is_permitted
+        self.get_root_path = get_root_path
+        self.list_dir = list_dir
+        self.to_dict = to_dict
+        self.build_response = build_response
+        self.get_user_logged_in = get_user_logged_in
+
+    def name(self):
+        return "action_perform_download"
+
+    async def run(self, dispatcher: CollectingDispatcher,
+                  tracker: Tracker,
+                  domain: dict):
+        file_no = tracker.get_slot("file_no")
+        logger.info("attempting to send file no %s", file_no)
+        dispatcher.utter_message(text="Baik, saya akan menyiapkan data untuk di download..")
+        return [
+            SlotSet("file_no", None)
+        ]

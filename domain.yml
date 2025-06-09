@@ -148,6 +148,7 @@ actions:
 - action_create_folder
 - validate_create_folder_form
 - action_perform_search
+- action_perform_download
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
