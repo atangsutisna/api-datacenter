@@ -183,6 +183,8 @@ class ActionListWorkspace(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         fullname = tracker.sender_id
+        dispatcher.utter_message(text="Baik, mohon ditunggu...")
+
         if fullname == "user":
             # belum login
             dispatcher.utter_message(text="""
