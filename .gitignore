@@ -12,3 +12,5 @@ actions/__pycache__*
 __pycache__/
 mappinguser.json
 user-mapping.txt
+nohup.out
+rasa.log
