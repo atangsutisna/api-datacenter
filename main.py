@@ -159,35 +159,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     caption=f"📎 Klik untuk mengunduh",
                     parse_mode="Markdown"
                 )
-        # if len(response) > 1:
-        #     custom_data = response[1]["custom"]["data"]
-        #     buttons_data = custom_data["reply_markup"]["inline_keyboard"]
-        #     # create inline keyboard button
-        #     # button ini sudah tidak diperlukan
-        #     keyboard = [
-        #         [InlineKeyboardButton(text=btn["teks"], callback_data=btn["callback_data"])]
-        #         for btn in buttons_data
-        #     ] 
-        #     reply_markup = InlineKeyboardMarkup(keyboard)
-        #     await update.message.reply_text(
-        #         response[0]['text'], 
-        #         parse_mode="Markdown", 
-        #         reply_markup=reply_markup
-        #     )
-        # else:
-        #     await update.message.reply_text(
-        #         response[0]['text'],
-        #         parse_mode="Markdown"
-        #     )
-    # url = "http://localhost:5005/webhooks/rest/webhook"
-    # processed: str = text.lower()
-    # data = {"sender": "user", "message": processed}
-    # responses = requests.post(url, json=data).json()
-    # for resp in responses:
-    #     if "image" in resp:
-    #         await update.message.reply_photo(photo=resp['image'])
-    #     elif "text" in resp:
-    #         await update.message.reply_text(resp['text'])
 
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info(f'Update {update} caused error {context.error}')
