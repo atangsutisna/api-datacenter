@@ -138,13 +138,27 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
     else:
         responses: str = handle_response(update, text)
+        chat_id = update.effective_chat.id
         # logger.info('Bot: %r', responses)
         for response in responses:
             logger.info("response %r", response)
-            await update.message.reply_text(
-                response['text'],
-                parse_mode="Markdown"
-            )
+            if "text" in response:
+                await update.message.reply_text(
+                    response['text'],
+                    parse_mode="Markdown"
+                )
+            if "attachment" in response:
+                attachment = response['attachment']
+                path_to_file = attachment["payload"]["url"]
+                caption = attachment['payload']['title']
+                logger.info("Got path to file %s with capton %s", path_to_file, caption)
+                # caption = "Sample.pdf"
+                await context.bot.send_document(
+                    chat_id=chat_id,
+                    document=open(path_to_file, "rb"),
+                    caption=f"📎 Klik untuk mengunduh",
+                    parse_mode="Markdown"
+                )
         # if len(response) > 1:
         #     custom_data = response[1]["custom"]["data"]
         #     buttons_data = custom_data["reply_markup"]["inline_keyboard"]

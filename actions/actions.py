@@ -868,7 +868,32 @@ class ActionPerformDownload(Action):
                   domain: dict):
         file_no = tracker.get_slot("file_no")
         logger.info("attempting to send file no %s", file_no)
-        dispatcher.utter_message(text="Baik, saya akan menyiapkan data untuk di download..")
+        search_results = tracker.get_slot("search_results")
+        if search_results:
+            logger.info("attempting to load search results %s", search_results)
+            user_files = json.loads(search_results)
+            selected_path = user_files.get(file_no)
+            is_file = os.path.isfile(selected_path)
+            if is_file:
+                # preparing for download
+                simple_root_path = simplified_path(selected_path)
+                file_name = os.path.basename(selected_path)
+                dispatcher.utter_message(
+                    text="Baik, mohon ditunggu...",
+                    attachment={
+                        "type": "file",
+                        "payload": {
+                            "url": selected_path,
+                            "title": "Download",
+                            "name": file_name
+                        }
+                    }
+                )
+            else:
+                # create file attachment
+                dispatcher.utter_message(text="Saya sedang menyiapkan file download untuk kamu")
+        else:
+            dispatcher.utter_message(text="Saya tidak menemukan data tersebut")
         return [
             SlotSet("file_no", None)
         ]
