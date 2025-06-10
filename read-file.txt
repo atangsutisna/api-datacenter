@@ -42,6 +42,7 @@ rasa run --enable-api --cors "*"
 
 ## agar tidak berhenti prosessnya ketika terminal ditutup
 nohup rasa run --enable-api --cors "*" > rasa.log 2>&1 &
+nohup rasa run actions > actions.log 2>&1 &
 ## cara menghentikannya
 ps aux | grep rasa
 ## akan muncul seperti ini

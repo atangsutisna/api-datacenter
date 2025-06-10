@@ -135,17 +135,7 @@ class ActionGreeting(Action):
                 message = f"Hai {fullname}, selamat malam. Ada yang bisa saya bantu?"
         
         dispatcher.utter_message(
-            text=message,
-            custom={
-                "data": {
-                    "username": "atang gombal",
-                    "fullname": "Atang Sutisna, Ir",
-                    "teks": "Silahkan pilih salah satu opsi:",
-                    "reply_markup": {
-                        "inline_keyboard": []
-                    }
-                }
-            }
+            text=message
         )
         return []
 
