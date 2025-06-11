@@ -41,6 +41,7 @@ import logging
 import json
 import shutil
 import traceback
+from pathlib import Path
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -100,6 +101,10 @@ def get_ask_to_open_remove_or_download() -> str:
         "Sudah selesai dengan ini, atau ada lagi yang bisa saya bantu? Mungkin menghapus, mengunduh, atau membuka folder lain? Sebutkan saja nomornya."
     ]
     return random.choice(additional_responses)
+
+def get_ext(path: str) -> str:
+    fullpath = Path(path)
+    return fullpath.suffix.lstrip(".")
 
 class ActionGreeting(Action):
     def name(self) -> Text:
@@ -257,8 +262,14 @@ class ActionListWorkspace(Action):
                 SlotSet("search_results", search_results_json),
                 SlotSet("current_path", current_path)
             ]
-    
+
 class ActionAccessData(Action):
+    def __init__(self):
+        from assistant_file_reader import read_file_with_file_search
+        from userloggedin import get_user_logged_in
+        self.get_user_logged_in = get_user_logged_in
+        self.read_file_with_file_search = read_file_with_file_search
+
     def name(self):
         return "action_to_open_data"
 
@@ -280,6 +291,20 @@ class ActionAccessData(Action):
                 if is_file:
                     # open the file using openai
                     dispatcher.utter_message(text="Mohon ditunggu, saya sedang membuat rangkuman file tersebut")
+                    # call open api
+                    ext = get_ext(selected_path)
+                    supported_extension = {"pdf", "doc", "docx", "txt"}
+                    if ext in supported_extension:
+                        logger.info("attempting to send request to openai")
+                        OPENAI_APIKEY = os.getenv('OPENAI_APIKEY')
+                        result = self.read_file_with_file_search(
+                            api_key=OPENAI_APIKEY,
+                            file_path=selected_path
+                        )
+                        dispatcher.utter_message(text=result)
+                    else:
+                        # convert to pdf
+                        dispatcher.utter_message(text="Mohon ditunggu, saya sedang membuat file membungkus file tersebut")
                     return []
                 else:
                     # list all child of the path
