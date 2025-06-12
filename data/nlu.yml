@@ -63,15 +63,26 @@ nlu:
     - saya bingung, gimana caranya upload data?
 - intent: ask_download
   examples: |
-    - bagaimana cara download-nya?
-    - bagaimana cara saya bisa mengunduh file?
-    - tolong beri tahu saya cara download.
-    - gimana cara download?
-    - saya mau download, gimana caranya?
-    - bisa bantu cara unduh file?
-    - langkah-langkah untuk download gimana ya?
-    - saya tidak tahu cara download
-    - bisa bantu saya download?
+    - Unduh file nomor [12](file_no)
+    - Tolong download yang nomor [7](file_no)
+    - Saya ingin mengunduh [25](file_no)
+    - Download item [3](file_no)
+    - Bisa tolong unduh nomor [18](file_no)?
+    - Ambil file nomor [9](file_no)
+    - Saya mau download yang [42](file_no) itu
+    - Unduh yang angka [1](file_no)
+    - Tolong download file [30](file_no)
+    - Download saja [5](file_no) ini
+    - Bisa unduh item di [15](file_no)?
+    - Saya mau ambil yang [2](file_no)
+    - Tolong download data [10](file_no)
+    - Unduh item yang saya pilih, yaitu [33](file_no)
+    - Saya ingin mengunduh data di [6](file_no)
+    - Download file atau folder nomor [20](file_no)
+    - Bisakah saya mengunduh [8](file_no)?
+    - Tolong unduh yang angka [11](file_no) itu
+    - Saya perlu download nomor [27](file_no)
+    - Download [4](file_no) ke perangkat saya
 - intent: ask_search_file
   examples: |
     - cari [dokumen rapat](search_query)

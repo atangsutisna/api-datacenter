@@ -36,10 +36,12 @@ rules:
     - intent: ask_about_insi
     - action: utter_ask_about_insi
 
-- rule: How to download
+- rule: User want download file
   steps:
     - intent: ask_download
-    - action: utter_download_command
+    - slot_was_set:
+      - file_no: not null
+    - action: action_perform_download
 
 - rule: How to upload
   steps:
