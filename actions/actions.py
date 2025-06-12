@@ -266,9 +266,11 @@ class ActionListWorkspace(Action):
 class ActionAccessData(Action):
     def __init__(self):
         from assistant_file_reader import read_file_with_file_search
+        from fileconverter import convert_to_pdf
         from userloggedin import get_user_logged_in
         self.get_user_logged_in = get_user_logged_in
         self.read_file_with_file_search = read_file_with_file_search
+        self.convert_to_pdf = convert_to_pdf
 
     def name(self):
         return "action_to_open_data"
@@ -294,9 +296,9 @@ class ActionAccessData(Action):
                     # call open api
                     ext = get_ext(selected_path)
                     supported_extension = {"pdf", "doc", "docx", "txt"}
+                    OPENAI_APIKEY = os.getenv('OPENAI_APIKEY')
                     if ext in supported_extension:
                         logger.info("attempting to send request to openai")
-                        OPENAI_APIKEY = os.getenv('OPENAI_APIKEY')
                         result = self.read_file_with_file_search(
                             api_key=OPENAI_APIKEY,
                             file_path=selected_path
@@ -304,8 +306,18 @@ class ActionAccessData(Action):
                         dispatcher.utter_message(text=result)
                     else:
                         # convert to pdf
-                        dispatcher.utter_message(text="Mohon ditunggu, saya sedang membuat file membungkus file tersebut")
-                    return []
+                        logger.info(f"attempting to convert {selected_path} to pdf")
+                        tmp_file_fullpath = self.convert_to_pdf(selected_path)
+                        logger.info("attempting to ask to openai")
+                        result = self.read_file_with_file_search(
+                            api_key=OPENAI_APIKEY,
+                            file_path=tmp_file_fullpath
+                        )
+                        dispatcher.utter_message(text=result)
+                        os.remove(tmp_file_fullpath)
+                    return [
+                        SlotSet("file_no", None),
+                    ]
                 else:
                     # list all child of the path
                     user_workspaces = []
