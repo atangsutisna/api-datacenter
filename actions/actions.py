@@ -354,9 +354,9 @@ class ActionAccessData(Action):
                         file = os.path.isfile(path)
                         simple_path = simplified_path(path)
                         if not file:
-                            message += f"\n{no}. `{simple_path}` (`{format_size(get_folder_size_bytes(path))}`)"
+                            message += f"\n{no}. `{simple_path}`"
                         else:
-                            message += f"\n{no}. `{simple_path}` (`{format_size(get_file_size_bytes(path))}`)"
+                            message += f"\n{no}. `{simple_path}`"
                         search_results[no] = path
                         no += 1
 
