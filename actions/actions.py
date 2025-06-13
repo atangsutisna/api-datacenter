@@ -427,7 +427,7 @@ class ActionBackToPrevious(Action):
         opening_messages = [
             "Ini adalah folder utama Kamu.",
             "Kamu sedang berada di direktori utama Kamu.",
-            "Selamat datang di folder utama Kamu.",
+            "Folder utama Kamu.",
             "Ini area utama penyimpanan Kamu.",
             "Kamu telah kembali ke folder utama Kamu."
         ]
@@ -450,13 +450,13 @@ class ActionBackToPrevious(Action):
                 file = os.path.isfile(path)
                 simple_path = simplified_path(path)
                 if not file:
-                    message += f"\n{no}. `{simple_path}` (`{format_size(get_folder_size_bytes(path))}`)"
+                    message += f"\n{no}. `{simple_path}`"
                 else:
-                    message += f"\n{no}. `{simple_path}` (`{format_size(get_file_size_bytes(path))}`)"
+                    message += f"\n{no}. `{simple_path}`"
                 search_results[no] = path
                 no += 1
 
-            additional_response = get_ask_to_open_remove_or_download()
+            additional_response = "Apa lagi yang bisa saya lakukan untuk Kamu?"
             message += "\n"+ additional_response
 
             dispatcher.utter_message(text=message)
@@ -486,9 +486,9 @@ class ActionBackToPrevious(Action):
                 file = os.path.isfile(path)
                 simple_path = simplified_path(path)
                 if not file:
-                    message += f"\n{no}. `{simple_path}` (`{format_size(get_folder_size_bytes(path))}`)"
+                    message += f"\n{no}. `{simple_path}`"
                 else:
-                    message += f"\n{no}. `{simple_path}` (`{format_size(get_file_size_bytes(path))}`)"
+                    message += f"\n{no}. `{simple_path}`"
                 search_results[no] = path
                 no += 1
             message += "\n"+ get_ask_to_open_remove_or_download()
