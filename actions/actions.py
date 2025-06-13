@@ -94,11 +94,11 @@ def simplified_path(original_path: str) -> str:
 
 def get_ask_to_open_remove_or_download() -> str:
     additional_responses = [
-        "Ada hal lain yang perlu saya bantu dengan data ini? Misalnya, Kamu ingin menghapus, mengunduh, atau membuka folder lain? Kamu bisa sebutkan angkanya.",
+        "Ada hal lain yang perlu saya bantu dengan data ini? Misalnya, Kamu ingin menghapus, mengunduh, atau membuka folder lain?",
         "Perlu bantuan lanjutan? Saya bisa bantu hapus, unduh, atau masuk ke folder lain. Cukup beritahu nomor yang Kamu inginkan.",
-        "Apa lagi yang bisa saya lakukan untuk Kamu? Ada pilihan hapus, unduh, atau jelajahi folder. Silakan ketik angkanya.",
-        "Apakah ada tindakan lain yang ingin Kamu lakukan? Misalnya, menghapus, mengunduh, atau membuka folder? Kamu bisa memilih dengan menyebutkan angkanya.",
-        "Sudah selesai dengan ini, atau ada lagi yang bisa saya bantu? Mungkin menghapus, mengunduh, atau membuka folder lain? Sebutkan saja nomornya."
+        "Apa lagi yang bisa saya lakukan untuk Kamu? Ada pilihan hapus, unduh, atau jelajahi folder.",
+        "Apakah ada tindakan lain yang ingin Kamu lakukan? Misalnya, menghapus, mengunduh, atau membuka folder?",
+        "Sudah selesai dengan ini, atau ada lagi yang bisa saya bantu? Mungkin menghapus, mengunduh, atau membuka folder lain?"
     ]
     return random.choice(additional_responses)
 
@@ -248,7 +248,10 @@ class ActionListWorkspace(Action):
                 search_results[no] = path
                 no += 1
 
-            additional_response = get_ask_to_open_remove_or_download()
+            if len(accounts) > 1:
+                additional_response = "Apa lagi yang bisa saya lakukan untuk Kamu?"
+            else:
+                additional_response = get_ask_to_open_remove_or_download()
             message += "\n"+ additional_response
 
             dispatcher.utter_message(
