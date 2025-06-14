@@ -29,7 +29,7 @@ async def start_upload_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text('Maaf, saya belum bisa melayani kamu. Silahkan verifikasi dulu nomor HPmu.')
     else:
         if "current_directory" not in context.user_data:
-            await update.message.reply_text('Mohon tentukan terlebih dahulu di folder mana kamu akan menyimpan filenya. \nKirim perintah /list untuk melihat semua folder.')
+            await update.message.reply_text('Mohon tentukan terlebih dahulu di folder mana kamu akan menyimpan filenya')
         else:
             # todo: check permissions
             telegram_id = str(update.effective_user.id)

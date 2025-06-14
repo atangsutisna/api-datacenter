@@ -97,7 +97,7 @@ responses:
   utter_ask_about_insi:
   - text: Baik, untuk mengetahui lebih jauh mengenai perkumpulan inisiatif silahkan anda mengunjungi website https://www.inisiatif.org
   utter_upload_command:
-  - text: Gunakan perintah /upload.
+  - text: Silakan gunakan perintah /upload.
   utter_download_command:
   - text: Gunakan perintah /download [no]. Sebelum mengetikan perintah itu, kamu harus cari dulu filenya dengan mengetikan /cari [nama file]
   utter_search_command:
