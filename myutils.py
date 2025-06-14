@@ -67,7 +67,7 @@ def format_lspaths(lspaths: list[str]) -> str:
         file = os.path.isfile(path)
         simple_path = simplified_path(path)
         size_func = get_file_size_bytes if os.path.isfile(path) else get_folder_size_bytes
-        message += f"\n{no}. `{simple_path}` (`{format_size(size_func(path))}`)"
+        message += f"\n{no}. `{simple_path}`"
     return message.strip()
 
 def build_response(opening_message: str, lspaths: list[str], ending_message):
