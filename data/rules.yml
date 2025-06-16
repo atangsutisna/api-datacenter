@@ -119,3 +119,7 @@ rules:
   steps:
   - intent: show_slots
   - action: utter_slots_values
+- rule: get current path
+  steps:
+  - intent: get_current_path
+  - action: action_get_current_path

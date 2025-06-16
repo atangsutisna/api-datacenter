@@ -462,6 +462,7 @@ class ActionBackToPrevious(Action):
             dispatcher.utter_message(text=message)
             search_results_json = json.dumps(search_results)
             return [
+                SlotSet("current_path", None),
                 SlotSet("search_results", search_results_json),
             ]
         else:
@@ -929,3 +930,31 @@ class ActionPerformDownload(Action):
         return [
             SlotSet("file_no", None)
         ]
+
+class ActionGetCurrentPath(Action):
+    def name(self) -> Text:
+        return "action_get_current_path"
+    
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        fullname = tracker.sender_id
+
+        metadata = tracker.latest_message.get("metadata")
+        telegram_id = metadata.get("telegram_id")
+        if fullname == "user":
+            # belum login
+            dispatcher.utter_message(text="""
+            Maaf, saya belum mengenal kamu.
+            Silahkan verifikasi nomor HP kamu dulu.
+            """)
+        else:
+            current_path = tracker.get_slot("current_path")
+            dispatcher.utter_message(
+                text=f"Path saat ini: {current_path}",
+                custom={
+                    "data": {
+                        "current_path": current_path,
+                    }
+                }
+            )

@@ -257,6 +257,23 @@ nlu:
     - debug slot
     - tampilkan semua informasi
     - tunjukan semua isi slow
+- intent: get_current_path
+  examples: |
+    - saya sedang berada di mana
+    - di mana saya sekarang
+    - di path mana saya sekarang
+    - saya sekarang di mana
+    - sekarang saya sedang di direktori mana
+    - dimana saya sekarang
+    - path saya saat ini apa
+    - saya sedang di folder apa
+    - tunjukkan lokasi saya
+    - direktori aktif saya apa
+    - bisa lihat path lengkapnya
+    - saya ada di mana
+    - cek lokasi saya sekarang
+    - path saat ini tolong
+    - di folder mana saya berada
 - regex: file_no
   examples: |
     - \d{1,3}

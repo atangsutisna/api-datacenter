@@ -21,6 +21,7 @@ intents:
 - greet_in_english # just for testing
 - show_slots
 - create_new_folder_with_name
+- get_current_path
 entities:
 - file_no
 - folder_name
@@ -149,6 +150,7 @@ actions:
 - validate_create_folder_form
 - action_perform_search
 - action_perform_download
+- action_get_current_path
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
