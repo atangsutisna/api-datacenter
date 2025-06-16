@@ -1,4 +1,4 @@
-import logging, os, re
+import logging, os, re, requests
 from checkpermissions import is_permitted
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
@@ -22,20 +22,41 @@ WAITING_FOR_FILE = range(1)
 
 # fix me, do not hard code
 # FOLDER_PATH = "/home/kangatang/git/filegator/repository/atang"
+def get_current_path(telegram_id: str):
+    url = "http://localhost:5005/webhooks/rest/webhook"
+    curr_user = get_user_logged_in(telegram_id)
+    sender = curr_user["fullname"] if curr_user is not None else "user"
+
+    data = {
+        "sender": sender, 
+        "message": "saya sekarang di mana", 
+        "metadata": {
+            "telegram_id": telegram_id,
+            "fullname": curr_user["fullname"]
+        }
+    }
+    response = requests.post(url, json=data)
+    logger.info("sekarang saya di mana: %r", response.json())
+    response_json = response.json()
+    return response_json[1]['custom']['data']
+
 async def start_upload_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     telegram_id = str(update.effective_user.id)
     curr_user = get_user_logged_in(telegram_id)
     if curr_user is None:
         await update.message.reply_text('Maaf, saya belum bisa melayani kamu. Silahkan verifikasi dulu nomor HPmu.')
     else:
-        if "current_directory" not in context.user_data:
+        # get current path from rasa
+        req_result = get_current_path(telegram_id)
+        logger.info("get custom data %r", req_result)
+        current_path = req_result['current_path']
+        if current_path is None:
             await update.message.reply_text('Mohon tentukan terlebih dahulu di folder mana kamu akan menyimpan filenya')
         else:
             # todo: check permissions
             telegram_id = str(update.effective_user.id)
-            
-            target_path = context.user_data['current_directory']
-            upload_permitted = is_permitted(telegram_id, target_path, "upload")
+            context.user_data['current_directory'] = current_path
+            upload_permitted = is_permitted(telegram_id, current_path, "upload")
             if not upload_permitted:
                 await update.message.reply_text("Mohon maaf, kamu tidak punya ijin untuk melakukan upload.")
                 return
@@ -96,53 +117,7 @@ async def done_upload(update: Update, context: ContextTypes.DEFAULT_TYPE):
     uploaded = context.user_data.get('uploaded_files', [])
     if uploaded:
         current_dir = context.user_data['current_directory']
-        dir_list = os.listdir(current_dir)
-        keyboard = []
-        no = 1
-        results = []
-        for dir in dir_list:
-            child_path = os.path.join(current_dir, dir)
-            results.append(child_path)
-
-            no_str = str(no)
-            file = os.path.isfile(child_path)
-            if not file:
-                buttons = [
-                    InlineKeyboardButton(
-                        text=f"File {dir}",
-                        callback_data=f"info_{no_str}"
-                    ),
-                    InlineKeyboardButton(
-                        text=f"❌",
-                        callback_data=f"remove_{no_str}"
-                    )
-                ]
-            else:
-                buttons = [
-                    InlineKeyboardButton(
-                        text=f"{dir}",
-                        callback_data=f"info_{no_str}"
-                    ),
-                    InlineKeyboardButton(
-                        text=f"❌",
-                        callback_data=f"remove_{no_str}"
-                    )
-                ]
-            keyboard.append(buttons)
-            no += 1
-            
-        parent_dir = os.path.dirname(current_dir)
-        results.append(os.path.join(REPOSITORY_PATH, parent_dir))
-        context.user_data['search_results'] = results
-        
-        no_str = str(no)
-        button = InlineKeyboardButton(
-            text=f"<< Kembali ",
-            callback_data=f"info_{no_str}"
-        )
-        keyboard.append([button])
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await update.message.reply_text(f"📂 {len(uploaded)} file berhasil diunggah. \n 📂 : {current_dir}", reply_markup=reply_markup)
+        await update.message.reply_text(f"📂 {len(uploaded)} file berhasil diunggah ke folder {current_dir}")
     else:
         results = []
         keyboard = []
