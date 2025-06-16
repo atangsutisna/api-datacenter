@@ -4,6 +4,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
 from dotenv import load_dotenv
 from userloggedin import get_user_logged_in
+from myutils import simplified_path
 
 load_dotenv()
 
@@ -115,25 +116,12 @@ async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
 async def done_upload(update: Update, context: ContextTypes.DEFAULT_TYPE):
     uploaded = context.user_data.get('uploaded_files', [])
+    current_dir = context.user_data['current_directory']
+    simplified_current_dir = simplified_path(current_dir)
     if uploaded:
-        current_dir = context.user_data['current_directory']
-        await update.message.reply_text(f"📂 {len(uploaded)} file berhasil diunggah ke folder {current_dir}")
+        await update.message.reply_text(f"📂 {len(uploaded)} file berhasil diunggah ke folder `{simplified_current_dir}`", parse_mode="Markdown")
     else:
-        results = []
-        keyboard = []
-
-        current_dir = context.user_data['current_directory']
-        parent_dir = os.path.dirname(current_dir)
-        results.append(os.path.join(REPOSITORY_PATH, parent_dir))
-        context.user_data['search_results'] = results
-
-        button = InlineKeyboardButton(
-            text=f"<< Kembali ",
-            callback_data=f"info_{1}"
-        )
-        keyboard.append([button])
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await update.message.reply_text(f"Tidak ada file yang dikirim.\n 📂 : {current_dir}", reply_markup=reply_markup)
+        await update.message.reply_text(f"Tidak ada file yang dikirim di `{simplified_current_dir}`", parse_mode="Markdown")
 
     return ConversationHandler.END
 
