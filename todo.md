@@ -24,3 +24,7 @@ Langkah-langkah download file:
 5. Sistem akan melakukan File index. Mungkin, proses ini akan dikerjakan di tahap enhancement.
 
 Ini sangat menyenangkan :joy:
+
+## TODO
+1. Rename file atau folder
+2. Hapus file atau folder masih bermasalah
