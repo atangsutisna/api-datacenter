@@ -131,7 +131,7 @@ class ActionGreeting(Action):
             telegram_id = metadata.get("telegram_id")
             fullname = metadata.get("fullname")
             if 4 <= current_hour < 10:
-                message = f"Hai, selamat pagi *{fullname}*"
+                message = f"Hai, selamat pagi *{fullname}*. Ada yang bisa saya bantu?"
             elif 10 <= current_hour < 15:
                 message = f"Hai {fullname}, selamat siang. Ada yang bisa saya bantu?"
             elif 15 <= current_hour < 18:
