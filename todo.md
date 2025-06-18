@@ -27,4 +27,4 @@ Ini sangat menyenangkan :joy:
 
 ## TODO
 1. Rename file atau folder
-2. Hapus file atau folder masih bermasalah
+2. ~~Hapus file atau folder masih bermasalah~~
