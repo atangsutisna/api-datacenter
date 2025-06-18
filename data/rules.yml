@@ -143,7 +143,6 @@ rules:
 - rule: after data removal
   steps:
     - action: action_remove_data
-    - action: utter_data_removed_successfully
     - action: action_listen
 
 - rule: user membatalkan penghapusan data
