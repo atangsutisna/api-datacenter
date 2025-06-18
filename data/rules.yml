@@ -132,7 +132,7 @@ rules:
   - slot_was_set:
       - file_no_to_be_removed: not null
 
-- rule: User confirm to remove data
+- rule: user confirm to remove data
   condition:
     - slot_was_set:
       - file_no_to_be_removed: not null
@@ -145,3 +145,14 @@ rules:
     - action: action_remove_data
     - action: utter_data_removed_successfully
     - action: action_listen
+
+- rule: user membatalkan penghapusan data
+  condition:
+    - active_loop: null
+    - slot_was_set:
+      - file_no_to_be_removed: not null
+  steps:
+    - intent: deny
+    - action: utter_ask_deny_remove_data
+    - action: action_listen
+# end of rule remove data
