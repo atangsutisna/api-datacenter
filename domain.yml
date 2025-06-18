@@ -15,7 +15,7 @@ intents:
 - open_file_or_folder
 - ask_to_back
 - ask_remove_data
-- ask_to_remove_current_path
+# - ask_to_remove_current_path
 - confirm_remove_data
 - deny
 - greet_in_english # just for testing
@@ -26,10 +26,17 @@ entities:
 - file_no
 - folder_name
 - search_query
+- file_no_to_be_removed
 slots:
   file_no:
     type: text
     influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: file_no
+  file_no_to_be_removed:
+    type: text
+    influence_conversation: true
     mappings:
     - type: from_entity
       entity: file_no
@@ -135,6 +142,8 @@ responses:
     - text: Baik form telah selesai.
   utter_slots_values:
     - text: "Berikut adalah nilai slot Anda saat ini:\n{slot_values}"
+  utter_data_removed_successfully:
+    - text: penghapusan telah selesai
 actions:
 - action_greeting
 - action_guessing_name

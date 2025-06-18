@@ -155,27 +155,29 @@ nlu:
     - nomor [100](file_no) buka
 - intent: ask_remove_data
   examples: |
-    - tolong hapus nomor [3](file_no) dong
-    - hapus yang nomor [6](file_no)
-    - hapus yang angka [4](file_no)
-    - hapus baris [9](file_no)
-    - hapus yang [7](file_no)
-    - tolong hapus baris [8](file_no)
-    - yang nomor [90](file_no), tolong dihapus
-    - nomor [90](file_no) dihapus
-    - hapus nomor [78](file_no)
-    - nomor [100](file_no) hapus
-    - tolong dihapus baris [8](file_no)
-- intent: ask_to_remove_current_path
-  examples: |
-    - tolong dihapus
-    - hapus dong
-    - dihapus saja
-    - hapus dong
-    - hapuslah
-    - hapus sajalah
-    - dihapus dong
-    - dihapus aja 
+    - tolong hapus nomor [3](file_no_to_be_removed) dong
+    - hapus yang nomor [6](file_no_to_be_removed)
+    - hapus yang angka [4](file_no_to_be_removed)
+    - hapus baris [9](file_no_to_be_removed)
+    - hapus yang [7](file_no_to_be_removed)
+    - tolong hapus baris [8](file_no_to_be_removed)
+    - yang nomor [90](file_no_to_be_removed), tolong dihapus
+    - nomor [90](file_no_to_be_removed) dihapus
+    - hapus nomor [78](file_no_to_be_removed)
+    - nomor [100](file_no_to_be_removed) hapus
+    - tolong dihapus baris [8](file_no_to_be_removed)
+    - tolong hapus baris [8](file_no_to_be_removed)
+    - hapus baris [8](file_no_to_be_removed)
+# - intent: ask_to_remove_current_path
+#   examples: |
+#     - tolong dihapus
+#     - hapus dong
+#     - dihapus saja
+#     - hapus dong
+#     - hapuslah
+#     - hapus sajalah
+#     - dihapus dong
+#     - dihapus aja 
 - intent: confirm_remove_data
   examples: |
     - iya, hapus saja
@@ -275,5 +277,8 @@ nlu:
     - path saat ini tolong
     - di folder mana saya berada
 - regex: file_no
+  examples: |
+    - \d{1,3}
+- regex: file_no_to_be_removed
   examples: |
     - \d{1,3}

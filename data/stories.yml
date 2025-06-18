@@ -50,38 +50,41 @@ stories:
 #   steps:
 #     - intent: ask_to_show
 #     - action: action_show_data
-- story: User mengkonfirmasi untuk menghapus data
-  steps:
-    - slot_was_set:
-      - current_path: not null # pastikan current path bukan folder utama
-    - intent: ask_remove_data
-    - action: utter_ask_confirm_remove_data
-    - intent: confirm_remove_data
-    - action: action_remove_data
-- story: User membatalkan untuk menghapus data
-  steps:
-    - slot_was_set:
-      - current_path: not null # pastikan current path bukan folder utama
-    - intent: ask_remove_data
-    - action: utter_ask_confirm_remove_data
-    - intent: deny
-    - action: utter_ask_deny_remove_data
-- story: User menghapus folder yang sedang aktif (current path)
-  steps:
-    - slot_was_set:
-      - current_path: not null # pastikan current path bukan folder utama
-    - intent: ask_to_remove_current_path
-    - action: utter_ask_confirm_remove_data
-    - intent: confirm_remove_data
-    - action: action_to_remove_current_path
-- story: User membatalkan untuk menghapus folder yang sedang aktif (current path)
-  steps:
-    - slot_was_set:
-      - current_path: not null # pastikan current path bukan folder utama
-    - intent: ask_to_remove_current_path
-    - action: utter_ask_confirm_remove_data
-    - intent: deny
-    - action: utter_ask_deny_remove_data
+
+# - story: User mengkonfirmasi untuk menghapus data
+#   steps:
+#     - slot_was_set:
+#       - current_path: not null # pastikan current path bukan folder utama
+#     - intent: ask_remove_data
+#     - action: utter_ask_confirm_remove_data
+#     - intent: confirm_remove_data
+#     - action: action_remove_data
+# - story: User membatalkan untuk menghapus data
+#   steps:
+#     - slot_was_set:
+#       - current_path: not null # pastikan current path bukan folder utama
+#     - intent: ask_remove_data
+#     - action: utter_ask_confirm_remove_data
+#     - intent: deny
+#     - action: utter_ask_deny_remove_data
+
+
+# - story: User menghapus folder yang sedang aktif (current path)
+#   steps:
+#     - slot_was_set:
+#       - current_path: not null # pastikan current path bukan folder utama
+#     - intent: ask_to_remove_current_path
+#     - action: utter_ask_confirm_remove_data
+#     - intent: confirm_remove_data
+#     - action: action_to_remove_current_path
+# - story: User membatalkan untuk menghapus folder yang sedang aktif (current path)
+#   steps:
+#     - slot_was_set:
+#       - current_path: not null # pastikan current path bukan folder utama
+#     - intent: ask_to_remove_current_path
+#     - action: utter_ask_confirm_remove_data
+#     - intent: deny
+#     - action: utter_ask_deny_remove_data
 # just for testing
 # - story: welcome message, premium user
 #   steps:

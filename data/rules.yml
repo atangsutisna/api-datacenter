@@ -123,3 +123,25 @@ rules:
   steps:
   - intent: get_current_path
   - action: action_get_current_path
+
+# command untuk menghapus data
+- rule: user want to remove data
+  steps:
+  - intent: ask_remove_data
+  - action: utter_ask_confirm_remove_data
+  - slot_was_set:
+      - file_no_to_be_removed: not null
+
+- rule: User confirm to remove data
+  condition:
+    - slot_was_set:
+      - file_no_to_be_removed: not null
+  steps:
+    - intent: confirm_remove_data
+    - action: action_remove_data
+
+- rule: after data removal
+  steps:
+    - action: action_remove_data
+    - action: utter_data_removed_successfully
+    - action: action_listen
