@@ -1042,7 +1042,17 @@ class ActionDoRename(Action):
                         dispatcher.utter_message(text="Mohon maaf, sepertinya ada kesalahan sistem. Rename file gagal")
                 else:
                     # rename folder
-                    dispatcher.utter_message(text=f"I will rename folder no {file_no} to be {new_name}")
+                    parent_dir = os.path.dirname(selected_path)
+                    new_path = os.path.join(parent_dir, new_name)
+                    try:
+                        os.rename(selected_path, new_path)
+                        old_name = simplified_path(selected_path)
+                        new_name = simplified_path(new_path)
+                        dispatcher.utter_message(text=f"File `{old_name}` telah diubah namanya menjadi `{new_name}`")
+                    except Exception as e:
+                        logger.info(f"Failed to rename the folder {e}")
+                        dispatcher.utter_message(text="Mohon maaf, sepertinya ada kesalahan sistem. Rename file gagal")                    
+                    # dispatcher.utter_message(text=f"I will rename folder no {file_no} to be {new_name}")
             else:
                 range_list = get_range_list(user_files)
                 max_no = max(int(k) for k in user_files.keys())
