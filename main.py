@@ -4,7 +4,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 from dotenv import load_dotenv
 import requests, json, bcrypt, os, re, logging
 
-import logincommand, forgotpasscommand, findcommand, uploadfilecommand
+import logincommand, forgotpasscommand, findcommand, uploadfilecommand, regusercommand
 from userloggedin import get_user_logged_in
 from mappinguser import verify_phone_number
 from myutils import hash_path
@@ -210,6 +210,9 @@ if __name__ == '__main__':
     # create folder command
     app.add_handler(findcommand.create_folder_handler)
     
+    # add user to db (usermapping)
+    app.add_handler(regusercommand.conversation_handler)
+
     # help command
     app.add_handler(CommandHandler('bantuan', help_command))
 
