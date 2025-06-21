@@ -1002,3 +1002,61 @@ class ActionGetCurrentPath(Action):
                     }
                 }
             )
+class ActionDoRename(Action):
+    def name(self) -> Text:
+        return "action_do_rename"
+    
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+        file_no = tracker.get_slot("file_no")
+        new_name = tracker.get_slot("new_name")
+        search_results = tracker.get_slot("search_results")
+        logger.info("Run action do rename...")
+        # dispatcher.utter_message(text=f"I will rename file no {file_no} to be {new_name}")
+        # return [
+        #     SlotSet("file_no", None),
+        #     SlotSet("new_name", None)
+        # ]
+        
+        if search_results:
+            logger.info("attempting to load search results %s", search_results)
+            user_files = json.loads(search_results)
+            selected_path = user_files.get(file_no)
+            # get old name
+            if selected_path:
+                # do rename
+                is_file = os.path.isfile(selected_path)
+                if is_file:
+                    # rename file
+                    directory = os.path.dirname(selected_path)
+                    _, ext = os.path.splitext(selected_path)
+                    new_path = os.path.join(directory, new_name + ext)
+                    try:
+                        os.rename(selected_path, new_path)
+                        old_name = simplified_path(selected_path)
+                        new_name = simplified_path(new_path)
+                        dispatcher.utter_message(text=f"File `{old_name}` telah diubah namanya menjadi `{new_name}`")
+                    except Exception as e:
+                        logger.info("Failed to rename the file")
+                        dispatcher.utter_message(text="Mohon maaf, sepertinya ada kesalahan sistem. Rename file gagal")
+                else:
+                    # rename folder
+                    dispatcher.utter_message(text=f"I will rename folder no {file_no} to be {new_name}")
+            else:
+                range_list = get_range_list(user_files)
+                max_no = max(int(k) for k in user_files.keys())
+                messages = [
+                    f"Hmm, nomor {file_no} di luar rentang data yang saya miliki 🤔. Saya punya data {range_list}. Apakah ada nomor lain yang kamu maksud?",
+                    f"Maaf, saya tidak bisa menemukan data dengan nomor {file_no}. Data yang ada hanya sampai nomor {max_no}. Apakah ada nomor lain yang kamu maksud?",
+                    f"Saya tidak menemukan data di posisi ke-{file_no}. Daftar data kamu berakhir di nomor {max_no}. Mungkin kamu ingin melihat data lain?"
+                ]
+                response = random.choice(messages)
+                dispatcher.utter_message(text=response)
+        else:
+            dispatcher.utter_message(text=f"Saya tidak menemukan file dengan nomor atau baris {file_no}")
+
+        return [
+            SlotSet("file_no", None),
+            SlotSet("new_name", None)
+        ]

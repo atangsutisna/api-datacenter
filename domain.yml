@@ -27,6 +27,7 @@ entities:
 - folder_name
 - search_query
 - file_no_to_be_removed
+- new_name
 slots:
   file_no:
     type: text
@@ -34,6 +35,12 @@ slots:
     mappings:
     - type: from_entity
       entity: file_no
+  new_name:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: new_name
   file_no_to_be_removed:
     type: text
     influence_conversation: true
@@ -160,6 +167,7 @@ actions:
 - action_perform_search
 - action_perform_download
 - action_get_current_path
+- action_do_rename
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

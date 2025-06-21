@@ -58,7 +58,7 @@ untuk menjalankan server api rasa
 
 # cara jalanin script
 ----------------------------------------------------------
-nohup python3 main.py &
+nohup python3 main.py > app.log 2>&1 &
 
 # cara mematikan script
 ps aux | grep main.py

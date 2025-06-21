@@ -155,3 +155,10 @@ rules:
     - action: utter_ask_deny_remove_data
     - action: action_listen
 # end of rule remove data
+
+# rename  a folder or file
+- rule: User want to rename a file or folder
+  steps:
+    - intent: rename_item_by_file_no
+    - action: action_do_rename
+    - action: action_listen
