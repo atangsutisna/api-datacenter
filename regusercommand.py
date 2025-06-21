@@ -5,6 +5,7 @@ from telegram import Update
 from telegram.ext import ContextTypes
 import re
 from telegram.ext import CommandHandler, MessageHandler, filters, ConversationHandler
+from reguser import add_user_to_db
 
 # Enable logging
 logging.basicConfig(
@@ -15,6 +16,11 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 ASK_PHONE, ASK_USERNAMES = range(2)
+
+def format_nomor_hp(nomor: str):
+    if nomor.startswith("0"):
+        return "62" + nomor[1:]
+    return nomor
 
 async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # start reguser-command
@@ -38,6 +44,14 @@ async def receive_usernames(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     context.user_data["usernames"] = usernames
     
+    phone_no = context.user_data['phone']
+    new_user = {
+        "phoneNumber": format_nomor_hp(phone_no),
+        "accounts": usernames
+    }
+    db_user = "mappinguser.json"
+    add_user_to_db(db_user, new_user)
+
     # Kirim ringkasan data
     await update.message.reply_text(
         f"✅ Data berhasil diterima:\n📱 Nomor HP: {context.user_data['phone']}\n👤 Username: {', '.join(usernames)}"
