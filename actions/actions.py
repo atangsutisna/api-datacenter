@@ -251,7 +251,7 @@ class ActionListWorkspace(Action):
                     no += 1
 
                 if len(accounts) > 1:
-                    additional_response = "Apa lagi yang bisa saya lakukan untuk Kamu?"
+                    additional_response = "Jika kamu ingin membuka salah satunya, cukup ketik angkanya."
                 else:
                     additional_response = get_ask_to_open_remove_or_download()
                 message += "\n"+ additional_response
