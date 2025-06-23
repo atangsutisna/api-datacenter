@@ -131,6 +131,8 @@ nlu:
     - tolong tampilkan semua filenya
     - apa saja filenya?
     - datanya apa saja?
+    - tampilkan data
+    - tampilkan list folder
 - intent: ask_about_guess_name
   examples: |
     - naha apal nama saya?
