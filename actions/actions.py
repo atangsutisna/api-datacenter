@@ -462,10 +462,10 @@ class ActionBackToPrevious(Action):
 
         opening_messages = [
             "Ini adalah folder utama Kamu.",
-            "Kamu sedang berada di direktori utama Kamu.",
+            "Kamu sedang berada di direktori utama",
             "Folder utama Kamu.",
             "Ini area utama penyimpanan Kamu.",
-            "Kamu telah kembali ke folder utama Kamu."
+            "Kamu telah kembali ke folder utama"
         ]
 
         current_path = tracker.get_slot("current_path")
@@ -492,7 +492,7 @@ class ActionBackToPrevious(Action):
                 search_results[no] = path
                 no += 1
 
-            additional_response = "Apa lagi yang bisa saya lakukan untuk Kamu?"
+            additional_response = "Data mana yang kamu inginkan? sebutkan angkanya.."
             message += "\n"+ additional_response
 
             dispatcher.utter_message(text=message)

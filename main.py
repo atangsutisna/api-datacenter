@@ -137,7 +137,12 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         else:
             return
     else:
-        responses: str = handle_response(update, text)
+        if text.isdigit():
+            # kemungkinan besar, user sedang berada di folder utama
+            message = "tolong buka nomor "+ text
+            responses: str = handle_response(update, message)
+        else:
+            responses: str = handle_response(update, text)
         chat_id = update.effective_chat.id
         # logger.info('Bot: %r', responses)
         for response in responses:
