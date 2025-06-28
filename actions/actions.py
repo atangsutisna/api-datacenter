@@ -915,7 +915,7 @@ class ActionPerformSearch(Action):
         response = self.build_response(
             opening_message=f"Saya menemukan beberapa data yang mengandung kata: `{search_query}`",
             ending_message=get_ask_to_open_remove_or_download(),
-            lspaths=results
+            lspaths=results[:20]
         )
         dispatcher.utter_message(text=response)
         search_results_json = json.dumps(results)
