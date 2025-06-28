@@ -26,6 +26,8 @@ Langkah-langkah download file:
 Ini sangat menyenangkan :joy:
 
 ## TODO
-1. Rename file atau folder
+1. ~~Rename file atau folder~~
 2. ~~Hapus file atau folder masih bermasalah~~
 3. ~~Upload file~~
+4. Paging untuk hasil pencarian. Untuk saat ini, ketika hasil pencarian jumlahnya lebih dari 4096. Belum ada handler untuk error ini. Sehingga, seperti Bug.
+6. Ketika melakukan pencarian, kadang sistem suka bilang "Maaf, saya tidak mengerti"
