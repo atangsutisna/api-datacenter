@@ -795,10 +795,12 @@ class ActionCreateFolder(Action):
             except Exception as e:
                 dispatcher.utter_message(response="utter_create_folder_failed", folder_name=folder_name)
                 traceback.print_exc()
-
+            
+            lspaths_json = json.dumps(self.to_dict(lspaths))
             return [
                 SlotSet("folder_name", None),
-                SlotSet("creation_permitted", None)
+                SlotSet("creation_permitted", None),
+                SlotSet("search_results", lspaths_json)
             ]
 
 class ValidateCreateFolderForm(FormValidationAction):
