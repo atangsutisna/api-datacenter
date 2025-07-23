@@ -8,6 +8,7 @@ import logincommand, forgotpasscommand, findcommand, uploadfilecommand, reguserc
 from userloggedin import get_user_logged_in
 from mappinguser import verify_phone_number
 from myutils import hash_path
+from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
 
 # Enable logging
 logging.basicConfig(
@@ -121,9 +122,19 @@ def handle_response(update: Update, text: str) -> str:
             "fullname": curr_user["fullname"]
         }
     }
-    response = requests.post(url, json=data)
-    # logger.info("response %r", response.json())
-    return response.json()
+    # todo: jangan tambahkan jika request belum selesai, kasih flag. jangan sampai request numpuk
+    try:
+        response = requests.post(url, json=data)
+        return response.json()
+    except Timeout:
+        # request timeout
+    except ConnectionError:
+        # connection error
+    except HTTPError as err:
+        if response.status_code == 503:
+            # service tidak tersedia
+        else:
+            # http error terjadi
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_type: str = update.message.chat.type
