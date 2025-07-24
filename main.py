@@ -128,13 +128,33 @@ def handle_response(update: Update, text: str) -> str:
         return response.json()
     except Timeout:
         # request timeout
+        logger.info("request timeout...")
+        return [{
+            "recipient_id": curr_user["fullname"],
+            "text": "Mohon maaf, bot belum bisa melayani perintah. Bot sedang mengalami kendala saat mengakses sistem data center."
+        }]
     except ConnectionError:
         # connection error
+        logger.info("connection error...")
+        return [{
+            "recipient_id": curr_user["fullname"],
+            "text": "Mohon maaf, bot belum bisa melayani perintah. Bot sedang mengalami kendala saat mengakses sistem data center."
+        }]
     except HTTPError as err:
         if response.status_code == 503:
             # service tidak tersedia
+            logger.info("service is not available...")
+            return [{
+                "recipient_id": curr_user["fullname"],
+                "text": "Mohon maaf, bot belum bisa menerima melayani perintah. Service bot mungkin sedang dimatikan atau dalam perbaikan."
+            }]
         else:
             # http error terjadi
+            logger.info("there something wrong...")
+            return [{
+                "recipient_id": curr_user["fullname"],
+                "text": "Mohon maaf, bot belum bisa menerima melayani perintah. Service bot sedang ada kendala teknis."
+            }]
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_type: str = update.message.chat.type
