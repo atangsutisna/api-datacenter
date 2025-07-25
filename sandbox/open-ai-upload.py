@@ -2,15 +2,31 @@
 from openai import OpenAI
 import time, os
 from dotenv import load_dotenv
+import subprocess, os
+from pathlib import Path
 
 load_dotenv()
 API_KEY = os.getenv('OPENAI_APIKEY')
+
+def convert_to_pdf(input_path) -> str:
+    input_path = Path(input_path)
+    subprocess.run([
+        "libreoffice",
+        "--headless",
+        "--convert-to", "pdf",
+        "--outdir", str(input_path.parent),
+        str(input_path)
+    ])
+
+    return os.path.join(input_path.parent, input_path.stem +".pdf") 
 
 # Inisialisasi client
 client = OpenAI(api_key=API_KEY)
 
 # Upload file
-fullpath = "/home/kangatang/git/filegator/repository/atang/shu-pinjaman.pdf"
+# Untuk file excel, perlu diubah dulu ke pdf untuk setiap sheet-nya.
+fullpath = convert_to_pdf("/home/kangatang/git/filegator/repository/atang/master-tabel.xlsx")
+print(f"fullpath {fullpath}")
 file = client.files.create(
     file=open(fullpath, "rb"),
     purpose="assistants"

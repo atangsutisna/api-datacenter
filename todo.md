@@ -30,4 +30,7 @@ Ini sangat menyenangkan :joy:
 2. ~~Hapus file atau folder masih bermasalah~~
 3. ~~Upload file~~
 4. Paging untuk hasil pencarian. Untuk saat ini, ketika hasil pencarian jumlahnya lebih dari 4096. Belum ada handler untuk error ini. Sehingga, seperti Bug.
-6. Ketika melakukan pencarian, kadang sistem suka bilang "Maaf, saya tidak mengerti"
+5. Ketika melakukan pencarian, kadang sistem suka bilang "Maaf, saya tidak mengerti"
+6. Untuk membuat summary file excel, perlu ada perbaikan. Sebelum file dikirimkan ke openai, konversikan terlebih dahulu menjadi PDF. Untuk saat ini, open ai belum support untuk membuat summary file excel.
+8. Batasi penggunaan token. Untuk file-file doc atau pdf yang isinya lebih dari 100 halaman, buat duplikasi file sebanyak dua halaman. Tujuannya adalah untuk mempercepat proses summarize. Tujuan dari summarize ini hanya ingin tahu gambaran sekilas tentang sebuah file. Hanya itu.
+9. Buat rencana presentasi. Susun tiap pertemua hanya membahas satu fitur. Misal hari jumat bahas tentang upload file.
