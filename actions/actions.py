@@ -561,7 +561,7 @@ class ActionRemoveData(Action):
         telegram_id = metadata.get("telegram_id")
 
         logger.info("Got current path %s", current_path)
-        chmod_permitted = self.is_permitted(telegram_id, current_path, "chmod")
+        chmod_permitted = self.is_permitted(telegram_id, current_path, "write")
         if chmod_permitted:
             # check file or folder?
             search_results = tracker.get_slot("search_results")
