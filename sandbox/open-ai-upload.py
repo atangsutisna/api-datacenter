@@ -25,7 +25,7 @@ client = OpenAI(api_key=API_KEY)
 
 # Upload file
 # Untuk file excel, perlu diubah dulu ke pdf untuk setiap sheet-nya.
-fullpath = convert_to_pdf("/home/kangatang/git/filegator/repository/atang/master-tabel.xlsx")
+fullpath = convert_to_pdf("/home/kangatang/git/filegator/repository/atang/master-tabel.pdf")
 print(f"fullpath {fullpath}")
 file = client.files.create(
     file=open(fullpath, "rb"),
@@ -36,7 +36,7 @@ print("File ID:", file.id)
 # Buat assistant
 assistant = client.beta.assistants.create(
     name="File Reader",
-    instructions="Bantu baca dan ringkas file.",
+    instructions="Tolong bacakan isi halaman 1 sampai 3 dari file ini",
     model="gpt-4-1106-preview",
     tools=[{"type": "file_search"}]
 )
@@ -48,7 +48,7 @@ thread = client.beta.threads.create()
 client.beta.threads.messages.create(
     thread_id=thread.id,
     role="user",
-    content="Tolong ringkas file ini.",
+    content="Tolong bacakan isi halaman 1 sampai 3 dari file ini",
     attachments=[
         {
             "file_id": file.id,
