@@ -338,9 +338,14 @@ class ActionAccessData(Action):
                     OPENAI_APIKEY = os.getenv('OPENAI_APIKEY')
                     if ext in supported_extension:
                         logger.info("attempting to send request to openai")
+                        prompt=(
+                            "Tolong bacakan isi halaman 1 sampai 3 dari file ini."
+                            "Jika tidak dapat dibaca, jelaskan penyebabnya secara singkat, tanpa mengajukan pertanyaan."
+                        )
                         result = self.read_file_with_file_search(
                             api_key=OPENAI_APIKEY,
-                            file_path=selected_path
+                            file_path=selected_path,
+                            prompt=prompt
                         )
                         dispatcher.utter_message(text=result)
                     else:
@@ -348,6 +353,7 @@ class ActionAccessData(Action):
                         logger.info(f"attempting to convert {selected_path} to pdf")
                         tmp_file_fullpath = self.convert_to_pdf(selected_path)
                         logger.info("attempting to ask to openai")
+                        # perlu optimasi
                         result = self.read_file_with_file_search(
                             api_key=OPENAI_APIKEY,
                             file_path=tmp_file_fullpath

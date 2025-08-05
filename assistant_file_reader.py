@@ -1,5 +1,10 @@
 from openai import OpenAI
 import time
+import time, os
+from dotenv import load_dotenv
+
+load_dotenv()
+API_KEY = os.getenv('OPENAI_APIKEY')
 
 def read_file_with_file_search(
     api_key: str,
@@ -14,12 +19,11 @@ def read_file_with_file_search(
     )
 
     # Buat Assistant dengan file_search (jika belum punya, kamu bisa reuse ID)
+            # "Bacalah file ini dan ringkas isinya."
+            # "Jika tidak dapat dibaca, jelaskan penyebabnya secara singkat, tanpa mengajukan pertanyaan."
     assistant = client.beta.assistants.create(
         name="File Reader",
-        instructions=(
-            "Bacalah file ini dan ringkas isinya."
-            "Jika tidak dapat dibaca, jelaskan penyebabnya secara singkat, tanpa mengajukan pertanyaan."
-        ),
+        instructions=prompt,
         model="gpt-4-1106-preview",
         tools=[{"type": "file_search"}]
     )
@@ -62,3 +66,14 @@ def read_file_with_file_search(
             return msg.content[0].text.value
 
     return "Tidak ada jawaban dari Assistant."
+
+selected_path = "/home/kangatang/git/filegator/repository/atang/master-tabel.pdf"
+prompt=(
+    "Tolong bacakan isi halaman 1 sampai 3 dari file ini."
+    "Jika tidak dapat dibaca, jelaskan penyebabnya secara singkat, tanpa mengajukan pertanyaan."
+)
+result = read_file_with_file_search(
+    api_key=API_KEY,
+    file_path=selected_path,
+    prompt=prompt
+)
