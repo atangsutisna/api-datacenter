@@ -67,13 +67,13 @@ def read_file_with_file_search(
 
     return "Tidak ada jawaban dari Assistant."
 
-selected_path = "/home/kangatang/git/filegator/repository/atang/master-tabel.pdf"
-prompt=(
-    "Tolong bacakan isi halaman 1 sampai 3 dari file ini."
-    "Jika tidak dapat dibaca, jelaskan penyebabnya secara singkat, tanpa mengajukan pertanyaan."
-)
-result = read_file_with_file_search(
-    api_key=API_KEY,
-    file_path=selected_path,
-    prompt=prompt
-)
+# selected_path = "/home/kangatang/git/filegator/repository/atang/master-tabel.pdf"
+# prompt=(
+#     "Tolong bacakan isi halaman 1 sampai 3 dari file ini."
+#     "Jika tidak dapat dibaca, jelaskan penyebabnya secara singkat, tanpa mengajukan pertanyaan."
+# )
+# result = read_file_with_file_search(
+#     api_key=API_KEY,
+#     file_path=selected_path,
+#     prompt=prompt
+# )
