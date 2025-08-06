@@ -168,6 +168,7 @@ actions:
 - action_perform_download
 - action_get_current_path
 - action_do_rename
+- action_notify_processing
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

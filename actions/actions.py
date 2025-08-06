@@ -31,7 +31,7 @@ from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.types import DomainDict
 from rasa_sdk.events import SlotSet
 from rasa_sdk.forms import FormValidationAction
-from rasa_sdk.events import AllSlotsReset, ActiveLoop
+from rasa_sdk.events import AllSlotsReset, ActiveLoop, FollowupAction
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import sys
@@ -42,6 +42,7 @@ import json
 import shutil
 import traceback
 from pathlib import Path
+# from rasa_sdk.events import 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -331,7 +332,7 @@ class ActionAccessData(Action):
                 is_file = os.path.isfile(selected_path)
                 if is_file:
                     # open the file using openai
-                    dispatcher.utter_message(text="Mohon ditunggu, saya sedang membuat rangkuman file tersebut")
+                    # dispatcher.utter_message(text="Mohon ditunggu, saya sedang membuat rangkuman file tersebut")
                     # call open api
                     ext = get_ext(selected_path)
                     supported_extension = {"pdf", "doc", "docx", "txt"}
@@ -1078,3 +1079,13 @@ class ActionDoRename(Action):
             SlotSet("file_no", None),
             SlotSet("new_name", None)
         ]
+
+class ActionNotifyProcessing(Action):
+    def name(self): return "action_notify_processing"
+
+    async def run(self, dispatcher, tracker, domain):
+        dispatcher.utter_message(
+            text="Mohon ditunggu..."
+        )
+        # langsung panggil action berikutnya
+        return [FollowupAction("action_to_open_data")]

@@ -70,7 +70,8 @@ rules:
         - search_results: not null
   steps:
     - intent: ask_to_open
-    - action: action_to_open_data
+    - action: action_notify_processing
+    # - action: action_to_open_data
 
 - rule: User meminta untuk balik ke lagi ke path sebelumnya
   condition:
