@@ -34,3 +34,7 @@ Ini sangat menyenangkan :joy:
 6. Untuk membuat summary file excel, perlu ada perbaikan. Sebelum file dikirimkan ke openai, konversikan terlebih dahulu menjadi PDF. Untuk saat ini, open ai belum support untuk membuat summary file excel.
 8. Batasi penggunaan token. Untuk file-file doc atau pdf yang isinya lebih dari 100 halaman, buat duplikasi file sebanyak dua halaman. Tujuannya adalah untuk mempercepat proses summarize. Tujuan dari summarize ini hanya ingin tahu gambaran sekilas tentang sebuah file. Hanya itu.
 9. Buat rencana presentasi. Susun tiap pertemua hanya membahas satu fitur. Misal hari jumat bahas tentang upload file.
+10. Bug, ketika user punya dua akun. 
+Buka salah satu root folder, lalu balik lagi.
+Buka salah satu folder, nanti muncul, maaf saya tidak mengerti.
+List tidak diupdate ketika buka salah satu root folder
