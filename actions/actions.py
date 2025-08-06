@@ -1088,4 +1088,5 @@ class ActionNotifyProcessing(Action):
             text="Mohon ditunggu..."
         )
         # langsung panggil action berikutnya
-        return [FollowupAction("action_to_open_data")]
+        # return [FollowupAction("action_to_open_data")]
+        return []
