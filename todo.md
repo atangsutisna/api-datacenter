@@ -38,3 +38,4 @@ Ini sangat menyenangkan :joy:
 Buka salah satu root folder, lalu balik lagi.
 Buka salah satu folder, nanti muncul, maaf saya tidak mengerti.
 List tidak diupdate ketika buka salah satu root folder
+11. Mengurangi dan menambahkan account ke nomor handphone
