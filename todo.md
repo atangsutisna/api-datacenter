@@ -38,4 +38,11 @@ Ini sangat menyenangkan :joy:
 Buka salah satu root folder, lalu balik lagi.
 Buka salah satu folder, nanti muncul, maaf saya tidak mengerti.
 List tidak diupdate ketika buka salah satu root folder
-11. Mengurangi dan menambahkan account ke nomor handphone
+11. Mengurangi dan menambahkan account ke nomor handphone (todo)
+
+## Bagaimana cara input user?
+1. admin menambahkan nomor handphone dan kaitannya dengan account melalui command.
+2. sistem akan mencatat handphone dan accounts itu ke dalam file mappinguser.json
+3. sistem menunggu user ketika request ke chatbot
+4. request datang, sistem akan melakukan verifikasi nomor handphone
+5. jika nomor handphone valid, ada di file mappinguser.json, maka sistem akan memindahkannya ke db.json
