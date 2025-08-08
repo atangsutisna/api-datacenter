@@ -1,4 +1,4 @@
-import logging, os, re, requests
+import logging, os, re, requests, json
 from telegram.ext import ConversationHandler
 from telegram import Update
 from telegram.ext import ContextTypes
@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
 USER_REPOSITORY_PATH = os.getenv('USER_REPOSITORY_PATH')
+DB_PATH = os.getenv('DB_PATH')
 
 # Enable logging
 logging.basicConfig(
@@ -25,6 +26,22 @@ def format_nomor_hp(nomor: str):
         return "62" + nomor[1:]
     return nomor
 
+def read_db(db_path: str):
+    logger.info("attempting to load db_path %s", DB_PATH)
+    try:
+        with open(DB_PATH, 'r') as f:
+            db_data = json.load(f)
+            if not isinstance(db_data, list):
+                db_data = []
+    except (FileNotFoundError, json.JSONDecodeError):
+        db_data = []
+    return db_data
+
+def is_phone_exist(phone: str, db_path: str):
+    data = read_db(db_path)
+    formatted_phone = format_nomor_hp(phone)
+    return any(item.get("phone") == formatted_phone for item in data)
+
 async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # start reguser-command
     await update.message.reply_text('Silakan masukan nomor HP:')
@@ -33,12 +50,19 @@ async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def receive_phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
     phone = update.message.text.strip()
     # Validasi sederhana nomor HP
+    logger.info("attempting to validate phone %s", phone)
     if not re.match(r"^\d{10,15}$", phone):
         await update.message.reply_text("Nomor HP tidak valid. Coba lagi:")
         return ASK_PHONE
 
-    context.user_data["phone"] = phone
     # todo: di sini perlu dicek apakah nomor handphone sudah ada
+    logger.info("attempting to load db_path %s", DB_PATH)
+    if not is_phone_exist(phone, DB_PATH):
+        await update.message.reply_text("No. Hp tidak dikenali. Silahkan masukan nomor lain")
+        return ASK_PHONE
+
+    logger.info("attempting to find phone with number %s", phone)
+    context.user_data["phone"] = phone
     await update.message.reply_text("Masukan username (pisahkan dengan koma):")
     return ASK_USERNAMES
 
@@ -78,3 +102,5 @@ conversation_handler = ConversationHandler(
     },
     fallbacks=[CommandHandler("batal", cancel)],
 )
+
+# print(is_phone_exist("0909090909090", DB_PATH))
