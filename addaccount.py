@@ -117,7 +117,42 @@ def add_account(db_path: str, phone: str, usernames: []):
         accounts.append(account)
 
     logger.info("Got users from usernames : %r : %r", usernames, accounts)
+    logger.info("Attempting to read db users")
+    with open(DB_PATH, 'r', encoding='utf-8') as file:
+        users = json.load(file)
 
+    formatted_phone = format_nomor_hp(phone)
+    for user in users:
+        if user.get("phone") == formatted_phone:
+            if "accounts" not in user:
+                user["accounts"] = []
+
+            for username in usernames:
+                if not any(acc.get("username") == username for acc in user["accounts"]):
+                    logger.info("attempting add username %s to account %s", username, formatted_phone)
+                    new_account = get_account_by_username(accounts, username)
+                    if new_account:
+                        user["accounts"].append(new_account)
+                    else:
+                        logger.info("Failed to get username with id %s", username)
+                else:
+                    logger.info("Username %s has been exists on phone %s", username, formatted_phone)
+            break
+        else:
+            logger.info("Failed to find phone %s", formatted_phone)
+    
+    logger.info("attempting to update db users")
+    with open(DB_PATH, "w") as f:
+        json.dump(users, f)
+
+def get_account_by_username(accounts, username):
+    return next((acc for acc in accounts if acc.get("username") == username), None)
+
+def username_exist(accounts, usernames):
+    # Ambil semua username dari accounts
+    existing_usernames = {acc.get("username") for acc in accounts}
+    # Cek apakah semua username ada
+    return all(u in existing_usernames for u in usernames)
 
 conversation_handler = ConversationHandler(
     entry_points=[CommandHandler("addaccount", start_cmd)],
