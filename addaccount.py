@@ -75,6 +75,7 @@ def add_account(db_path: str, phone: str, usernames: []):
         users = json.load(file)
 
     formatted_phone = format_nomor_hp(phone)
+    added = False
     for user in users:
         if user.get("phone") == formatted_phone:
             if "accounts" not in user:
@@ -85,6 +86,7 @@ def add_account(db_path: str, phone: str, usernames: []):
                     logger.info("attempting add username %s to account %s", username, formatted_phone)
                     new_account = get_account_by_username(accounts, username)
                     if new_account:
+                        added = True
                         user["accounts"].append(new_account)
                     else:
                         logger.info("Failed to get username with id %s", username)
@@ -97,6 +99,8 @@ def add_account(db_path: str, phone: str, usernames: []):
     logger.info("attempting to update db users")
     with open(DB_PATH, "w") as f:
         json.dump(users, f)
+
+    return added
 
 def get_account_by_username(accounts, username):
     return next((acc for acc in accounts if acc.get("username") == username), None)
@@ -133,11 +137,15 @@ async def receive_usernames(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["usernames"] = usernames
     
     phone_no = context.user_data['phone']
-    add_account(DB_PATH, phone_no, usernames)
-    await update.message.reply_text(
-        f"✅ Akun telah berhasil ditambahkan ke nomor Hp {phone_no}"
-    )
-
+    added = add_account(DB_PATH, phone_no, usernames)
+    if added:
+        await update.message.reply_text(
+            f"✅ Sukses! Akun telah berhasil ditambahkan ke nomor Hp {phone_no}"
+        )
+    else:
+        await update.message.reply_text(
+            f"❌ Gagal! Tidak ada satupun akun yang ditambahkan ke nomor Hp {phone_no}"
+        )
     return ConversationHandler.END
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -154,7 +162,7 @@ conversation_handler = ConversationHandler(
 )
 
 # print(is_phone_exist("0909090909090", DB_PATH))
-# add_account(DB_PATH, '083821230266', ['spark'])
+# print(add_account(DB_PATH, '083821230266', ['spark']))
 # todo: 
 # 1. map username to user and home dir
 # 2. add username to account
