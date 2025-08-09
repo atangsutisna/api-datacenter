@@ -47,53 +47,6 @@ async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text('Silakan masukan nomor HP:')
     return ASK_PHONE
 
-async def receive_phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    phone = update.message.text.strip()
-    # Validasi sederhana nomor HP
-    logger.info("attempting to validate phone %s", phone)
-    if not re.match(r"^\d{10,15}$", phone):
-        await update.message.reply_text("Nomor HP tidak valid. Coba lagi:")
-        return ASK_PHONE
-
-    # todo: di sini perlu dicek apakah nomor handphone sudah ada
-    logger.info("attempting to load db_path %s", DB_PATH)
-    if not is_phone_exist(phone, DB_PATH):
-        await update.message.reply_text("No. Hp tidak dikenali. Silahkan masukan nomor lain")
-        return ASK_PHONE
-
-    logger.info("attempting to find phone with number %s", phone)
-    context.user_data["phone"] = phone
-    await update.message.reply_text("Masukan username (pisahkan dengan koma):")
-    return ASK_USERNAMES
-
-async def receive_usernames(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    username_input = update.message.text.strip()
-    usernames = [u.strip() for u in username_input.split(",") if u.strip()]
-    
-    context.user_data["usernames"] = usernames
-    
-    phone_no = context.user_data['phone']
-    new_user = {
-        "phoneNumber": format_nomor_hp(phone_no),
-        "accounts": usernames
-    }
-    # db_user = ".json"
-    # add_user_to_db(db_user, new_user)
-
-    # Kirim ringkasan data
-    # await update.message.reply_text(
-    #     f"✅ Data berhasil diterima:\n📱 Nomor HP: {context.user_data['phone']}\n👤 Username: {', '.join(usernames)}"
-    # )
-    await update.message.reply_text(
-        f"✅ Username berhasil ditambahkan"
-    )
-
-    return ConversationHandler.END
-
-async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Proses dibatalkan.")
-    return ConversationHandler.END
-
 def add_account(db_path: str, phone: str, usernames: []):
     logger.info("attempting to load all users from origin")
     with open(USER_REPOSITORY_PATH, 'r', encoding='utf-8') as file:
@@ -153,6 +106,53 @@ def username_exist(accounts, usernames):
     existing_usernames = {acc.get("username") for acc in accounts}
     # Cek apakah semua username ada
     return all(u in existing_usernames for u in usernames)
+
+async def receive_phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    phone = update.message.text.strip()
+    # Validasi sederhana nomor HP
+    logger.info("attempting to validate phone %s", phone)
+    if not re.match(r"^\d{10,15}$", phone):
+        await update.message.reply_text("Nomor HP tidak valid. Coba lagi:")
+        return ASK_PHONE
+
+    # todo: di sini perlu dicek apakah nomor handphone sudah ada
+    logger.info("attempting to load db_path %s", DB_PATH)
+    if not is_phone_exist(phone, DB_PATH):
+        await update.message.reply_text("No. Hp tidak dikenali. Silahkan masukan nomor lain")
+        return ASK_PHONE
+
+    logger.info("attempting to find phone with number %s", phone)
+    context.user_data["phone"] = phone
+    await update.message.reply_text("Masukan username (pisahkan dengan koma):")
+    return ASK_USERNAMES
+
+async def receive_usernames(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    username_input = update.message.text.strip()
+    usernames = [u.strip() for u in username_input.split(",") if u.strip()]
+    
+    context.user_data["usernames"] = usernames
+    
+    phone_no = context.user_data['phone']
+    new_user = {
+        "phoneNumber": format_nomor_hp(phone_no),
+        "accounts": usernames
+    }
+    # db_user = ".json"
+    # add_user_to_db(db_user, new_user)
+
+    # Kirim ringkasan data
+    # await update.message.reply_text(
+    #     f"✅ Data berhasil diterima:\n📱 Nomor HP: {context.user_data['phone']}\n👤 Username: {', '.join(usernames)}"
+    # )
+    await update.message.reply_text(
+        f"✅ Username berhasil ditambahkan"
+    )
+
+    return ConversationHandler.END
+
+async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Proses dibatalkan.")
+    return ConversationHandler.END
 
 conversation_handler = ConversationHandler(
     entry_points=[CommandHandler("addaccount", start_cmd)],
