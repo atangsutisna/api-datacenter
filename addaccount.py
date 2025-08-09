@@ -94,6 +94,11 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Proses dibatalkan.")
     return ConversationHandler.END
 
+def add_account(db_path: str, phone: str, usernames: []):
+    logger.info("attempting to load all users from origin")
+    with open(USER_REPOSITORY_PATH, 'r', encoding='utf-8') as file:
+        origin_users = json.load(file)
+
 conversation_handler = ConversationHandler(
     entry_points=[CommandHandler("addaccount", start_cmd)],
     states={
@@ -104,3 +109,6 @@ conversation_handler = ConversationHandler(
 )
 
 # print(is_phone_exist("0909090909090", DB_PATH))
+# todo: 
+# 1. map username to user and home dir
+# 2. add username to account
