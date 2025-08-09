@@ -133,19 +133,9 @@ async def receive_usernames(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["usernames"] = usernames
     
     phone_no = context.user_data['phone']
-    new_user = {
-        "phoneNumber": format_nomor_hp(phone_no),
-        "accounts": usernames
-    }
-    # db_user = ".json"
-    # add_user_to_db(db_user, new_user)
-
-    # Kirim ringkasan data
-    # await update.message.reply_text(
-    #     f"✅ Data berhasil diterima:\n📱 Nomor HP: {context.user_data['phone']}\n👤 Username: {', '.join(usernames)}"
-    # )
+    add_account(DB_PATH, phone_no, usernames)
     await update.message.reply_text(
-        f"✅ Username berhasil ditambahkan"
+        f"✅ Akun telah berhasil ditambahkan ke nomor Hp {phone_no}"
     )
 
     return ConversationHandler.END
@@ -164,7 +154,7 @@ conversation_handler = ConversationHandler(
 )
 
 # print(is_phone_exist("0909090909090", DB_PATH))
-add_account(DB_PATH, '083821230266', ['spark'])
+# add_account(DB_PATH, '083821230266', ['spark'])
 # todo: 
 # 1. map username to user and home dir
 # 2. add username to account
