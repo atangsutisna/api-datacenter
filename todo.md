@@ -38,7 +38,7 @@ Ini sangat menyenangkan :joy:
 Buka salah satu root folder, lalu balik lagi.
 Buka salah satu folder, nanti muncul, maaf saya tidak mengerti.
 List tidak diupdate ketika buka salah satu root folder
-11. Mengurangi dan menambahkan account ke nomor handphone (todo)
+11. ~~Mengurangi dan menambahkan account ke nomor handphone (todo)~~
 
 ## Bagaimana cara input user?
 1. admin menambahkan nomor handphone dan kaitannya dengan account melalui command.
