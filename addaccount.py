@@ -99,6 +99,26 @@ def add_account(db_path: str, phone: str, usernames: []):
     with open(USER_REPOSITORY_PATH, 'r', encoding='utf-8') as file:
         origin_users = json.load(file)
 
+    filtered_accounts = {
+        key: value for key, value in origin_users.items()
+        if value.get("username") in usernames
+    }
+
+    accounts = []
+    for user_id, user_data in filtered_accounts.items():
+        account = {
+            "username": user_data["username"],
+            "fullname": user_data["name"],
+            "homedir": user_data["homedir"],
+            "parentdir": REPOSITORY_PATH + user_data["homedir"],
+            "permissions": user_data["permissions"],
+        }
+        logger.info("attempting to add user id %s to accounts", user_id)
+        accounts.append(account)
+
+    logger.info("Got users from usernames : %r : %r", usernames, accounts)
+
+
 conversation_handler = ConversationHandler(
     entry_points=[CommandHandler("addaccount", start_cmd)],
     states={
@@ -109,6 +129,7 @@ conversation_handler = ConversationHandler(
 )
 
 # print(is_phone_exist("0909090909090", DB_PATH))
+add_account(DB_PATH, '083821230266', ['spark'])
 # todo: 
 # 1. map username to user and home dir
 # 2. add username to account
