@@ -4,7 +4,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 from dotenv import load_dotenv
 import requests, json, bcrypt, os, re, logging
 
-import logincommand, forgotpasscommand, findcommand, uploadfilecommand, regusercommand, addaccount
+import logincommand, forgotpasscommand, findcommand, uploadfilecommand, regusercommand, addaccount, rmaccount
 from userloggedin import get_user_logged_in
 from mappinguser import verify_phone_number
 from myutils import hash_path
@@ -251,6 +251,9 @@ if __name__ == '__main__':
 
     # add account to user
     app.add_handler(addaccount.conversation_handler)
+
+    # remove account to user
+    app.add_handler(rmaccount.conversation_handler)
 
     # help command
     app.add_handler(CommandHandler('bantuan', help_command))

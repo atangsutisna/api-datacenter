@@ -1,5 +1,18 @@
 import hashlib, os
 from userloggedin import get_user_logged_in
+import logging, json
+from dotenv import load_dotenv
+
+# Enable logging
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.DEBUG
+)
+# set higher logging level for httpx to avoid all GET and POST requests being logged
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logger = logging.getLogger(__name__)
+
+load_dotenv()
+DB_PATH = os.getenv('DB_PATH')
 
 def hash_path(path):
     return hashlib.sha1(path.encode()).hexdigest()[:10]
@@ -101,6 +114,27 @@ def get_workspaces(telegram_id: str):
             user_workspaces.append(child_path)
     
     return user_workspaces
+
+def format_mphone_number(nomor: str):
+    if nomor.startswith("0"):
+        return "62" + nomor[1:]
+    return nomor
+
+def is_phone_exist(phone: str, db_path: str):
+    data = read_db(db_path)
+    formatted_phone = format_mphone_number(phone)
+    return any(item.get("phone") == formatted_phone for item in data)
+
+def read_db(db_path: str):
+    logger.info("attempting to load db_path %s", DB_PATH)
+    try:
+        with open(DB_PATH, 'r') as f:
+            db_data = json.load(f)
+            if not isinstance(db_data, list):
+                db_data = []
+    except (FileNotFoundError, json.JSONDecodeError):
+        db_data = []
+    return db_data
 
 # path = "/home/kangatang/git/filegator/repository/spark"
 # lspaths = list_dir(path)
