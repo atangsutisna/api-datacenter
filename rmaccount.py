@@ -5,7 +5,7 @@ from telegram.ext import ContextTypes
 import re
 from telegram.ext import CommandHandler, MessageHandler, filters, ConversationHandler
 from dotenv import load_dotenv
-from myutils import is_phone_exist
+from myutils import is_phone_exist, format_mphone_number, read_db
 
 load_dotenv()
 REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
@@ -21,6 +21,10 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 ASK_PHONE, ASK_USERNAMES = range(2)
+
+def rm_accounts_by_usernames(accounts, usernames):
+    usernames_set = set(usernames)  # biar pencarian lebih cepat
+    return [acc for acc in accounts if acc.get("username") not in usernames_set]
 
 async def start_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # start reguser-command
@@ -53,14 +57,31 @@ async def receive_usernames(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["usernames"] = usernames
     
     phone_no = context.user_data['phone']
+    old_users = data = read_db(DB_PATH)
+
     removed = True
+    formatted_phone = format_mphone_number(phone_no)
+    new_users = []
+    for user in old_users:
+        if user.get("phone") == formatted_phone:
+            if "accounts" not in user:
+                user["accounts"] = []
+            new_users = rm_accounts_by_usernames(user["accounts"], usernames)
+            break
+        else:
+            logger.info("Failed to find phone %s", formatted_phone)
+
     if removed:
+        logger.info("attempting to update db user with new users %r", new_users)
+        with open(DB_PATH, "w") as f:
+            json.dump(new_users, f)
+
         await update.message.reply_text(
-            f"✅ Sukses! Akun telah berhasil ditambahkan ke nomor Hp {phone_no}"
+            f"✅ Sukses! Akun telah berhasil dihapus dari nomor Hp {phone_no}"
         )
     else:
         await update.message.reply_text(
-            f"❌ Gagal! Tidak ada satupun akun yang ditambahkan ke nomor Hp {phone_no}"
+            f"❌ Gagal! Tidak ada satupun akun yang dihapus dari nomor Hp {phone_no}"
         )
     return ConversationHandler.END
 
