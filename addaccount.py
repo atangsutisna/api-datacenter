@@ -158,7 +158,7 @@ conversation_handler = ConversationHandler(
         ASK_PHONE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_phone)],
         ASK_USERNAMES: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_usernames)],
     },
-    fallbacks=[CommandHandler("batal", cancel)],
+    fallbacks=[CommandHandler("cancel", cancel)],
 )
 
 # print(is_phone_exist("0909090909090", DB_PATH))
