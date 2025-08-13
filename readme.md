@@ -1,5 +1,11 @@
 # Chatbot Commands
 
+Untuk menambah pengguna baru dengan hp baru, gunakan perintah ini:
+```
+/reguser
+```
+
+Untuk menambah account pada user, gunakan perintah ini;
 ```
 /addaccount
 ```
