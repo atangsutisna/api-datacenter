@@ -641,7 +641,7 @@ class ActionCheckPermissionRemoveData(Action):
         file_no = tracker.get_slot("file_no")
         # hapus, terus tampilkan list datanya
         # hapus dulu datanya, 
-        chmod_permitted = is_permitted(telegram_id, path, "chmod")
+        chmod_permitted = is_permitted(telegram_id, path, "write")
         if chmod_permitted:
             return [
                 SlotSet("remove_permitted", True)
@@ -676,7 +676,7 @@ class ActionRemoveCurrentPath(Action):
         simple_path = simplified_path(current_path)
 
         logger.info("Got current path %s", current_path)
-        chmod_permitted = self.is_permitted(telegram_id, current_path, "chmod")
+        chmod_permitted = self.is_permitted(telegram_id, current_path, "write")
         if not chmod_permitted:
             dispatcher.utter_message(text=f"Maaf, kamu tidak dijinkan untuk menghapus data")
             return []
