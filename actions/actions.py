@@ -955,6 +955,7 @@ class ActionPerformDownload(Action):
         file_no = tracker.get_slot("file_no")
         logger.info("attempting to send file no %s", file_no)
         search_results = tracker.get_slot("search_results")
+        # TODO: check download
         if search_results:
             logger.info("attempting to load search results %s", search_results)
             user_files = json.loads(search_results)
@@ -1027,7 +1028,7 @@ class ActionDoRename(Action):
         #     SlotSet("file_no", None),
         #     SlotSet("new_name", None)
         # ]
-        
+        # TODO: check permission
         if search_results:
             logger.info("attempting to load search results %s", search_results)
             user_files = json.loads(search_results)
