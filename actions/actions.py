@@ -960,6 +960,21 @@ class ActionPerformDownload(Action):
             logger.info("attempting to load search results %s", search_results)
             user_files = json.loads(search_results)
             selected_path = user_files.get(file_no)
+            # check permission
+            logger.info("Got the file on path %s", selected_path)
+            metadata = tracker.latest_message.get("metadata")
+            fullname = metadata.get("fullname")
+            telegram_id = metadata.get("telegram_id")
+            download_permitted = self.is_permitted(telegram_id, selected_path, "download")
+            logger.info("Is telegram id %s has write permission: %s", telegram_id, download_permitted)
+            if download_permitted is False:
+                dispatcher.utter_message("Maaf, kamu tidak diijinkan untuk mendownload file disini.")
+                return {
+                    "folder_name": None, 
+                    "creation_permitted": False,
+                    "requested_slot": None
+                }
+
             is_file = os.path.isfile(selected_path)
             if is_file:
                 # preparing for download
