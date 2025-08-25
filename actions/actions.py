@@ -1013,6 +1013,10 @@ class ActionGetCurrentPath(Action):
                 }
             )
 class ActionDoRename(Action):
+    def __init__(self):
+        from checkpermissions import is_permitted
+        self.is_permitted = is_permitted
+
     def name(self) -> Text:
         return "action_do_rename"
     
@@ -1028,13 +1032,28 @@ class ActionDoRename(Action):
         #     SlotSet("file_no", None),
         #     SlotSet("new_name", None)
         # ]
-        # TODO: check permission
         if search_results:
             logger.info("attempting to load search results %s", search_results)
             user_files = json.loads(search_results)
             selected_path = user_files.get(file_no)
+
+            # TODO: check permission
             # get old name
             if selected_path:
+                metadata = tracker.latest_message.get("metadata")
+                fullname = metadata.get("fullname")
+                telegram_id = metadata.get("telegram_id")
+                # telegram_id = "7272740693"
+                write_permitted = self.is_permitted(telegram_id, selected_path, "write")
+                logger.info("Is telegram id %s has write permission: %s", telegram_id, write_permitted)
+                if write_permitted is False:
+                    dispatcher.utter_message(response="utter_permission_denied_create_folder")
+                    return {
+                        "folder_name": None, 
+                        "creation_permitted": False,
+                        "requested_slot": None
+                    }
+
                 # do rename
                 is_file = os.path.isfile(selected_path)
                 if is_file:

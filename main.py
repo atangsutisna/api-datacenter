@@ -122,6 +122,7 @@ def handle_response(update: Update, text: str) -> str:
             "fullname": curr_user["fullname"]
         }
     }
+    logger.info("attempting to send request with params %r", data)
     # todo: jangan tambahkan jika request belum selesai, kasih flag. jangan sampai request numpuk
     try:
         response = requests.post(url, json=data)
