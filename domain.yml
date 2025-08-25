@@ -15,6 +15,7 @@ intents:
 - open_file_or_folder
 - ask_to_back
 - ask_remove_data
+- ask_to_home
 # - ask_to_remove_current_path
 - confirm_remove_data
 - deny
@@ -169,6 +170,7 @@ actions:
 - action_get_current_path
 - action_do_rename
 - action_notify_processing
+- action_go_home
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

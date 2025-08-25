@@ -323,6 +323,28 @@ nlu:
     - ganti baris [7](file_no) jadi [agenda rapat 10 Juni](new_name)
     - tolong ubah [1](file_no) ke [template laporan](new_name)
     - rename [5](file_no) jadi [file sementara](new_name)
+- intent: ask_to_home
+  examples: |
+    - pergi ke [home](home_page)
+    - kembali ke [awal](home_page)
+    - ke [beranda](home_page)
+    - pergi ke [root](home_page)
+    - langsung ke [workspace](home_page)
+    - tolong ke [halaman utama](home_page)
+    - ke [start](home_page)
+    - kembali ke [menu awal](home_page)
+    
+- synonym: home
+  examples: |
+    - home
+    - awal
+    - beranda
+    - halaman utama
+    - root
+    - start
+    - workspace
+    - menu awal
+
 - regex: file_no
   examples: |
     - \d{1,3}

@@ -163,3 +163,8 @@ rules:
     - intent: rename_item_by_file_no
     - action: action_do_rename
     - action: action_listen
+
+- rule: Pergi ke halaman home/workspace
+  steps:
+    - intent: ask_to_home
+    - action: action_go_home
