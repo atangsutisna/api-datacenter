@@ -88,6 +88,10 @@ def add_account(db_path: str, phone: str, usernames: []):
                     if new_account:
                         added = True
                         user["accounts"].append(new_account)
+                        if "version" not in user:
+                            user["version"] = 1
+                        else:
+                            user["version"] = user["version"] + 1
                     else:
                         logger.info("Failed to get username with id %s", username)
                 else:
