@@ -57,24 +57,29 @@ async def receive_usernames(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["usernames"] = usernames
     
     phone_no = context.user_data['phone']
-    old_users = data = read_db(DB_PATH)
+    old_users = read_db(DB_PATH)
 
-    removed = True
+    removed = False
     formatted_phone = format_mphone_number(phone_no)
-    new_users = []
     for user in old_users:
         if user.get("phone") == formatted_phone:
             if "accounts" not in user:
                 user["accounts"] = []
-            new_users = rm_accounts_by_usernames(user["accounts"], usernames)
+            else:
+                user["accounts"] = rm_accounts_by_usernames(user["accounts"], usernames)
+                if "version" not in user:
+                    user["version"] = 1
+                else:
+                    user["version"] = user["version"] + 1
+                removed = True
             break
         else:
             logger.info("Failed to find phone %s", formatted_phone)
 
     if removed:
-        logger.info("attempting to update db user with new users %r", new_users)
+        logger.info("attempting to update db user with new users %r", old_users)
         with open(DB_PATH, "w") as f:
-            json.dump(new_users, f)
+            json.dump(old_users, f)
 
         await update.message.reply_text(
             f"✅ Sukses! Akun telah berhasil dihapus dari nomor Hp {phone_no}"
