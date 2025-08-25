@@ -1047,7 +1047,7 @@ class ActionDoRename(Action):
                 write_permitted = self.is_permitted(telegram_id, selected_path, "write")
                 logger.info("Is telegram id %s has write permission: %s", telegram_id, write_permitted)
                 if write_permitted is False:
-                    dispatcher.utter_message(response="utter_permission_denied_create_folder")
+                    dispatcher.utter_message("Maaf, kamu tidak diijinkan untuk merubah nama folder atau file di sini.")
                     return {
                         "folder_name": None, 
                         "creation_permitted": False,
