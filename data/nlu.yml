@@ -278,6 +278,7 @@ nlu:
     - cek lokasi saya sekarang
     - path saat ini tolong
     - di folder mana saya berada
+# ini bena-benar rawan error
 - intent: rename_item_by_file_no
   examples: |
     - rename baris [1](file_no) menjadi [tara](new_name)
