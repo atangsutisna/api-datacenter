@@ -1075,6 +1075,7 @@ class ActionDoRename(Action):
                     # rename file
                     directory = os.path.dirname(selected_path)
                     _, ext = os.path.splitext(selected_path)
+                    logger.info("attempting to rename to be %s%s", new_name, ext)
                     new_path = os.path.join(directory, new_name + ext)
                     try:
                         os.rename(selected_path, new_path)
