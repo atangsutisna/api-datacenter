@@ -1,6 +1,6 @@
 import hashlib, os
 from userloggedin import get_user_logged_in
-import logging, json
+import logging, json,random
 from dotenv import load_dotenv
 
 # Enable logging
@@ -142,6 +142,16 @@ def simplified_path(original_path: str) -> str:
     
     parent_path = os.path.dirname(repository_path)
     return os.path.join(parent_path, folder_name)
+
+def get_ask_to_open_remove_or_download() -> str:
+    additional_responses = [
+        "Ada hal lain yang perlu saya bantu dengan data ini? Misalnya, Kamu ingin menghapus, mengunduh, atau membuka folder lain?",
+        "Perlu bantuan lanjutan? Saya bisa bantu hapus, unduh, atau masuk ke folder lain.",
+        "Apa lagi yang bisa saya lakukan untuk Kamu? Ada pilihan hapus, unduh, atau jelajahi folder.",
+        "Apakah ada tindakan lain yang ingin Kamu lakukan? Misalnya, menghapus, mengunduh, atau membuka folder?",
+        "Sudah selesai dengan ini, atau ada lagi yang bisa saya bantu? Mungkin menghapus, mengunduh, atau membuka folder lain?"
+    ]
+    return random.choice(additional_responses)
 
 # path = "/home/kangatang/git/filegator/repository/spark"
 # lspaths = list_dir(path)
