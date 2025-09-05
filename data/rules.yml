@@ -161,9 +161,17 @@ rules:
 - rule: User want to rename a file or folder
   steps:
     - intent: rename_item_by_file_no
+    - action: rename_form
+    - active_loop: rename_form
+- rule: Selesaikan rename file
+  condition:
+    - active_loop: rename_form
+  steps:
+    - action: rename_form
+    - active_loop: null
     - action: action_do_rename
-    - action: action_listen
-
+    # - action: utter_confirm_rename
+    
 - rule: Pergi ke halaman home/workspace
   steps:
     - intent: ask_to_home

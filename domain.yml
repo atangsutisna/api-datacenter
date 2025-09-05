@@ -23,12 +23,15 @@ intents:
 - show_slots
 - create_new_folder_with_name
 - get_current_path
+- rename_item_by_file_no
 entities:
 - file_no
 - folder_name
 - search_query
 - file_no_to_be_removed
 - new_name
+- new_file_name
+- rename_no
 slots:
   file_no:
     type: text
@@ -81,6 +84,20 @@ slots:
     initial_value: null
     mappings:
       - type: custom
+  new_file_name:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_text
+        conditions:
+          - active_loop: rename_form
+            requested_slot: new_file_name
+  rename_no:
+    type: float
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: rename_no
   # premium_account: # just for testing
   #   type: bool
   #   influence_conversation: true
@@ -97,6 +114,10 @@ forms:
   file_selection_form:
     required_slots:
     - file_no
+  rename_form:
+    required_slots:
+    - rename_no
+    - new_file_name    
   # create_folder_form:
   #   required_slots:
   #   - folder_name
@@ -152,6 +173,12 @@ responses:
     - text: "Berikut adalah nilai slot Anda saat ini:\n{slot_values}"
   utter_data_removed_successfully:
     - text: penghapusan telah selesai
+  utter_ask_new_file_name:
+    - text: "Diganti jadi apa?"
+  utter_ask_rename_no:
+    - text: "Baik, nomor berapa?"
+  utter_confirm_rename:
+    - text: "File sudah diganti namanya. Selesai!"
 actions:
 - action_greeting
 - action_guessing_name
