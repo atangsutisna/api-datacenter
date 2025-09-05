@@ -5,6 +5,12 @@ from rasa_sdk.types import DomainDict
 from rasa_sdk.events import SlotSet
 import logging,sys,os,random,json
 
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.DEBUG
+)
+logger = logging.getLogger(__name__)
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 class ActionListWorkspace(Action):
     def __init__(self):
         from userloggedin import get_user_logged_in
