@@ -1038,7 +1038,7 @@ class ActionDoRename(Action):
     def run(self, dispatcher: CollectingDispatcher,
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
-        file_no = tracker.get_slot("rename_no")
+        file_no = tracker.get_slot("file_no")
         new_name = tracker.get_slot("new_file_name")
         # search_results = tracker.get_slot("search_results")
         logger.info("Run action do rename...")

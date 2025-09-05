@@ -281,19 +281,19 @@ nlu:
 # ini bena-benar rawan error
 - intent: rename_item_by_file_no
   examples: |
-    - saya mau rename baris [1](rename_no)
-    - saya mau ganti nama baris [2](rename_no)
-    - tolong ubah baris [2](rename_no)
-    - saya mau rename item nomor [4](rename_no)
-    - tolong ganti nama di list [5](rename_no)
-    - rename nomor [16](rename_no)
-    - ganti nama yang di baris [30](rename_no)
-    - ubah yang nomor [38](rename_no)
-    - tolong ganti nama item [11](rename_no)
-    - rubah nama baris [7](rename_no)
-    - ganti nama baris [15](rename_no)
-    - ubah nama yang di list nomor [9](rename_no)
-    - rename item [6](rename_no)
+    - saya mau rename baris [1](file_no)
+    - saya mau ganti nama baris [2](file_no)
+    - tolong ubah baris [2](file_no)
+    - saya mau rename item nomor [4](file_no)
+    - tolong ganti nama di list [5](file_no)
+    - rename nomor [16](file_no)
+    - ganti nama yang di baris [30](file_no)
+    - ubah yang nomor [38](file_no)
+    - tolong ganti nama item [11](file_no)
+    - rubah nama baris [7](file_no)
+    - ganti nama baris [15](file_no)
+    - ubah nama yang di list nomor [9](file_no)
+    - rename item [6](file_no)
 
 - intent: ask_to_home
   examples: |

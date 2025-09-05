@@ -31,7 +31,6 @@ entities:
 - file_no_to_be_removed
 - new_name
 - new_file_name
-- rename_no
 slots:
   file_no:
     type: text
@@ -92,12 +91,6 @@ slots:
         conditions:
           - active_loop: rename_form
             requested_slot: new_file_name
-  rename_no:
-    type: float
-    influence_conversation: true
-    mappings:
-      - type: from_entity
-        entity: rename_no
   # premium_account: # just for testing
   #   type: bool
   #   influence_conversation: true
@@ -116,7 +109,7 @@ forms:
     - file_no
   rename_form:
     required_slots:
-    - rename_no
+    - file_no
     - new_file_name    
   # create_folder_form:
   #   required_slots:
