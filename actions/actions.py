@@ -815,14 +815,3 @@ class ActionPerformDownload(Action):
         return [
             SlotSet("file_no", None)
         ]
-
-class ActionNotifyProcessing(Action):
-    def name(self): return "action_notify_processing"
-
-    async def run(self, dispatcher, tracker, domain):
-        dispatcher.utter_message(
-            text="Mohon ditunggu..."
-        )
-        # langsung panggil action berikutnya
-        # return [FollowupAction("action_to_open_data")]
-        return []
