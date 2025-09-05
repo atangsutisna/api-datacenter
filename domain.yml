@@ -167,9 +167,10 @@ responses:
   utter_data_removed_successfully:
     - text: penghapusan telah selesai
   utter_ask_new_file_name:
-    - text: "Diganti jadi apa?"
-  utter_ask_rename_no:
-    - text: "Baik, nomor berapa?"
+    - text: "Baik, silakan tulis nama baru yang kamu inginkan"
+    - text: "Baik, apa nama baru yang ingin diberikan untuk file ini?"
+    - text: "Baik, silakan sebutkan namanya"
+    - text: "Baik, silakan nama baru untuk file yang mau di-rename"
   utter_confirm_rename:
     - text: "File sudah diganti namanya. Selesai!"
 actions:
