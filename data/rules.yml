@@ -59,7 +59,7 @@ rules:
     - action: action_perform_search
     - action: action_listen
 
-- rule: User meminta untuk menimpilkan data yang ada di workspacenya
+- rule: User meminta untuk menampilkan data yang ada di workspacenya
   steps:
     - intent: ask_to_show
     - action: action_show_data
