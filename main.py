@@ -10,6 +10,9 @@ from mappinguser import verify_phone_number
 from myutils import hash_path
 from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
 
+from telegram.error import BadRequest
+from telegram.helpers import escape_markdown
+
 # Enable logging
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.DEBUG
@@ -180,10 +183,18 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         for response in responses:
             logger.info("response %r", response)
             if "text" in response:
-                await update.message.reply_text(
-                    response['text'],
-                    parse_mode="Markdown"
-                )
+                try:
+                    await update.message.reply_text(
+                        response['text'],
+                        parse_mode="Markdown"
+                    )
+                except BadRequest as e:
+                    logger.info("there is something wrong when parsing response")
+                    safe_text = escape_markdown(response['text'], version=2)
+                    await update.message.reply_text(
+                        safe_text,
+                        parse_mode="MarkdownV2"
+                    )
             if "attachment" in response:
                 attachment = response['attachment']
                 path_to_file = attachment["payload"]["url"]
