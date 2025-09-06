@@ -25,6 +25,7 @@ def is_permitted(telegram_id: str, target_path: str, action: str) -> bool:
     is_permitted = False
     for account in accounts:
         workspace = account['parentdir']
+        logger.info("workspace %s, target path %s", workspace, target_path)
         if is_child(workspace, target_path) or workspace == target_path:
             permissions = account['permissions']
             if action in permissions:
@@ -33,7 +34,7 @@ def is_permitted(telegram_id: str, target_path: str, action: str) -> bool:
         else:
             child = is_child(workspace, target_path)
             in_workspace = workspace == target_path
-            logger.info("path %s is child %s or is_workspace %s", target_path, child, is_workspace)
+            logger.info("path %s is child %s or is_workspace %s", target_path, child, in_workspace)
     
     return is_permitted
 # upload_permitted = is_permitted("7272740693", "/home/kangatang/git/filegator/repository/atang/sorangan/", "upload")
