@@ -54,6 +54,7 @@ class ActionPerformDownload(Action):
             is_file = os.path.isfile(selected_path)
             if is_file:
                 # preparing for download
+                # todo: create zip file or a link
                 simple_root_path = self.simplified_path(selected_path)
                 file_name = os.path.basename(selected_path)
                 dispatcher.utter_message(
@@ -69,6 +70,7 @@ class ActionPerformDownload(Action):
                 )
             else:
                 # create file attachment
+                # todo: create zip file for download
                 dispatcher.utter_message(text="Saya sedang menyiapkan file download untuk kamu")
         else:
             dispatcher.utter_message(text="Saya tidak menemukan data tersebut")
