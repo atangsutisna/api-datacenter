@@ -26,12 +26,17 @@ class ActionGetCurrentPath(Action):
             """)
         else:
             current_path = tracker.get_slot("current_path")
-            current_path = self.simplified_path(current_path)
-            dispatcher.utter_message(
-                text=f"Path saat ini: {current_path}",
-                custom={
-                    "data": {
-                        "current_path": current_path,
+            if current_path is None:
+                dispatcher.utter_message(
+                    text=f"Kamu sedang berada di beranda",
+                )
+            else:                
+                current_path = self.simplified_path(current_path)
+                dispatcher.utter_message(
+                    text=f"Path saat ini: {current_path}",
+                    custom={
+                        "data": {
+                            "current_path": current_path,
+                        }
                     }
-                }
-            )
+                )
