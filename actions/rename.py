@@ -15,11 +15,15 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 class ActionDoRename(Action):
     def __init__(self):
         from checkpermissions import is_permitted
-        from myutils import simplified_path,get_range_list
+        from myutils import list_dir,build_response,to_dict,simplified_path,get_ask_to_open_remove_or_download,get_range_list
 
         self.is_permitted = is_permitted
         self.simplified_path = simplified_path
         self.get_range_list = get_range_list
+        self.list_dir = list_dir
+        self.build_response = build_response
+        self.to_dict = to_dict
+        self.get_ask_to_open_remove_or_download = get_ask_to_open_remove_or_download
 
     def name(self) -> Text:
         return "action_do_rename"
@@ -32,7 +36,7 @@ class ActionDoRename(Action):
         search_results = tracker.get_slot("search_results")
         # TODO: handle if the name has exist
         logger.info("original file no %s", file_no)
-        file_no = file_no.lstrip("0")
+        # file_no = file_no.lstrip("0")
         logger.info("attempting to rename file no %s to be %s", file_no, new_name)
         # dispatcher.utter_message(text=f"File line {file_no} will be rename to be {new_name}")
         # return [
@@ -125,6 +129,7 @@ class ActionDoRename(Action):
         else:
             dispatcher.utter_message(text=f"Saya tidak menemukan file dengan nomor atau baris {file_no}")
 
+        # lspaths = self.list_dir(current_path)
         return [
             SlotSet("file_no", None),
             SlotSet("new_file_name", None),

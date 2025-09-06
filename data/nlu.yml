@@ -317,9 +317,13 @@ nlu:
     - workspace
     - menu awal
 
-- regex: file_no
-  examples: |
-    - \d{1,3}
-- regex: file_no_to_be_removed
-  examples: |
-    - \d{1,3}
+# ini bermasalah ketika saya memberikan perintah rename dengan nama misal cerita-01.
+# string cerita-01,akan membuat file_no menjadi 01, atau cerita-03, maka file_no akan menjadi 3
+# pemilihan menjadi kacau
+
+# - regex: file_no
+#   examples: |
+#     - \d{1,3}
+# - regex: file_no_to_be_removed
+#   examples: |
+#     - \d{1,3}
