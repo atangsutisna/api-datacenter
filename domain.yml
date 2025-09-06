@@ -91,6 +91,11 @@ slots:
         conditions:
           - active_loop: rename_form
             requested_slot: new_file_name
+  has_rename_permission:
+    type: bool
+    influence_conversation: true
+    mappings:
+      - type: custom
   # premium_account: # just for testing
   #   type: bool
   #   influence_conversation: true
@@ -173,6 +178,8 @@ responses:
     - text: "Baik, silakan nama baru untuk file yang mau di-rename"
   utter_confirm_rename:
     - text: "File sudah diganti namanya. Selesai!"
+  utter_no_rename_permission:
+    - text: "Kamu tidak punya izin untuk rename."
 actions:
 - action_greeting
 - action_guessing_name
@@ -192,6 +199,7 @@ actions:
 - action_do_rename
 - action_notify_processing
 - action_go_home
+- action_prepare_rename
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

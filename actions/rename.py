@@ -41,7 +41,7 @@ class ActionDoRename(Action):
             logger.info("attempting to load search results %s", search_results)
             user_files = json.loads(search_results)
             selected_path = user_files.get(file_no)
-
+            
             # TODO: check permission
             # get old name
             if selected_path:
@@ -56,6 +56,7 @@ class ActionDoRename(Action):
                     return [
                         SlotSet("file_no", None),
                         SlotSet("new_file_name", None),
+                        SlotSet("has_rename_permission", None)
                     ]
                     # return {
                     #     "folder_name": None,
@@ -123,5 +124,6 @@ class ActionDoRename(Action):
 
         return [
             SlotSet("file_no", None),
-            SlotSet("new_file_name", None)
+            SlotSet("new_file_name", None),
+            SlotSet("has_rename_permission", None)
         ]

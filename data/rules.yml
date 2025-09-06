@@ -158,20 +158,47 @@ rules:
 # end of rule remove data
 
 # rename  a folder or file
-- rule: User want to rename a file or folder
+# - rule: User want to rename a file or folder
+#   steps:
+#     - intent: rename_item_by_file_no
+#     - action: action_prepare_rename
+#     - action: rename_form
+#     - active_loop: rename_form
+# - rule: Selesaikan rename file
+#   condition:
+#     - active_loop: rename_form
+#   steps:
+#     - action: rename_form
+#     - active_loop: null
+#     - action: action_do_rename
+
+# - rule: Konfirmasi rename setelah form selesai
+#   condition:
+#     - active_loop: rename_form
+#   steps:
+#     - action: rename_form
+#     - active_loop: null
+#     - action: action_do_rename
+
+- rule: User has permission to rename
   steps:
     - intent: rename_item_by_file_no
+    - action: action_prepare_rename
+    - slot_was_set:
+        - has_rename_permission: true
     - action: rename_form
     - active_loop: rename_form
-- rule: Selesaikan rename file
-  condition:
-    - active_loop: rename_form
-  steps:
-    - action: rename_form
     - active_loop: null
     - action: action_do_rename
-    # - action: utter_confirm_rename
     
+- rule: User has no permission to rename
+  steps:
+    - intent: rename_item_by_file_no
+    - action: action_prepare_rename
+    - slot_was_set:
+        - has_rename_permission: false
+    - action: utter_no_rename_permission
+# go home / ke beranda
 - rule: Pergi ke halaman home/workspace
   steps:
     - intent: ask_to_home

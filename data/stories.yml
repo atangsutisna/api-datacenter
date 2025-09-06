@@ -101,3 +101,13 @@ stories:
     #   - premium_account: false has been removed
     # - action: utter_basic_account
     # - action: utter_when_to_upgrade
+#  - story: User has permission to rename
+#    steps:
+#     - intent: rename_item_by_file_no
+#     - action: action_prepare_rename
+#     - slot_was_set:
+#         - has_rename_permission: true
+#     - action: rename_form
+#     - active_loop: rename_form
+#     - active_loop: null
+#     - action: action_do_rename
