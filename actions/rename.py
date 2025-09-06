@@ -54,7 +54,8 @@ class ActionDoRename(Action):
                 if write_permitted is False:
                     dispatcher.utter_message("Maaf, kamu tidak diijinkan untuk merubah nama folder atau file di sini.")
                     return {
-                        "folder_name": None, 
+                        "folder_name": None,
+                        "new_file_name": None, 
                         "creation_permitted": False,
                         "requested_slot": None
                     }
