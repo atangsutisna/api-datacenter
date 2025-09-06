@@ -58,6 +58,7 @@ async def start_upload_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
             telegram_id = str(update.effective_user.id)
             context.user_data['current_directory'] = current_path
             upload_permitted = is_permitted(telegram_id, current_path, "upload")
+            logger.info("is %s permitted to upload to path %s", curr_user, current_path)
             if not upload_permitted:
                 await update.message.reply_text("Mohon maaf, kamu tidak punya ijin untuk melakukan upload.")
                 return
