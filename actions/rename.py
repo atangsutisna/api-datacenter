@@ -31,6 +31,8 @@ class ActionDoRename(Action):
         new_name = tracker.get_slot("new_file_name")
         search_results = tracker.get_slot("search_results")
         # TODO: handle if the name has exist
+        logger.info("original file no %s", file_no)
+        file_no = file_no.lstrip("0")
         logger.info("attempting to rename file no %s to be %s", file_no, new_name)
         # dispatcher.utter_message(text=f"File line {file_no} will be rename to be {new_name}")
         # return [
