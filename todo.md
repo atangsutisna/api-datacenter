@@ -47,3 +47,9 @@ List tidak diupdate ketika buka salah satu root folder
 3. sistem menunggu user ketika request ke chatbot
 4. request datang, sistem akan melakukan verifikasi nomor handphone
 5. jika nomor handphone valid, ada di file mappinguser.json, maka sistem akan memindahkannya ke db.json
+
+## Perbaikan dan Testing Sabtu, 6 September 2025
+1. Download file
+2. Rename file with existing name
+3. Create a new folder with existing name
+4. Sebelum menghapus, cek dl permissionnya
