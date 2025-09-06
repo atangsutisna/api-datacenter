@@ -159,7 +159,7 @@ responses:
   utter_folder_created_success:
     - text: "Folder '{folder_name}' berhasil dibuat di '{current_path}'"
   utter_create_folder_failed:
-    - text: "Gagal membuat '{folder_name}'. Terjadi kesalahan."
+    - text: "Terjadi kesalahan saat membuat folder `{folder_name}`. Silakan hubungi Admin."
   utter_submit: 
     - text: Baik form telah selesai.
   utter_slots_values:

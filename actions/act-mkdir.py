@@ -123,6 +123,7 @@ class ActionCreateFolder(Action):
                     SlotSet("creation_permitted", None),
                 ]
             except Exception as e:
+                logger.info("Failed to create folder %s", folder_name)
                 dispatcher.utter_message(response="utter_create_folder_failed", folder_name=folder_name)
                 traceback.print_exc()
                 return [
