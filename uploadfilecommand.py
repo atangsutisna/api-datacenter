@@ -50,7 +50,7 @@ async def start_upload_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # get current path from rasa
         req_result = get_current_path(telegram_id)
         logger.info("get custom data %r", req_result)
-        current_path = req_result['current_path']
+        current_path = req_result['full_current_path']
         if current_path is None:
             await update.message.reply_text('Mohon tentukan terlebih dahulu di folder mana kamu akan menyimpan filenya')
         else:
@@ -133,6 +133,7 @@ async def done_upload(update: Update, context: ContextTypes.DEFAULT_TYPE):
     return ConversationHandler.END
 
 async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    logger.info("File upload action is canceled")
     await update.message.reply_text('Upload dibatalkan. Terima kasih.')
     return ConversationHandler.END
 
@@ -141,7 +142,8 @@ upload_cmd_handler = ConversationHandler(
     states={
         WAITING_FOR_FILE: [
             CommandHandler("selesai", done_upload),
-            MessageHandler(filters.ALL, receive_file)
+            CommandHandler("batal", cancel_command),
+            MessageHandler((filters.Document.ALL | filters.PHOTO) & ~filters.COMMAND, receive_file)
         ],
     },
     fallbacks=[CommandHandler("batal", cancel_command)]

@@ -26,8 +26,8 @@ def is_permitted(telegram_id: str, target_path: str, action: str) -> bool:
     is_permitted = False
     for account in accounts:
         workspace = account['parentdir']
-        logger.info("workspace %s, target path %s", simplified_path(workspace), target_path)
-        if is_child(workspace, target_path) or simplified_path(workspace) == target_path:
+        logger.info("workspace %s, target path %s", workspace, target_path)
+        if is_child(workspace, target_path) or workspace == target_path:
             permissions = account['permissions']
             if action in permissions:
                 is_permitted = True
