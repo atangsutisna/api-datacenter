@@ -152,6 +152,13 @@ def get_ask_to_open_remove_or_download() -> str:
         "Sudah selesai dengan ini, atau ada lagi yang bisa saya bantu? Mungkin menghapus, mengunduh, atau membuka folder lain?"
     ]
     return random.choice(additional_responses)
+    
+def get_range_list(dictionary):
+    if not dictionary:
+        return "No data"
+    min_key = min(int(k) for k in dictionary.keys())
+    max_key = max(int(k) for k in dictionary.keys())
+    return f"{min_key}..{max_key}"
 
 # path = "/home/kangatang/git/filegator/repository/spark"
 # lspaths = list_dir(path)

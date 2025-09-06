@@ -15,10 +15,11 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 class ActionDoRename(Action):
     def __init__(self):
         from checkpermissions import is_permitted
-        from myutils import simplified_path
+        from myutils import simplified_path,get_range_list
 
         self.is_permitted = is_permitted
         self.simplified_path = simplified_path
+        self.get_range_list = get_range_list
 
     def name(self) -> Text:
         return "action_do_rename"
@@ -41,7 +42,7 @@ class ActionDoRename(Action):
             logger.info("attempting to load search results %s", search_results)
             user_files = json.loads(search_results)
             selected_path = user_files.get(file_no)
-            
+
             # TODO: check permission
             # get old name
             if selected_path:
@@ -110,7 +111,7 @@ class ActionDoRename(Action):
                             logger.info(f"Failed to rename the folder {e}")
                             dispatcher.utter_message(text="Mohon maaf, sepertinya ada kesalahan sistem. Rename file gagal")                    
             else:
-                range_list = get_range_list(user_files)
+                range_list = self.get_range_list(user_files)
                 max_no = max(int(k) for k in user_files.keys())
                 messages = [
                     f"Hmm, nomor {file_no} di luar rentang data yang saya miliki 🤔. Saya punya data {range_list}. Apakah ada nomor lain yang kamu maksud?",
@@ -125,5 +126,5 @@ class ActionDoRename(Action):
         return [
             SlotSet("file_no", None),
             SlotSet("new_file_name", None),
-            SlotSet("has_rename_permission", None)
+            # SlotSet("has_rename_permission", None)
         ]
