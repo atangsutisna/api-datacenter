@@ -3,7 +3,7 @@ from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.types import DomainDict
 from rasa_sdk.events import SlotSet
-import logging,sys,os,random,json
+import logging,sys,os,random,json,shutil
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.DEBUG
