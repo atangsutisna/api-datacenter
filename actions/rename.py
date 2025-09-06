@@ -79,14 +79,31 @@ class ActionDoRename(Action):
                     # rename folder
                     parent_dir = os.path.dirname(selected_path)
                     new_path = os.path.join(parent_dir, new_name)
-                    try:
-                        os.rename(selected_path, new_path)
+
+                    # validate new_path
+                    if os.path.exists(new_path):
                         old_name = self.simplified_path(selected_path)
-                        new_name = self.simplified_path(new_path)
-                        dispatcher.utter_message(text=f"File `{old_name}` telah diubah namanya menjadi `{new_name}`")
-                    except Exception as e:
-                        logger.info(f"Failed to rename the folder {e}")
-                        dispatcher.utter_message(text="Mohon maaf, sepertinya ada kesalahan sistem. Rename file gagal")                    
+                        dispatcher.utter_message(
+                            text=f"Maaf, tidak dapat mengganti nama `{old_name}` menjadi `{new_name}`, "
+                                f"karena sudah ada file/folder dengan nama tersebut."
+                        )
+                    else:
+                        try:
+                            os.rename(selected_path, new_path)
+                            old_name = self.simplified_path(selected_path)
+                            new_name = self.simplified_path(new_path)
+                            dispatcher.utter_message(text=f"File `{old_name}` telah diubah namanya menjadi `{new_name}`")
+                        except PermissionError:
+                            dispatcher.utter_message(
+                                text="Gagal mengganti nama file karena tidak ada izin."
+                            )
+                        except FileNotFoundError:
+                            dispatcher.utter_message(
+                                text="Gagal mengganti nama file. File asal tidak ditemukan."
+                            )
+                        except Exception as e:
+                            logger.info(f"Failed to rename the folder {e}")
+                            dispatcher.utter_message(text="Mohon maaf, sepertinya ada kesalahan sistem. Rename file gagal")                    
             else:
                 range_list = get_range_list(user_files)
                 max_no = max(int(k) for k in user_files.keys())
