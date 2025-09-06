@@ -53,13 +53,16 @@ class ActionDoRename(Action):
                 logger.info("Is telegram id %s has write permission: %s", telegram_id, write_permitted)
                 if write_permitted is False:
                     dispatcher.utter_message("Maaf, kamu tidak diijinkan untuk merubah nama folder atau file di sini.")
-                    return {
-                        "folder_name": None,
-                        "new_file_name": None, 
-                        "creation_permitted": False,
-                        "requested_slot": None
-                    }
-
+                    return [
+                        SlotSet("file_no", None),
+                        SlotSet("new_file_name", None),
+                    ]
+                    # return {
+                    #     "folder_name": None,
+                    #     "new_file_name": None, 
+                    #     "creation_permitted": False,
+                    #     "requested_slot": None
+                    # }
                 # do rename
                 is_file = os.path.isfile(selected_path)
                 if is_file:
