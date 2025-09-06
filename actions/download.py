@@ -47,11 +47,9 @@ class ActionPerformDownload(Action):
             logger.info("Is telegram id %s has write permission: %s", telegram_id, download_permitted)
             if download_permitted is False:
                 dispatcher.utter_message("Maaf, kamu tidak diijinkan untuk mendownload file disini.")
-                return {
-                    "folder_name": None, 
-                    "creation_permitted": False,
-                    "requested_slot": None
-                }
+                return [
+                    SlotSet("file_no", None)
+                ]
 
             is_file = os.path.isfile(selected_path)
             if is_file:

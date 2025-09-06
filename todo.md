@@ -53,3 +53,7 @@ List tidak diupdate ketika buka salah satu root folder
 2. Rename file with existing name
 3. Create a new folder with existing name
 4. Sebelum menghapus, cek dl permissionnya
+
+
+1. Bagaimana menghandle jika rename nggak jadi?
+2. Folder root tidak boleh diubah
