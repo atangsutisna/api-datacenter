@@ -42,7 +42,6 @@ import json
 import shutil
 import traceback
 from pathlib import Path
-# from rasa_sdk.events import 
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -57,34 +56,34 @@ logger = logging.getLogger(__name__)
 # REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
 # OPENAI_APIKEY = os.getenv('OPENAI_APIKEY')
 
-def get_range_list(dictionary):
-    if not dictionary:
-        return "No data"
-    min_key = min(int(k) for k in dictionary.keys())
-    max_key = max(int(k) for k in dictionary.keys())
-    return f"{min_key}..{max_key}"
+# def get_range_list(dictionary):
+#     if not dictionary:
+#         return "No data"
+#     min_key = min(int(k) for k in dictionary.keys())
+#     max_key = max(int(k) for k in dictionary.keys())
+#     return f"{min_key}..{max_key}"
 
-def get_file_size_bytes(file_path):
-    return os.path.getsize(file_path)
+# def get_file_size_bytes(file_path):
+#     return os.path.getsize(file_path)
 
-def get_folder_size_bytes(folder_path):
-    total_size = 0
-    for dirpath, _, filenames in os.walk(folder_path):
-        for f in filenames:
-            fp = os.path.join(dirpath, f)
-            if os.path.isfile(fp):
-                total_size += os.path.getsize(fp)
-    return total_size    
+# def get_folder_size_bytes(folder_path):
+#     total_size = 0
+#     for dirpath, _, filenames in os.walk(folder_path):
+#         for f in filenames:
+#             fp = os.path.join(dirpath, f)
+#             if os.path.isfile(fp):
+#                 total_size += os.path.getsize(fp)
+#     return total_size    
 
-def format_size(size_bytes):
-    if size_bytes < 1024:
-        return f"{size_bytes} B"
-    elif size_bytes < 1024**2:
-        return f"{size_bytes / 1024:.2f} KB"
-    elif size_bytes < 1024**3:
-        return f"{size_bytes / 1024**2:.2f} MB"
-    else:
-        return f"{size_bytes / 1024**3:.2f} GB"
+# def format_size(size_bytes):
+#     if size_bytes < 1024:
+#         return f"{size_bytes} B"
+#     elif size_bytes < 1024**2:
+#         return f"{size_bytes / 1024:.2f} KB"
+#     elif size_bytes < 1024**3:
+#         return f"{size_bytes / 1024**2:.2f} MB"
+#     else:
+#         return f"{size_bytes / 1024**3:.2f} GB"
 
 def simplified_path(original_path: str) -> str:
     folder_name = os.path.basename(original_path)
@@ -103,35 +102,9 @@ def get_ask_to_open_remove_or_download() -> str:
     ]
     return random.choice(additional_responses)
 
-def get_ext(path: str) -> str:
-    fullpath = Path(path)
-    return fullpath.suffix.lstrip(".")
-
-class ActionCheckPermissionRemoveData(Action):
-    def __init__(self):
-        from checkpermissions import is_permitted
-        self.is_permitted = is_permitted
-
-    def name(self):
-        return "action_check_permission_remove_data"
-
-    async def run(self, dispatcher: CollectingDispatcher,
-                  tracker: Tracker,
-                  domain: dict):
-        logger.info("starting to check permission")
-        file_no = tracker.get_slot("file_no")
-        # hapus, terus tampilkan list datanya
-        # hapus dulu datanya, 
-        chmod_permitted = is_permitted(telegram_id, path, "write")
-        if chmod_permitted:
-            return [
-                SlotSet("remove_permitted", True)
-            ]
-        else:
-            dispatcher.utter_message(text=f"Mohon maaf, kamu nggak punya akses untuk menghapus data")
-            return [
-                SlotSet("remove_permitted", False)
-            ]
+# def get_ext(path: str) -> str:
+#     fullpath = Path(path)
+#     return fullpath.suffix.lstrip(".")
 
 class ActionRemoveCurrentPath(Action):
     def __init__(self):
