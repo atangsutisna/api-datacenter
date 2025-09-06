@@ -3,6 +3,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 import os
 import logging
+from myutils import simplified_path
 
 load_dotenv()
 REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
@@ -25,15 +26,15 @@ def is_permitted(telegram_id: str, target_path: str, action: str) -> bool:
     is_permitted = False
     for account in accounts:
         workspace = account['parentdir']
-        logger.info("workspace %s, target path %s", workspace, target_path)
-        if is_child(workspace, target_path) or workspace == target_path:
+        logger.info("workspace %s, target path %s", simplified_path(workspace), target_path)
+        if is_child(workspace, target_path) or simplified_path(workspace) == target_path:
             permissions = account['permissions']
             if action in permissions:
                 is_permitted = True
                 break
         else:
             child = is_child(workspace, target_path)
-            in_workspace = workspace == target_path
+            in_workspace = simplified_path(workspace) == target_path
             logger.info("path %s is child %s or is_workspace %s", target_path, child, in_workspace)
     
     return is_permitted
