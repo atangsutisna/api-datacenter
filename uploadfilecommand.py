@@ -78,7 +78,7 @@ async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
     telegram_id = str(update.effective_user.id)
     req_result = get_current_path(telegram_id)
     logger.info("get custom data %r", req_result)
-    current_path = req_result['current_path']
+    current_path = req_result['full_current_path']
     # cek foto
     if update.message.photo:
         photo_list = update.message.photo
@@ -122,11 +122,13 @@ async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def done_upload(update: Update, context: ContextTypes.DEFAULT_TYPE):
     uploaded = context.user_data.get('uploaded_files', [])
     current_dir = context.user_data['current_directory']
-    simplified_current_dir = simplified_path(current_dir)
+
+    logger.info(f"Got {len(uploaded)} on {current_dir}")
+    # simplified_current_dir = simplified_path(current_dir)
     if uploaded:
-        await update.message.reply_text(f"📂 {len(uploaded)} file berhasil diunggah ke folder `{simplified_current_dir}`", parse_mode="Markdown")
+        await update.message.reply_text(f"📂 {len(uploaded)} file berhasil diunggah ke folder `{current_dir}`", parse_mode="Markdown")
     else:
-        await update.message.reply_text(f"Tidak ada file yang dikirim di `{simplified_current_dir}`", parse_mode="Markdown")
+        await update.message.reply_text(f"Tidak ada file yang dikirim di `{current_dir}`", parse_mode="Markdown")
 
     return ConversationHandler.END
 

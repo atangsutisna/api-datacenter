@@ -31,12 +31,13 @@ class ActionGetCurrentPath(Action):
                     text=f"Kamu sedang berada di beranda",
                 )
             else:                
-                current_path = self.simplified_path(current_path)
+                simplified_current_path = self.simplified_path(current_path)
                 dispatcher.utter_message(
-                    text=f"Path saat ini: {current_path}",
+                    text=f"Path saat ini: {simplified_current_path}",
                     custom={
                         "data": {
-                            "current_path": current_path,
+                            "current_path": simplified_current_path,
+                            "full_current_path": current_path
                         }
                     }
                 )
