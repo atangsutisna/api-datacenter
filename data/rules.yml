@@ -129,6 +129,9 @@ rules:
 - rule: user want to remove data
   steps:
   - intent: ask_remove_data
+  - action: action_prepare_remove
+  - slot_was_set:
+      - has_rm_permission: true
   - action: utter_ask_confirm_remove_data
   - slot_was_set:
       - file_no_to_be_removed: not null
@@ -155,6 +158,14 @@ rules:
     - intent: deny
     - action: utter_ask_deny_remove_data
     - action: action_listen
+
+- rule: User has no permission to remove
+  steps:
+    - intent: ask_remove_data
+    - action: action_prepare_remove
+    - slot_was_set:
+        - has_rm_permission: false
+    - action: utter_no_rm_permission
 # end of rule remove data
 
 # rename  a folder or file

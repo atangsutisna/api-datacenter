@@ -96,6 +96,11 @@ slots:
     influence_conversation: true
     mappings:
       - type: custom
+  has_rm_permission:
+    type: bool
+    influence_conversation: true
+    mappings:
+      - type: custom
   # premium_account: # just for testing
   #   type: bool
   #   influence_conversation: true
@@ -180,6 +185,8 @@ responses:
     - text: "File sudah diganti namanya. Selesai!"
   utter_no_rename_permission:
     - text: "Kamu tidak punya izin untuk rename."
+  utter_no_rm_permission:
+    - text: "Kamu tidak punya izin untuk menghapus."
 actions:
 - action_greeting
 - action_guessing_name
@@ -200,6 +207,7 @@ actions:
 - action_notify_processing
 - action_go_home
 - action_prepare_rename
+- action_prepare_remove
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
