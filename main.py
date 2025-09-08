@@ -199,7 +199,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 attachment = response['attachment']
                 download_url = attachment["payload"]["url"]
                 caption = attachment['payload']['title']
-                logger.info("Got path to file %s with capton %s", path_to_file, caption)
+                logger.info("Got download file %s with capton %s", download_url, caption)
                 # caption = "Sample.pdf"
                 await context.bot.send_document(
                     chat_id=chat_id,

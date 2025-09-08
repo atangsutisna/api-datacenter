@@ -187,6 +187,10 @@ responses:
     - text: "Kamu tidak punya izin untuk rename."
   utter_no_rm_permission:
     - text: "Kamu tidak punya izin untuk menghapus."
+  utter_waiting_download:
+    - text: "Baik, mungkin ini akan memerlukan waktu beberapa menit untuk menyiapkan file. Mohon ditunggu."
+    - text: "Mohon ditunggu ya, mungkin perlu beberapa menit untuk menyiapkan filenya."
+    - text: "Baik, mohon ditunggu ya. Biasanya memerlukan beberapa menit untuk menyiapkan filenya."
 actions:
 - action_greeting
 - action_guessing_name

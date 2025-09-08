@@ -41,6 +41,7 @@ rules:
     - intent: ask_download
     - slot_was_set:
       - file_no: not null
+    - action: utter_waiting_download
     - action: action_perform_download
 
 - rule: How to upload

@@ -67,7 +67,7 @@ class ActionPerformDownload(Action):
                 else:
                     short_url = self.shorten_url(long_url)
                     dispatcher.utter_message(
-                        text="Baik, mohon ditunggu...",
+                        text="Ini linknya, silahkan.",
                         attachment={
                             "type": "file",
                             "payload": {
