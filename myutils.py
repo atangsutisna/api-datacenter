@@ -2,6 +2,7 @@ import hashlib, os
 from userloggedin import get_user_logged_in
 import logging, json,random
 from dotenv import load_dotenv
+import requests
 
 # Enable logging
 logging.basicConfig(
@@ -159,6 +160,36 @@ def get_range_list(dictionary):
     min_key = min(int(k) for k in dictionary.keys())
     max_key = max(int(k) for k in dictionary.keys())
     return f"{min_key}..{max_key}"
+
+
+
+# def upload_once(file_path):
+#     url = "https://file.io"
+#     with open(file_path, "rb") as f:
+#         response = requests.post(url, files={"file": f})
+#     print("Status:", response.status_code)
+#     print("Response text:", response.text)
+#     return response.json()["link"]
+
+# link = upload_once("/home/kangatang/git/filegator/repository/samplepptx.pptx")
+# print("One-time download link:", link)
+
+def upload_to_filebin(filepath: str):
+    file_name = os.path.basename(filepath)
+    url = "https://filebin.net/insi-datacenter/"+ file_name
+
+    with open(filepath, "rb") as f:
+        files = {"file": f}
+        response = requests.post(url, files=files)
+    
+    if response.ok:
+        logger.info("Upload sukses: %s", response.url)
+        return response.url
+    else:
+        logger.info("Gagal upload: %s : %s", response.status_code, response.text)
+        return None
+# link = upload_to_filebin("/home/kangatang/git/filegator/repository/dummy.pdf")
+# print("Link download:", link)
 
 # path = "/home/kangatang/git/filegator/repository/spark"
 # lspaths = list_dir(path)
