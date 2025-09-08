@@ -201,12 +201,13 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 caption = attachment['payload']['title']
                 logger.info("Got path to file %s with capton %s", path_to_file, caption)
                 # caption = "Sample.pdf"
-                await context.bot.send_document(
-                    chat_id=chat_id,
-                    document=open(path_to_file, "rb"),
-                    caption=f"📎 Klik untuk mengunduh",
-                    parse_mode="Markdown"
-                )
+                with open(path_to_file, "rb") as f:
+                    await context.bot.send_document(
+                        chat_id=chat_id,
+                        document=f,
+                        caption=f"📎 Klik untuk mengunduh",
+                        parse_mode="Markdown"
+                    )
 
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info(f'Update {update} caused error {context.error}')
