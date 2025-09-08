@@ -7,7 +7,7 @@ import requests, json, bcrypt, os, re, logging
 import logincommand, forgotpasscommand, findcommand, uploadfilecommand, regusercommand, addaccount, rmaccount
 from userloggedin import get_user_logged_in
 from mappinguser import verify_phone_number
-from myutils import hash_path
+from myutils import hash_path,upload_to_filebin,shorten_url
 from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
 
 from telegram.error import BadRequest
@@ -197,17 +197,16 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     )
             if "attachment" in response:
                 attachment = response['attachment']
-                path_to_file = attachment["payload"]["url"]
+                download_url = attachment["payload"]["url"]
                 caption = attachment['payload']['title']
                 logger.info("Got path to file %s with capton %s", path_to_file, caption)
                 # caption = "Sample.pdf"
-                with open(path_to_file, "rb") as f:
-                    await context.bot.send_document(
-                        chat_id=chat_id,
-                        document=f,
-                        caption=f"📎 Klik untuk mengunduh",
-                        parse_mode="Markdown"
-                    )
+                await context.bot.send_document(
+                    chat_id=chat_id,
+                    document=download_url,
+                    caption=f"📎 Klik untuk mengunduh",
+                    parse_mode="Markdown"
+                )
 
 async def error(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info(f'Update {update} caused error {context.error}')

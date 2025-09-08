@@ -174,6 +174,9 @@ def get_range_list(dictionary):
 # link = upload_once("/home/kangatang/git/filegator/repository/samplepptx.pptx")
 # print("One-time download link:", link)
 
+# contoh penggunaan
+# link = upload_to_filebin("/home/kangatang/git/filegator/repository/dummy.pdf")
+# print("Link download:", link)
 def upload_to_filebin(filepath: str):
     file_name = os.path.basename(filepath)
     url = "https://filebin.net/insi-datacenter/"+ file_name
@@ -190,6 +193,18 @@ def upload_to_filebin(filepath: str):
         return None
 # link = upload_to_filebin("/home/kangatang/git/filegator/repository/dummy.pdf")
 # print("Link download:", link)
+
+# contoh penggunaan
+# long_url = "https://filebin.net/xyz123/samplepptx.pptx"
+# short_url = shorten_url(long_url)
+# print("Short URL:", short_url)
+def shorten_url(url: str) -> str:
+    api_url = "https://tinyurl.com/api-create.php"
+    response = requests.get(api_url, params={"url": url})
+    if response.ok:
+        return response.text
+    else:
+        raise Exception("Gagal memendekkan URL")
 
 # path = "/home/kangatang/git/filegator/repository/spark"
 # lspaths = list_dir(path)

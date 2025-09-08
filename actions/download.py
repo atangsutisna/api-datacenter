@@ -15,7 +15,7 @@ class ActionPerformDownload(Action):
     def __init__(self):
         from userloggedin import get_user_logged_in
         from checkpermissions import is_permitted
-        from myutils import get_root_path, list_dir, to_dict, build_response,simplified_path
+        from myutils import get_root_path, list_dir, to_dict, build_response,simplified_path,upload_to_filebin,shorten_url
 
         self.is_permitted = is_permitted
         self.get_root_path = get_root_path
@@ -24,6 +24,8 @@ class ActionPerformDownload(Action):
         self.build_response = build_response
         self.get_user_logged_in = get_user_logged_in
         self.simplified_path = simplified_path
+        self.upload_to_filebin = upload_to_filebin
+        self.shorten_url = shorten_url
 
     def name(self):
         return "action_perform_download"
@@ -57,17 +59,24 @@ class ActionPerformDownload(Action):
                 # todo: create zip file or a link
                 simple_root_path = self.simplified_path(selected_path)
                 file_name = os.path.basename(selected_path)
-                dispatcher.utter_message(
-                    text="Baik, mohon ditunggu...",
-                    attachment={
-                        "type": "file",
-                        "payload": {
-                            "url": selected_path,
-                            "title": "Download",
-                            "name": file_name
+
+                logger.info("starting to upload %s to filebin to generate a link", selected_path)
+                long_url = self.upload_to_filebin(selected_path)
+                if long_url is None:
+                    dispatcher.utter_message(text="Mohon maaf, ada kendala saat menyipkan file. Silakan hubungi admin untuk mengetahui lebih lanjut. Terima kasih.")
+                else:
+                    short_url = self.shorten_url(long_url)
+                    dispatcher.utter_message(
+                        text="Baik, mohon ditunggu...",
+                        attachment={
+                            "type": "file",
+                            "payload": {
+                                "url": short_url,
+                                "title": "Download",
+                                "name": file_name
+                            }
                         }
-                    }
-                )
+                    )
             else:
                 # create file attachment
                 # todo: create zip file for download
