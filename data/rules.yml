@@ -41,8 +41,12 @@ rules:
     - intent: ask_download
     - slot_was_set:
       - file_no: not null
-    - action: utter_waiting_download
+    - action: action_start_download
+
+- rule: Kirim link download setelah proses selesai
+  steps:
     - action: action_perform_download
+    - action: utter_download_done
 
 - rule: How to upload
   steps:

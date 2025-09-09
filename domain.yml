@@ -187,10 +187,9 @@ responses:
     - text: "Kamu tidak punya izin untuk rename."
   utter_no_rm_permission:
     - text: "Kamu tidak punya izin untuk menghapus."
-  utter_waiting_download:
-    - text: "Baik, mungkin ini akan memerlukan waktu beberapa menit untuk menyiapkan file. Mohon ditunggu."
-    - text: "Mohon ditunggu ya, mungkin perlu beberapa menit untuk menyiapkan filenya."
-    - text: "Baik, mohon ditunggu ya. Biasanya memerlukan beberapa menit untuk menyiapkan filenya."
+  utter_download_done:
+    - text: "Selesai, silakan cek link di atas"
+  
 actions:
 - action_greeting
 - action_guessing_name
@@ -212,6 +211,7 @@ actions:
 - action_go_home
 - action_prepare_rename
 - action_prepare_remove
+- action_start_download
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

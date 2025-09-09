@@ -3,6 +3,7 @@ from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.types import DomainDict
 from rasa_sdk.events import SlotSet
+from rasa_sdk.events import FollowupAction
 import logging,sys,os,random,json
 
 logging.basicConfig(
@@ -10,6 +11,16 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+class ActionStartDowload(Action):
+    def name(self):
+        return "action_start_download"
+
+    async def run(self, dispatcher: CollectingDispatcher,
+                  tracker: Tracker,
+                  domain: dict):
+        dispatcher.utter_message(text="Baik, mungkin ini akan memerlukan waktu beberapa menit untuk menyiapkan file. Mohon ditunggu.")
+        return [FollowupAction("action_perform_download")]
 
 class ActionPerformDownload(Action):
     def __init__(self):
