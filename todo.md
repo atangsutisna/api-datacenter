@@ -61,3 +61,72 @@ User yang seharusnya bisa upload file, tidak bisa upload file. Penyebabnya adala
 ## TODO
 1. Bagaimana menghandle jika rename nggak jadi?
 2. Folder root tidak boleh diubah
+
+Rabu 10 September 2025
+** urutan folder disusun waktu
+** bila upload lebih dari satu file, yang muncul adalah sebanya file itu.
+** hapus lebih dari satu
+** hapus hapus bermasalah
+** zip folder disimpan kemudia didownload
+
+
+2025-09-10 09:43:47 INFO     userloggedin  - Got user data {'telegram_id': '7272740693', 'fullname': 'Atang', 'accounts': [{'username': 'tatang-publik', 'fullname': 'tatang', 'homedir': '/sdd/Public Internal', 'parentdir': '/var/www/filegator/repository/sdd/Public Internal', 'permissions': 'read|write|upload|download|preview|batchdownload|zip'}, {'username': 'pengajuan', 'fullname': 'pengajuan', 'homedir': '/sdd/Pribadi(1)/Pribadi/Grita/Pengajuan Keuangan', 'parentdir': '/var/www/filegator/repository/sdd/Pribadi(1)/Pribadi/Grita/Pengajuan Keuangan', 'permissions': 'read|upload'}, {'username': 'tes2', 'fullname': 'tes2', 'homedir': '/sdd/tes2', 'parentdir': '/var/www/filegator/repository/sdd/tes2', 'permissions': 'read|upload'}, {'username': 'tes3', 'fullname': 'tes3', 'homedir': '/sdd/tes3', 'parentdir': '/var/www/filegator/repository/sdd/tes3', 'permissions': 'read|upload|download'}, {'username': 'tes', 'fullname': 'tes1', 'homedir': '/sdd/tes1', 'parentdir': '/var/www/filegator/repository/sdd/tes1', 'permissions': 'read|write|upload|download|preview|batchdownload|zip'}], 'phone': '6283821230266', 'version': 3}
+2025-09-10 09:43:47 INFO     userloggedin  - Got user with telegram id 7272740693
+2025-09-10 09:43:47 INFO     checkpermissions  - workspace /var/www/filegator/repository/sdd/Public Internal, target path None
+2025-09-10 09:43:47 ERROR    rasa_sdk.endpoint  - Exception occurred during execution of request <Request: POST /webhook>
+Traceback (most recent call last):
+  File "handle_request", line 83, in handle_request
+    )
+  File "/home/datacenter/git/api-datacenter/.venv/lib/python3.10/site-packages/rasa_sdk/endpoint.py", line 113, in webhook
+    result = await executor.run(action_call)
+  File "/home/datacenter/git/api-datacenter/.venv/lib/python3.10/site-packages/rasa_sdk/executor.py", line 399, in run
+    action(dispatcher, tracker, domain)
+  File "/home/datacenter/git/api-datacenter/actions/pre-rm.py", line 38, in run
+    has_permission = self.is_permitted(telegram_id, selected_path, "write")
+  File "/home/datacenter/git/api-datacenter/checkpermissions.py", line 30, in is_permitted
+    if is_child(workspace, target_path) or workspace == target_path:
+  File "/home/datacenter/git/api-datacenter/checkpermissions.py", line 18, in is_child
+    Path(child).resolve().relative_to(Path(parent).resolve())
+  File "/usr/lib/python3.10/pathlib.py", line 960, in __new__
+    self = cls._from_parts(args)
+  File "/usr/lib/python3.10/pathlib.py", line 594, in _from_parts
+    drv, root, parts = self._parse_args(args)
+  File "/usr/lib/python3.10/pathlib.py", line 578, in _parse_args
+    a = os.fspath(a)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+2025-09-10 09:45:03 INFO     actions.pre-rm  - starting to prepare rm action...
+2025-09-10 09:45:03 INFO     actions.pre-rm  - attempting to get path on line None
+2025-09-10 09:45:03 INFO     userloggedin  - attempting to find user with telegram id 7272740693 on db.json
+2025-09-10 09:45:03 INFO     userloggedin  - Got user data {'telegram_id': '7272740693', 'fullname': 'Atang', 'accounts': [{'username': 'tatang-publik', 'fullname': 'tatang', 'homedir': '/sdd/Public Internal', 'parentdir': '/var/www/filegator/repository/sdd/Public Internal', 'permissions': 'read|write|upload|download|preview|batchdownload|zip'}, {'username': 'pengajuan', 'fullname': 'pengajuan', 'homedir': '/sdd/Pribadi(1)/Pribadi/Grita/Pengajuan Keuangan', 'parentdir': '/var/www/filegator/repository/sdd/Pribadi(1)/Pribadi/Grita/Pengajuan Keuangan', 'permissions': 'read|upload'}, {'username': 'tes2', 'fullname': 'tes2', 'homedir': '/sdd/tes2', 'parentdir': '/var/www/filegator/repository/sdd/tes2', 'permissions': 'read|upload'}, {'username': 'tes3', 'fullname': 'tes3', 'homedir': '/sdd/tes3', 'parentdir': '/var/www/filegator/repository/sdd/tes3', 'permissions': 'read|upload|download'}, {'username': 'tes', 'fullname': 'tes1', 'homedir': '/sdd/tes1', 'parentdir': '/var/www/filegator/repository/sdd/tes1', 'permissions': 'read|write|upload|download|preview|batchdownload|zip'}], 'phone': '6283821230266', 'version': 3}
+2025-09-10 09:45:03 INFO     userloggedin  - Got user with telegram id 7272740693
+2025-09-10 09:45:03 INFO     checkpermissions  - workspace /var/www/filegator/repository/sdd/Public Internal, target path None
+2025-09-10 09:45:03 ERROR    rasa_sdk.endpoint  - Exception occurred during execution of request <Request: POST /webhook>
+Traceback (most recent call last):
+  File "handle_request", line 83, in handle_request
+    )
+  File "/home/datacenter/git/api-datacenter/.venv/lib/python3.10/site-packages/rasa_sdk/endpoint.py", line 113, in webhook
+    result = await executor.run(action_call)
+  File "/home/datacenter/git/api-datacenter/.venv/lib/python3.10/site-packages/rasa_sdk/executor.py", line 399, in run
+    action(dispatcher, tracker, domain)
+  File "/home/datacenter/git/api-datacenter/actions/pre-rm.py", line 38, in run
+    has_permission = self.is_permitted(telegram_id, selected_path, "write")
+  File "/home/datacenter/git/api-datacenter/checkpermissions.py", line 30, in is_permitted
+    if is_child(workspace, target_path) or workspace == target_path:
+  File "/home/datacenter/git/api-datacenter/checkpermissions.py", line 18, in is_child
+    Path(child).resolve().relative_to(Path(parent).resolve())
+  File "/usr/lib/python3.10/pathlib.py", line 960, in __new__
+    self = cls._from_parts(args)
+  File "/usr/lib/python3.10/pathlib.py", line 594, in _from_parts
+    drv, root, parts = self._parse_args(args)
+  File "/usr/lib/python3.10/pathlib.py", line 578, in _parse_args
+    a = os.fspath(a)
+TypeError: expected str, bytes or os.PathLike object, not NoneType
+** pesan error download harusnya muncul. jangan seperti ini:
+> DataCenterBot:
+Baik, mungkin ini akan memerlukan waktu beberapa menit untuk menyiapkan file. Mohon ditunggu.
+
+> DataCenterBot:
+Maaf, kamu tidak diijinkan untuk mendownload file disini.
+
+> DataCenterBot:
+Selesai, silakan cek link di atas
