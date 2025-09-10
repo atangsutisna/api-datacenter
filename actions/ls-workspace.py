@@ -59,7 +59,9 @@ class ActionListWorkspace(Action):
                         homedir = account['homedir'].lstrip("/")
                         root_path = os.path.join(REPOSITORY_PATH, homedir)
                         root_paths.append(root_path)
-                        user_workspaces.append(root_path)
+                        
+                        mtime = os.path.getmtime(root_path)
+                        user_workspaces.append((root_path, mtime))
                 else:
                     dirname = accounts[0]['homedir'].lstrip("/")
                     logger.info("attempting to list all data in %s", dirname)
@@ -69,7 +71,9 @@ class ActionListWorkspace(Action):
                     for dir in list_dir:
                         child_path = os.path.join(root_path, dir)
                         root_paths.append(root_path)
-                        user_workspaces.append(child_path)
+
+                        mtime = os.path.getmtime(child_path)
+                        user_workspaces.append((child_path, mtime))
 
                 opening_messages = [
                     "Baik, ini semua data yang kamu miliki:",
@@ -79,7 +83,9 @@ class ActionListWorkspace(Action):
                 message = random.choice(opening_messages)
                 no = 1
                 search_results = {}
-                for path in user_workspaces:
+
+                sorted_paths = sorted(user_workspaces, key=lambda x: x[1], reverse=True)
+                for path, mtime in sorted_paths:
                     file = os.path.isfile(path)
                     simple_path = self.simplified_path(path)
                     if not file:
@@ -140,3 +146,10 @@ class ActionListWorkspace(Action):
                     SlotSet("file_no", None),
                     SlotSet("current_path", current_path),
                 ]
+
+
+# workspaces = []
+# path = "/home/kangatang/git/filegator/repository/atang"
+# mtime = os.path.getmtime(path)
+# workspaces.append((path, mtime))
+# print(workspaces)
