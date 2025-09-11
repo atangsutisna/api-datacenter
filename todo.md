@@ -63,7 +63,7 @@ User yang seharusnya bisa upload file, tidak bisa upload file. Penyebabnya adala
 2. Folder root tidak boleh diubah
 
 Rabu 10 September 2025
-** urutan folder disusun waktu
+** urutan folder disusun waktu -> solved: sorted by modification time
 ** bila upload lebih dari satu file, yang muncul adalah sebanya file itu.
 ** hapus lebih dari satu
 ** hapus hapus bermasalah
