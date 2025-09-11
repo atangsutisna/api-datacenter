@@ -40,6 +40,7 @@ class ActionAccessData(Action):
             logger.info("attempting to load search results %s", search_results)
             user_files = json.loads(search_results)
             selected_path = user_files.get(file_no)
+            logger.info("attempting to open dir on path %s", selected_path)
             if selected_path:
                 is_file = os.path.isfile(selected_path)
                 if is_file:
@@ -95,7 +96,9 @@ class ActionAccessData(Action):
                     
                     for dir in list_dir:
                         child_path = os.path.join(selected_path, dir)
-                        user_workspaces.append(child_path)
+
+                        mtime = os.path.getmtime(child_path)
+                        user_workspaces.append((child_path, mtime))
 
                     # format user workspaces
                     opening_messages = [
@@ -105,7 +108,8 @@ class ActionAccessData(Action):
                     message = random.choice(opening_messages)
                     no = 1
                     search_results = {}
-                    for path in user_workspaces:
+                    sorted_paths = sorted(user_workspaces, key=lambda x: x[1], reverse=True)
+                    for path, mtime in sorted_paths:
                         file = os.path.isfile(path)
                         simple_path = self.simplified_path(path)
                         if not file:

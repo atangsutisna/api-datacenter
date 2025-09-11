@@ -114,11 +114,15 @@ class ActionListWorkspace(Action):
                 ]
             else:
                 # tampilkan berdasarkan current path
+                logger.info("attempting to execute ls command on path %s", current_path)
                 user_workspaces = []
                 list_dir = os.listdir(current_path)
                 for dir in list_dir:
                     child_path = os.path.join(current_path, dir)
-                    user_workspaces.append(child_path)
+
+                    mtime = os.path.getmtime(child_path)
+                    user_workspaces.append((child_path, mtime))
+
                 simplified_root_path = self.simplified_path(current_path)
                 opening_messages = [
                     f"Baik, ini isi dari folder `{simplified_root_path}`:",
@@ -127,7 +131,8 @@ class ActionListWorkspace(Action):
                 message = random.choice(opening_messages)
                 no = 1
                 search_results = {}
-                for path in user_workspaces:
+                sorted_paths = sorted(user_workspaces, key=lambda x: x[1], reverse=True)
+                for path, mtime in sorted_paths:
                     file = os.path.isfile(path)
                     simple_path = self.simplified_path(path)
                     if not file:

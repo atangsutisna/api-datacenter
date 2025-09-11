@@ -32,7 +32,9 @@ class ActionBackToPrevious(Action):
             for account in accounts:
                 homedir = account['homedir'].lstrip("/")
                 fullpath = os.path.join(root_path, homedir)
-                user_workspaces.append(fullpath)
+
+                mtime = os.path.getmtime(fullpath)
+                user_workspaces.append((fullpath, mtime))
         else:
             dirname = accounts[0]['homedir'].lstrip("/")
             logger.info("attempting to list all data in %s", dirname)
@@ -40,7 +42,9 @@ class ActionBackToPrevious(Action):
             list_dir = os.listdir(home_path)
             for dir in list_dir:
                 child_path = os.path.join(home_path, dir)
-                user_workspaces.append(child_path)
+
+                mtime = os.path.getmtime(child_path)
+                user_workspaces.append((child_path, mtime))
         
         return user_workspaces
 
@@ -74,7 +78,9 @@ class ActionBackToPrevious(Action):
             message = random.choice(opening_messages)
             no = 1
             search_results = {}
-            for path in user_workspaces:
+
+            sorted_paths = sorted(user_workspaces, key=lambda x: x[1], reverse=True)
+            for path, mtime in sorted_paths:
                 file = os.path.isfile(path)
                 simple_path = self.simplified_path(path)
                 if not file:
@@ -100,7 +106,9 @@ class ActionBackToPrevious(Action):
             user_workspaces = []
             for dir in list_dir:
                 child_path = os.path.join(parent_path, dir)
-                user_workspaces.append(child_path)
+
+                mtime = os.path.getmtime(child_path)
+                user_workspaces.append((child_path, mtime))
 
             simple_root_path = self.simplified_path(parent_path)
             opening_messages = [
@@ -111,7 +119,8 @@ class ActionBackToPrevious(Action):
 
             no = 1
             search_results = {}
-            for path in user_workspaces:
+            sorted_paths = sorted(user_workspaces, key=lambda x: x[1], reverse=True)
+            for path, mtime in sorted_paths:
                 file = os.path.isfile(path)
                 simple_path = self.simplified_path(path)
                 if not file:
