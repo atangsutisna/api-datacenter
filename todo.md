@@ -69,7 +69,17 @@ Rabu 10 September 2025
 ** hapus hapus bermasalah
 ** zip folder disimpan kemudia didownload
 
+## How to reproduce 
+- buat folder baru
+- buka folder itu dengan perinta "buka folder 4"
+- lakukan upload ke dalam folder itu
+- tampilkan
+- hapus --> di sini sudah bermasalah. Bot masih ingat nomor 4
+- tampilakan
+- hapus --> di sini sudah bermasalah. bot sudah tidak bisa mengenali intent menghapus
 
+Maka, akan muncul error seperti ini:
+===========================================================================================
 2025-09-10 09:43:47 INFO     userloggedin  - Got user data {'telegram_id': '7272740693', 'fullname': 'Atang', 'accounts': [{'username': 'tatang-publik', 'fullname': 'tatang', 'homedir': '/sdd/Public Internal', 'parentdir': '/var/www/filegator/repository/sdd/Public Internal', 'permissions': 'read|write|upload|download|preview|batchdownload|zip'}, {'username': 'pengajuan', 'fullname': 'pengajuan', 'homedir': '/sdd/Pribadi(1)/Pribadi/Grita/Pengajuan Keuangan', 'parentdir': '/var/www/filegator/repository/sdd/Pribadi(1)/Pribadi/Grita/Pengajuan Keuangan', 'permissions': 'read|upload'}, {'username': 'tes2', 'fullname': 'tes2', 'homedir': '/sdd/tes2', 'parentdir': '/var/www/filegator/repository/sdd/tes2', 'permissions': 'read|upload'}, {'username': 'tes3', 'fullname': 'tes3', 'homedir': '/sdd/tes3', 'parentdir': '/var/www/filegator/repository/sdd/tes3', 'permissions': 'read|upload|download'}, {'username': 'tes', 'fullname': 'tes1', 'homedir': '/sdd/tes1', 'parentdir': '/var/www/filegator/repository/sdd/tes1', 'permissions': 'read|write|upload|download|preview|batchdownload|zip'}], 'phone': '6283821230266', 'version': 3}
 2025-09-10 09:43:47 INFO     userloggedin  - Got user with telegram id 7272740693
 2025-09-10 09:43:47 INFO     checkpermissions  - workspace /var/www/filegator/repository/sdd/Public Internal, target path None
