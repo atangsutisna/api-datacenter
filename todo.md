@@ -62,14 +62,14 @@ User yang seharusnya bisa upload file, tidak bisa upload file. Penyebabnya adala
 1. Bagaimana menghandle jika rename nggak jadi?
 2. Folder root tidak boleh diubah
 
-Rabu 10 September 2025
-** urutan folder disusun waktu -> solved: sorted by modification time
-** bila upload lebih dari satu file, yang muncul adalah sebanya file itu.
-** hapus lebih dari satu
-** hapus hapus bermasalah
-** zip folder disimpan kemudia didownload
+## BUG Rabu 10 September 2025
+1. ~~urutan folder disusun waktu. saat ini, disusun berdasarkan update terbaru.~~
+2. bila upload lebih dari satu file, yang muncul adalah sebanya file itu.
+3. hapus lebih dari satu
+4. ~~hapus bermasalah~~
+5. zip folder disimpan kemudia didownload
 
-## How to reproduce 
+## How to reproduce bug remove
 - buat folder baru
 - buka folder itu dengan perinta "buka folder 4"
 - lakukan upload ke dalam folder itu
