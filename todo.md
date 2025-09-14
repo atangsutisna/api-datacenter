@@ -49,14 +49,14 @@ List tidak diupdate ketika buka salah satu root folder
 5. jika nomor handphone valid, ada di file mappinguser.json, maka sistem akan memindahkannya ke db.json
 
 ## Perbaikan dan Testing Sabtu, 6 September 2025
-1. Download file. 
+1. ~~Download file.~~ 
 Donwload file bermasalah jika ukuran file lebih dari 5 mb.
-2. Handle rename file with existing name
-3. Handle create a new folder with existing name
-4. Check permission before removing action
-5. Upload file
+2. ~~Handle rename file with existing name~~
+3. ~~Handle create a new folder with existing name~~
+4. ~~Check permission before removing action~~
+5. ~~Upload file~~
 User yang seharusnya bisa upload file, tidak bisa upload file. Penyebabnya adalah pathnya tidak lengkap. Yaitu menggunakan simplified path.
-6. Check permission before renaming
+6. ~~Check permission before renaming~~
 
 ## TODO
 1. Bagaimana menghandle jika rename nggak jadi?
