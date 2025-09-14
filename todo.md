@@ -69,8 +69,8 @@ Solusi: setelah file diupload, chatbot tidak langsung balas. Setelah kirim /sele
 3. Hapus lebih dari satu
 4. ~~Hapus bermasalah~~
 5. Zip folder disimpan kemudia didownload
-6. Pesan error yang kurang tepat ketika tidak punya akses untuk download.
-Saat ini, pesan yang tampil adalah seperti ini:
+6. ~~Pesan error yang kurang tepat ketika tidak punya akses untuk download.~~
+~~Saat ini, pesan yang tampil adalah seperti ini:~~
 > DataCenterBot:
 Baik, mungkin ini akan memerlukan waktu beberapa menit untuk menyiapkan file. Mohon ditunggu.
 
