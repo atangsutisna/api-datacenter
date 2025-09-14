@@ -79,45 +79,35 @@ async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
     req_result = get_current_path(telegram_id)
     logger.info("get custom data %r", req_result)
     current_path = req_result['full_current_path']
+    os.makedirs(current_path, exist_ok=True)
+
+    saved_files = []
     # cek foto
     if update.message.photo:
         photo_list = update.message.photo
         photo = photo_list[-1] # mengambil gambar dengan resolusi tertinggi
         logger.info('attempting to process photo with id %s', photo.file_id)
         file = await context.bot.get_file(photo.file_id)
-
-        os.makedirs(current_path, exist_ok=True)
+    
         filename = f"photo_{photo.file_id}.jpg"
         file_path = os.path.join(current_path, filename)
         await file.download_to_drive(file_path)
 
         context.user_data['uploaded_files'].append(filename)
-        await update.message.reply_text(f"File {filename} telah disimpan. Klik atau ketik /selesai jika sudah.")
-        return WAITING_FOR_FILE
-    elif update.message.document:
+        saved_files.append(filename)
+
+    if update.message.document:
         document = update.message.document
         file_id = document.file_id
         file = await context.bot.get_file(file_id)
-
-        # ensure folder path exists
-        # FOLDER_PATH = context.user_data['current_directory']
-        logger.info('attempting to upload file with id %s to %s', file_id, current_path)
-        os.makedirs(current_path, exist_ok=True)
 
         file_path = os.path.join(current_path, document.file_name)
         await file.download_to_drive(file_path)
 
         context.user_data['uploaded_files'].append(document.file_name)
-        await update.message.reply_text(f"File {document.file_name} telah disimpan. Klik atau ketik /selesai jika sudah.")
-        return WAITING_FOR_FILE
-    else:
-        await update.message.reply_text("Tolong kirim file. Atau ketik /selesai jika sudah.")
-        return WAITING_FOR_FILE
-    # document = update.message.document
-    # if not document:
-    #     logger.info('The message is not document')
-    #     await update.message.reply_text("Tolong kirim file. Atau ketik /selesai jika sudah.")
-    #     return WAITING_FOR_FILE
+        saved_files.append(document.file_name)
+
+    return WAITING_FOR_FILE
     
 async def done_upload(update: Update, context: ContextTypes.DEFAULT_TYPE):
     uploaded = context.user_data.get('uploaded_files', [])
