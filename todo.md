@@ -63,12 +63,12 @@ User yang seharusnya bisa upload file, tidak bisa upload file. Penyebabnya adala
 2. Folder root tidak boleh diubah
 
 ## BUG Rabu 10 September 2025
-1. ~~urutan folder disusun waktu. saat ini, disusun berdasarkan update terbaru.~~
-2. ~~bila upload lebih dari satu file, maka pesan yang muncul adalah sebanyak file itu. Jika file upload sebanyak 3, maka pesannya akan sebanyak 3.~~
+1. ~~Urutan folder disusun waktu. saat ini, disusun berdasarkan update terbaru.~~
+2. ~~Bila upload lebih dari satu file, maka pesan yang muncul adalah sebanyak file itu. Jika file upload sebanyak 3, maka pesannya akan sebanyak 3.~~
 Solusi: setelah file diupload, chatbot tidak langsung balas. Setelah kirim /selesai, bot akan membuat summary.
-3. hapus lebih dari satu
-4. ~~hapus bermasalah~~
-5. zip folder disimpan kemudia didownload
+3. Hapus lebih dari satu
+4. ~~Hapus bermasalah~~
+5. Zip folder disimpan kemudia didownload
 6. Pesan error yang kurang tepat ketika tidak punya akses untuk download.
 Saat ini, pesan yang tampil adalah seperti ini:
 > DataCenterBot:
