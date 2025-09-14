@@ -64,7 +64,8 @@ User yang seharusnya bisa upload file, tidak bisa upload file. Penyebabnya adala
 
 ## BUG Rabu 10 September 2025
 1. ~~urutan folder disusun waktu. saat ini, disusun berdasarkan update terbaru.~~
-2. bila upload lebih dari satu file, yang muncul adalah sebanya file itu.
+2. ~~bila upload lebih dari satu file, maka pesan yang muncul adalah sebanyak file itu. Jika file upload sebanyak 3, maka pesannya akan sebanyak 3.~~
+Solusi: setelah file diupload, chatbot tidak langsung balas. Setelah kirim /selesai, bot akan membuat summary.
 3. hapus lebih dari satu
 4. ~~hapus bermasalah~~
 5. zip folder disimpan kemudia didownload
