@@ -17,9 +17,9 @@ def get_user_logged_in(telegram_id: str):
         users_loggedin = json.load(file)
     user = None
     for user_data in users_loggedin:
-        logger.info("Got user data %r", user_data)
+        # logger.info("Got user data %r", user_data)
         if user_data["telegram_id"] == telegram_id:
-            logger.info("Got user with telegram id %s", telegram_id)
+            # logger.info("Got user with telegram id %s", telegram_id)
             user = user_data
             break
     return user

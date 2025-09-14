@@ -102,6 +102,11 @@ slots:
     influence_conversation: true
     mappings:
       - type: custom
+  has_download_permission:
+    type: bool
+    influence_conversation: true
+    mappings:
+      - type: custom
   # premium_account: # just for testing
   #   type: bool
   #   influence_conversation: true
@@ -188,6 +193,8 @@ responses:
     - text: "Kamu tidak punya izin untuk rename."
   utter_no_rm_permission:
     - text: "Kamu tidak punya izin untuk menghapus."
+  utter_no_download_permission:
+    - text: "Kamu tidak punya izin untuk download."
   utter_download_done:
     - text: "Selesai, silakan cek link di atas"
   
@@ -213,6 +220,7 @@ actions:
 - action_prepare_rename
 - action_prepare_remove
 - action_start_download
+- action_prepare_download
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
