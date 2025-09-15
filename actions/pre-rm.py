@@ -37,15 +37,20 @@ class ActionPrepareRemove(Action):
             for val in slot_value:
                 delete_indexes.extend(self.to_be_list(val))
         
-        logger.info("attempting to get path on line %s", delete_indexes)
+        logger.info("attempting to get path on lines %s", delete_indexes)
         search_results = tracker.get_slot("search_results")
 
         # logger.info("attempting to load search results %s", search_results)
         user_files = json.loads(search_results)
-        logger.info("attempting to get path on line %s", file_no)
-        selected_path = user_files.get(file_no)
-
-        has_permission = self.is_permitted(telegram_id, selected_path, "write")
+        has_permission = True
+        for file_no in delete_indexes:
+            logger.info("attempting to get path on line %s", file_no)
+            selected_path = user_files.get(file_no)
+            if selected_path:
+                has_permission = has_permission and self.is_permitted(telegram_id, selected_path, "write")
+            else:
+                logger.info("Failed to find path on line %s", file_no)
+    
         logger.info("Is telegram id %s has rm permission: %s", telegram_id, has_permission)
         if not has_permission:
             logger.info("user %s has no permission to remove", telegram_id)
