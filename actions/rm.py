@@ -53,11 +53,14 @@ class ActionRemoveData(Action):
             user_files = json.loads(search_results)
             # logger.info("current user files %r", user_files)
             
+            delete_names = []
             for file_no in delete_indexes:
                 selected_path = user_files.get(file_no)
                 file_exists = os.path.exists(selected_path)
                 if file_exists:
                     removed_path = self.simplified_path(selected_path)
+                    delete_names.append(removed_path)
+
                     is_file = os.path.isfile(selected_path)
                     if is_file:         
                         logger.info("attempting to remove file on path %s", selected_path)
@@ -70,13 +73,15 @@ class ActionRemoveData(Action):
                 else:
                     logger.info("file number %s not found")
                 
+            # prepare for response
+            names = ",".join(delete_names)
             lspaths = self.list_dir(current_path)
             response = self.build_response(
-                opening_message=f"Data sudah dihapus",
+                opening_message=f"data `{names}` sudah dihapus",
                 ending_message=self.get_ask_to_open_remove_or_download(),
                 lspaths=lspaths
             )
-            # prepare for response
+            
             dispatcher.utter_message(text=response)
             lspaths_json = json.dumps(self.to_dict(lspaths))
             return [
