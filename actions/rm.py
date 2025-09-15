@@ -29,9 +29,16 @@ class ActionRemoveData(Action):
                   tracker: Tracker,
                   domain: dict):
         logger.info("starting to run action_remove_data")
-        file_no = tracker.get_slot("file_no_to_be_removed")
-        current_path = tracker.get_slot("current_path")
+        slot_value = tracker.get_slot("file_no_to_be_removed")
+        delete_indexes = []
+        if isinstance(slot_value, str):
+            delete_indexes.extend(self.to_be_list(slot_value))
+        elif isinstance(slot_value, list):
+            for val in slot_value:
+                delete_indexes.extend(self.to_be_list(val))
+        logger.info("Got slot values: %r", delete_indexes)
 
+        current_path = tracker.get_slot("current_path")
         metadata = tracker.latest_message.get("metadata")
         fullname = metadata.get("fullname")
         telegram_id = metadata.get("telegram_id")
@@ -39,6 +46,7 @@ class ActionRemoveData(Action):
         logger.info("Got current path %s", current_path)
         chmod_permitted = self.is_permitted(telegram_id, current_path, "write")
         if chmod_permitted:
+            # TODO: fix me, delete multi number
             # check file or folder?
             search_results = tracker.get_slot("search_results")
             user_files = json.loads(search_results)
