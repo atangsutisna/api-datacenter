@@ -13,8 +13,10 @@ logger = logging.getLogger(__name__)
 class ActionPrepareRemove(Action):
     def __init__(self):
         from checkpermissions import is_permitted
-
+        from myutils import to_be_list
+        
         self.is_permitted = is_permitted
+        self.to_be_list = to_be_list
 
     def name(self) -> Text:
         return "action_prepare_remove"
@@ -27,7 +29,15 @@ class ActionPrepareRemove(Action):
         fullname = metadata.get("fullname")
         telegram_id = metadata.get("telegram_id")
 
-        file_no = tracker.get_slot("file_no_to_be_removed")
+        slot_value = tracker.get_slot("file_no_to_be_removed")
+        delete_indexes = []
+        if isinstance(slot_value, str):
+            delete_indexes.extend(self.to_be_list(slot_value))
+        elif isinstance(slot_value, list):
+            for val in slot_value:
+                delete_indexes.extend(self.to_be_list(val))
+        
+        logger.info("attempting to get path on line %s", delete_indexes)
         search_results = tracker.get_slot("search_results")
 
         # logger.info("attempting to load search results %s", search_results)

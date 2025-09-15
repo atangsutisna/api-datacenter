@@ -170,6 +170,9 @@ nlu:
     - tolong dihapus baris [8](file_no_to_be_removed)
     - tolong hapus baris [8](file_no_to_be_removed)
     - hapus baris [8](file_no_to_be_removed)
+    - hapus baris [1](file_no_to_be_removed), [2](file_no_to_be_removed), dan [3](file_no_to_be_removed)
+    - tolong hapus nomor [5](file_no_to_be_removed) dan [6](file_no_to_be_removed)
+    - hapus yang angka [4](file_no_to_be_removed)
 # - intent: ask_to_remove_current_path
 #   examples: |
 #     - tolong dihapus

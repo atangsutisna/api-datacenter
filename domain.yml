@@ -45,7 +45,7 @@ slots:
     - type: from_entity
       entity: new_name
   file_no_to_be_removed:
-    type: text
+    type: list
     influence_conversation: true
     mappings:
     - type: from_entity

@@ -219,3 +219,12 @@ def shorten_url(url: str) -> str:
 # )
 # print(response)
 # print(get_root_path(path))
+
+def to_be_list(slot_value: str):
+    text = slot_value.replace("dan", ",").replace("atau", ",")
+    return [v.strip() for v in text.split(",") if v.strip().isdigit()]
+    # return {"file_no_to_be_removed": values}
+
+# slot_value = ["1,2,3"]
+# for val in slot_value:
+#     print(to_be_list(val))
