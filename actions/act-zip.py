@@ -50,7 +50,7 @@ class ActionZip(Action):
                     self.compress_folder(selected_path)
             # check permission
             logger.info("Got the file on path %s", selected_path)
-            dispatcher.utter_message(text="Sudah selesai.")
+            dispatcher.utter_message(text="Proses kompresi sudah selesai.")
         else:
             dispatcher.utter_message(text="Saya tidak menemukan data apapun")
 
