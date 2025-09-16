@@ -24,6 +24,8 @@ intents:
 - create_new_folder_with_name
 - get_current_path
 - rename_item_by_file_no
+- zip_folder
+
 entities:
 - file_no
 - folder_name
@@ -103,6 +105,11 @@ slots:
     mappings:
       - type: custom
   has_download_permission:
+    type: bool
+    influence_conversation: true
+    mappings:
+      - type: custom
+  has_zip_permission:
     type: bool
     influence_conversation: true
     mappings:
@@ -197,7 +204,10 @@ responses:
     - text: "Kamu tidak punya izin untuk download."
   utter_download_done:
     - text: "Selesai, silakan cek link di atas"
-  
+  utter_zip_done:
+    - text: "Folder telah selesai dikompres/zip, silakan di-list lagi jika mau download"
+  utter_no_zip_permission:
+    - text: "Kamu tidak punya izin untuk zip."
 actions:
 - action_greeting
 - action_guessing_name
@@ -221,6 +231,8 @@ actions:
 - action_prepare_remove
 - action_start_download
 - action_prepare_download
+- action_zip
+- action_prepare_zip
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

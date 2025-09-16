@@ -232,3 +232,27 @@ rules:
   steps:
     - intent: ask_to_home
     - action: action_go_home
+
+# user want to compress a folder
+- rule: user has permission to zip a folder
+  steps:
+  - intent: zip_folder
+  - action: action_prepare_zip
+  - slot_was_set:
+      - file_no: not null
+      - has_zip_permission: true
+  - action: action_zip
+
+- rule: Infokan bila proses zip selesai
+  steps:
+    - action: action_zip
+    - action: utter_zip_done
+
+- rule: User has no permission to zip
+  steps:
+    - intent: zip_folder
+    - action: action_prepare_zip
+    - slot_was_set:
+        - file_no: not null
+        - has_zip_permission: false
+    - action: utter_no_zip_permission

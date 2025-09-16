@@ -320,6 +320,19 @@ nlu:
     - workspace
     - menu awal
 
+- intent: zip_folder
+  examples: |
+    - tolong zip folder nomor [1](file_no)
+    - zip folder [2](file_no) jadi file zip
+    - buat zip dari folder [3](file_no)
+    - compress folder [4](file_no)
+    - saya mau zip folder [5](file_no)
+    - folder [6](file_no) tolong di-zip
+    - bisa zip folder [7](file_no)?
+    - zip-kan folder nomor [8](file_no)
+    - tolong compress folder nomor [9](file_no)
+    - zip folder [10](file_no) dong
+
 # ini bermasalah ketika saya memberikan perintah rename dengan nama misal cerita-01.
 # string cerita-01,akan membuat file_no menjadi 01, atau cerita-03, maka file_no akan menjadi 3
 # pemilihan menjadi kacau

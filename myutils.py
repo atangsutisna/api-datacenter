@@ -3,6 +3,7 @@ from userloggedin import get_user_logged_in
 import logging, json,random
 from dotenv import load_dotenv
 import requests
+import zipfile
 
 # Enable logging
 logging.basicConfig(
@@ -228,3 +229,32 @@ def to_be_list(slot_value: str):
 # slot_value = ["1,2,3"]
 # for val in slot_value:
 #     print(to_be_list(val))
+def compress_folder(folder_path):
+    folder_name = os.path.basename(os.path.normpath(folder_path))
+    parent_dir = os.path.dirname(os.path.normpath(folder_path))
+    output_path = os.path.join(parent_dir, f"{folder_name}.zip")
+    # Membuat file zip
+    with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, dirs, files in os.walk(folder_path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                # Simpan dengan path relatif agar struktur folder tetap
+                arcname = os.path.relpath(file_path, folder_path)
+                zipf.write(file_path, arcname)
+    print(f"Folder '{folder_path}' berhasil dikompres menjadi '{output_path}'")
+
+def compress_file(file_path):
+    file_name = os.path.splitext(os.path.basename(file_path))[0]
+    parent_dir = os.path.dirname(os.path.normpath(file_path))
+    output_path = os.path.join(parent_dir, f"{file_name}.zip")
+
+    with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        zipf.write(file_path, os.path.basename(file_path))
+    print(f"File '{file_path}' berhasil dikompres menjadi '{output_path}'")
+
+
+# Contoh penggunaan:
+# Kompres folder
+# compress_folder("/home/kangatang/git/filegator/repository/spark/sepeda/")
+# Kompres file
+compress_file("/home/kangatang/git/filegator/repository/spark/Paparan_Audiensi_Ombudsman.pptx")
