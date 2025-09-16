@@ -15,7 +15,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 class ActionZip(Action):
     def __init__(self):
         from checkpermissions import is_permitted
-        from myutils import get_root_path,list_dir,to_dict,build_response,get_ask_to_open_remove_or_download,simplified_path
+        from myutils import get_root_path,list_dir,to_dict,build_response,get_ask_to_open_remove_or_download,simplified_path,compress_folder,compress_file
 
         self.is_permitted = is_permitted
         self.get_root_path = get_root_path
@@ -23,7 +23,9 @@ class ActionZip(Action):
         self.to_dict = to_dict
         self.build_response = build_response
         self.get_ask_to_open_remove_or_download = get_ask_to_open_remove_or_download
-        self.simplified_path = simplified_path
+        self.simplified_path = simplified_path,
+        self.compress_folder = compress_folder
+        self.compress_file = compress_file
 
     def name(self):
         return "action_zip"
