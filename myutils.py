@@ -257,4 +257,4 @@ def compress_file(file_path):
 # Kompres folder
 # compress_folder("/home/kangatang/git/filegator/repository/spark/sepeda/")
 # Kompres file
-compress_file("/home/kangatang/git/filegator/repository/spark/Paparan_Audiensi_Ombudsman.pptx")
+# compress_file("/home/kangatang/git/filegator/repository/spark/Paparan_Audiensi_Ombudsman.pptx")

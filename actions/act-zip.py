@@ -42,11 +42,17 @@ class ActionZip(Action):
         if search_results:
             user_files = json.loads(search_results)
             selected_path = user_files.get(file_no)
+            if selected_path:
+                is_file = os.path.isfile(selected_path)
+                if is_file:
+                    self.compress_file(selected_path)
+                else:
+                    self.compress_folder(selected_path)
             # check permission
             logger.info("Got the file on path %s", selected_path)
-            dispatcher.utter_message(text="Saya sedang menyiapkan file download untuk kamu")
+            dispatcher.utter_message(text="Sudah selesai.")
         else:
-            dispatcher.utter_message(text="Saya tidak menemukan data tersebut")
+            dispatcher.utter_message(text="Saya tidak menemukan data apapun")
 
         return [
             SlotSet("file_no", None)
