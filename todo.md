@@ -116,7 +116,7 @@ TypeError: expected str, bytes or os.PathLike object, not NoneType``
 
 
 ### Rabu, 17 September
-** susun berdasarkan abjad
+** ~~susun berdasarkan abjad~~
 ** tambahkan pesan untuk user jika harus menunggu lama. dan hitung berapa lama. 
 ** waktu yang diperlukan untuk zip. isi data maksimal. batas maksimal download.
 ** transisi bila percakapan ke hal lain.
