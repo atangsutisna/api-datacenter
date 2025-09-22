@@ -113,3 +113,10 @@ Traceback (most recent call last):
   File "/usr/lib/python3.10/pathlib.py", line 578, in _parse_args
     a = os.fspath(a)
 TypeError: expected str, bytes or os.PathLike object, not NoneType``
+
+
+### Rabu, 17 September
+** susun berdasarkan abjad
+** tambahkan pesan untuk user jika harus menunggu lama. dan hitung berapa lama. 
+** waktu yang diperlukan untuk zip. isi data maksimal. batas maksimal download.
+** transisi bila percakapan ke hal lain.
