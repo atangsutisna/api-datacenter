@@ -4,7 +4,7 @@ import logging, json,random
 from dotenv import load_dotenv
 import requests
 import zipfile
-
+import time
 # Enable logging
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.DEBUG
@@ -230,6 +230,7 @@ def to_be_list(slot_value: str):
 # for val in slot_value:
 #     print(to_be_list(val))
 def compress_folder(folder_path):
+    start_time = time.time()
     folder_name = os.path.basename(os.path.normpath(folder_path))
     parent_dir = os.path.dirname(os.path.normpath(folder_path))
     output_path = os.path.join(parent_dir, f"{folder_name}.zip")
@@ -242,8 +243,12 @@ def compress_folder(folder_path):
                 arcname = os.path.relpath(file_path, folder_path)
                 zipf.write(file_path, arcname)
     print(f"Folder '{folder_path}' berhasil dikompres menjadi '{output_path}'")
+    end_time = time.time()
+    return end_time - start_time
 
 def compress_file(file_path):
+    start_time = time.time()
+
     file_name = os.path.splitext(os.path.basename(file_path))[0]
     parent_dir = os.path.dirname(os.path.normpath(file_path))
     output_path = os.path.join(parent_dir, f"{file_name}.zip")
@@ -251,6 +256,12 @@ def compress_file(file_path):
     with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
         zipf.write(file_path, os.path.basename(file_path))
     print(f"File '{file_path}' berhasil dikompres menjadi '{output_path}'")
+    end_time = time.time()
+    return end_time - start_time
+
+def estimate_time(total_size, speed_mb_per_s=50):
+    # hitung estimasi (detik)
+    return total_size / (speed_mb_per_s * 1024 * 1024)
 
 
 # Contoh penggunaan:
@@ -258,3 +269,14 @@ def compress_file(file_path):
 # compress_folder("/home/kangatang/git/filegator/repository/spark/sepeda/")
 # Kompres file
 # compress_file("/home/kangatang/git/filegator/repository/spark/Paparan_Audiensi_Ombudsman.pptx")
+
+total_size = get_folder_size_bytes("/home/kangatang/git/filegator/repository/spark")
+est_time = estimate_time(total_size, speed_mb_per_s=50)
+
+print(f"Total ukuran file: {total_size / (1024*1024):.2f} MB")
+print(f"Estimasi waktu: {est_time:.2f} detik (dengan asumsi 50 MB/s)")
+
+# proses zip
+actual_time = compress_folder("/home/kangatang/git/filegator/repository/spark")
+print(f"Proses zip selesai: ")
+print(f"Waktu aktual: {actual_time:.2f} detik")
