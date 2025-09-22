@@ -96,9 +96,7 @@ class ActionAccessData(Action):
                     
                     for dir in list_dir:
                         child_path = os.path.join(selected_path, dir)
-
-                        mtime = os.path.getmtime(child_path)
-                        user_workspaces.append((child_path, mtime))
+                        user_workspaces.append(child_path)
 
                     # format user workspaces
                     opening_messages = [
@@ -108,8 +106,8 @@ class ActionAccessData(Action):
                     message = random.choice(opening_messages)
                     no = 1
                     search_results = {}
-                    sorted_paths = sorted(user_workspaces, key=lambda x: x[1], reverse=True)
-                    for path, mtime in sorted_paths:
+                    sorted_list = sorted(user_workspaces, key=lambda x: x.lower())
+                    for path in sorted_list:
                         file = os.path.isfile(path)
                         simple_path = self.simplified_path(path)
                         if not file:
