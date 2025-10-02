@@ -270,13 +270,13 @@ def estimate_time(total_size, speed_mb_per_s=50):
 # Kompres file
 # compress_file("/home/kangatang/git/filegator/repository/spark/Paparan_Audiensi_Ombudsman.pptx")
 
-total_size = get_folder_size_bytes("/home/kangatang/git/filegator/repository/spark")
-est_time = estimate_time(total_size, speed_mb_per_s=50)
+# total_size = get_folder_size_bytes("/home/kangatang/git/filegator/repository/spark")
+# est_time = estimate_time(total_size, speed_mb_per_s=50)
 
-print(f"Total ukuran file: {total_size / (1024*1024):.2f} MB")
-print(f"Estimasi waktu: {est_time:.2f} detik (dengan asumsi 50 MB/s)")
+# print(f"Total ukuran file: {total_size / (1024*1024):.2f} MB")
+# print(f"Estimasi waktu: {est_time:.2f} detik (dengan asumsi 50 MB/s)")
 
-# proses zip
-actual_time = compress_folder("/home/kangatang/git/filegator/repository/spark")
-print(f"Proses zip selesai: ")
-print(f"Waktu aktual: {actual_time:.2f} detik")
+# # proses zip
+# actual_time = compress_folder("/home/kangatang/git/filegator/repository/spark")
+# print(f"Proses zip selesai: ")
+# print(f"Waktu aktual: {actual_time:.2f} detik")
