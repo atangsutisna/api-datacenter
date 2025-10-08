@@ -114,6 +114,7 @@ def handle_response(update: Update, text: str) -> str:
     processed: str = text.lower()
 
     telegram_id = str(update.effective_user.id)
+    chat_id = update.effective_chat.id
     curr_user = get_user_logged_in(telegram_id)
     sender = curr_user["fullname"] if curr_user is not None else "user"
 
@@ -122,7 +123,8 @@ def handle_response(update: Update, text: str) -> str:
         "message": processed, 
         "metadata": {
             "telegram_id": telegram_id,
-            "fullname": curr_user["fullname"]
+            "fullname": curr_user["fullname"],
+            "chat_id": chat_id 
         }
     }
     logger.info("attempting to send request with params %r", data)

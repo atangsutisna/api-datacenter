@@ -256,3 +256,14 @@ rules:
         - file_no: not null
         - has_zip_permission: false
     - action: utter_no_zip_permission
+
+# long running task
+- rule: Run long running task
+  steps:
+    - intent: run_long_running_task
+    - action: action_long_run_task
+
+- rule: Check status zip
+  steps:
+    - intent: check_zip_status
+    - action: utter_zip_done

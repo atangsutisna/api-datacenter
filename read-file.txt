@@ -75,3 +75,6 @@ sudo apt install libreoffice   # Debian/Ubuntu
 rasa run actions
 nohup rasa run actions &
 
+## cara menjalankan celery
+celery -A tasks worker --loglevel=INFO
+

@@ -25,7 +25,9 @@ intents:
 - get_current_path
 - rename_item_by_file_no
 - zip_folder
-
+# just for testing
+- run_long_running_task
+- check_zip_status
 entities:
 - file_no
 - folder_name
@@ -233,6 +235,7 @@ actions:
 - action_prepare_download
 - action_zip
 - action_prepare_zip
+- action_long_run_task
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true
