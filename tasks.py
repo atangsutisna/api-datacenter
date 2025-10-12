@@ -83,6 +83,7 @@ def run_zip(sender_id):
 @app.task
 def do_zip(chat_id, base_path):
     logger.info("starting to run zip with params %s", base_path)
+    # batasi besaran file, jangan sampai melebihi satu gb atau 500gb
     is_file = os.path.isfile(base_path)
     if is_file:
         output_path = compress_file(base_path)
