@@ -49,6 +49,7 @@ def run_zip(sender_id):
 
     duration = 10
     print(f"Starting zip for {duration} seconds.")
+    loop.run_until_complete(bot.send_message(chat_id="7272740693", text="Mohon ditunggu, sepertinya proses ini memerlukan waktu sekitar 1 menit"))
     time.sleep(duration)
     print(f"Finished zip..")
     
@@ -83,6 +84,7 @@ def run_zip(sender_id):
 @app.task
 def do_zip(chat_id, base_path):
     logger.info("starting to run zip with params %s", base_path)
+    # disini kita bisa mengirimkan pesan,estimasi waktu yang diperlukan
     # batasi besaran file, jangan sampai melebihi satu gb atau 500gb
     is_file = os.path.isfile(base_path)
     if is_file:
