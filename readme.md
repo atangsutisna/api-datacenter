@@ -26,6 +26,8 @@ Untuk menjalankan proses yang perlu waktu lama, service ini menggunakan redis da
 
 ```
 celery -A tasks worker --loglevel=INFO
+atau
+nohup celery -A celery_app worker --loglevel=INFO > celery-tasks.log &
 ```
 Menjalankan redis-server
 ```
