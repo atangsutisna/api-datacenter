@@ -110,27 +110,4 @@ def do_zip(chat_id, base_path):
                 text=f"📎 Klik untuk mengunduh: [Download]({short_url})",
                 parse_mode="Markdown"
             )
-        )    
-# async def send_document_async(bot: Bot, chat_id: int, output_path: str, caption: str):
-#     """Fungsi pembantu async untuk mengirim dokumen."""
-#     try:
-#         with open(output_path, 'rb') as doc_file:
-#             await bot.send_document(
-#                 chat_id=chat_id, 
-#                 document=doc_file,
-#                 caption=caption,
-#                 parse_mode="Markdown"
-#             )
-#         return True
-#     except FileNotFoundError:
-#         # Log error di sini
-#         return False
-#     except Exception as e:
-#         # Log error Telegram/jaringan di sini
-#         full_traceback = traceback.format_exc()
-#         logger.error(
-#             "Error: Gagal mengirim dokumen ke Telegram. Detail: %s\nStack Trace:\n%s", 
-#             e, 
-#             full_traceback
-#         )
-#         return False
+        )
