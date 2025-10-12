@@ -4,6 +4,8 @@ from telegram import Bot
 from dotenv import load_dotenv
 import os
 import asyncio
+import logging
+from myutils import compress_folder,compress_file
 
 load_dotenv()
 app = Celery("hello", broker='redis://localhost:6379/0')
@@ -14,6 +16,12 @@ bot = Bot(token=os.getenv("TOKEN"))
 # Buat event loop global sekali saja
 loop = asyncio.new_event_loop()
 asyncio.set_event_loop(loop)
+
+
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.DEBUG
+)
+logger = logging.getLogger(__name__)
 
 @app.task
 def hello():
@@ -72,6 +80,12 @@ def run_zip(sender_id):
     except requests.exceptions.RequestException as e:
         print(f"[{sender_id}] GAGAL mengirim notifikasi ke Rasa: {e}")
 
-# print("start")
-# asyncio.run(bot.send_message(chat_id="7272740693", text="Selesai, bro.."))
-# print("finish")
+@app.task
+def do_zip(chat_id, base_path):
+    logger.info("starting to run zip with params %s", base_path)
+    is_file = os.path.isfile(base_path)
+    if is_file:
+        compress_file(base_path)
+    else:
+        compress_folder(base_path)
+    loop.run_until_complete(bot.send_message(chat_id=chat_id, text="Proses kompresi sudah selesai. Silakan dicek dengan mengirimkan perintah menampilkan data."))

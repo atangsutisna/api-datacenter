@@ -16,6 +16,7 @@ class ActionZip(Action):
     def __init__(self):
         from checkpermissions import is_permitted
         from myutils import get_root_path,list_dir,to_dict,build_response,get_ask_to_open_remove_or_download,simplified_path,compress_folder,compress_file
+        from tasks import do_zip
 
         self.is_permitted = is_permitted
         self.get_root_path = get_root_path
@@ -26,11 +27,12 @@ class ActionZip(Action):
         self.simplified_path = simplified_path,
         self.compress_folder = compress_folder
         self.compress_file = compress_file
+        self.do_zip = do_zip
 
     def name(self):
         return "action_zip"
 
-    async def run(self, dispatcher: CollectingDispatcher,
+    def run(self, dispatcher: CollectingDispatcher,
                   tracker: Tracker,
                   domain: dict):
         logger.info("action zip called...")
@@ -42,15 +44,12 @@ class ActionZip(Action):
         if search_results:
             user_files = json.loads(search_results)
             selected_path = user_files.get(file_no)
-            if selected_path:
-                is_file = os.path.isfile(selected_path)
-                if is_file:
-                    self.compress_file(selected_path)
-                else:
-                    self.compress_folder(selected_path)
-            # check permission
-            logger.info("Got the file on path %s", selected_path)
             dispatcher.utter_message(text="Proses kompresi sudah selesai.")
+            
+            metadata = tracker.latest_message.get("metadata")
+            chat_id = metadata.get("chat_id")
+            logger.info("outsourcing zip-process with param chat-id: %s", chat_id)
+            self.do_zip.delay(chat_id=chat_id, base_path=selected_path)
         else:
             dispatcher.utter_message(text="Saya tidak menemukan data apapun")
 
