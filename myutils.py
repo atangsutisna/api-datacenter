@@ -6,6 +6,8 @@ import requests
 import zipfile
 import time
 import uuid
+import math
+
 # Enable logging
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.DEBUG
@@ -194,8 +196,6 @@ def upload_to_filebin(filepath: str):
     else:
         logger.info("Gagal upload: %s : %s", response.status_code, response.text)
         return None
-link = upload_to_filebin("/home/kangatang/git/filegator/repository/dummy.pdf")
-print("Link download:", link)
 
 # contoh penggunaan
 # long_url = "https://filebin.net/xyz123/samplepptx.pptx"
@@ -278,3 +278,78 @@ def estimate_time(total_size, speed_mb_per_s=50):
 # actual_time = compress_folder("/home/kangatang/git/filegator/repository/spark")
 # print(f"Proses zip selesai: ")
 # print(f"Waktu aktual: {actual_time:.2f} detik")
+import os
+
+def get_folder_size_mb(folder_path):
+    total_size = 0
+    for dirpath, _, filenames in os.walk(folder_path):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            if os.path.isfile(fp):
+                total_size += os.path.getsize(fp)
+    # ubah byte ke megabyte
+    size_mb = total_size / (1024 * 1024)
+    return size_mb
+
+def is_folder_less_than_1gb(folder_path):
+    size_in_bytes = get_folder_size_bytes(folder_path)
+    one_gb_in_bytes = 1024 * 1024 * 1024
+    return size_in_bytes < one_gb_in_bytes
+
+def is_folder_less_than_2mb(folder_path):
+    size_in_bytes = get_folder_size_bytes(folder_path)
+    two_mb_in_bytes = 2 * 1024 * 1024  # 2 MB = 2 * 1024 * 1024 bytes
+    return size_in_bytes < two_mb_in_bytes
+
+def is_folder_larger_than_2mb(folder_path):
+    size_in_bytes = get_folder_size_bytes(folder_path)
+    two_mb_in_bytes = 2 * 1024 * 1024  # 2 MB dalam byte
+    return size_in_bytes > two_mb_in_bytes
+
+def format_time(seconds):
+    """Ubah detik menjadi format menit/detik agar mudah dibaca."""
+    minutes = math.floor(seconds / 60)
+    secs = math.ceil(seconds % 60)
+    if minutes > 0:
+        return f"{minutes} menit {secs} detik"
+    else:
+        return f"{secs} detik"
+
+# Contoh penggunaan
+# folder_path = "/home/kangatang/git/filegator/repository/spark/jamrud"
+# if is_folder_less_than_1gb(folder_path):
+#     print("Ukuran folder kurang dari 1 GB.")
+# else:
+#     print("Ukuran folder sama dengan atau lebih dari 1 GB.")
+
+def estimate_zip_time(folder_path, compression_speed_mb_per_sec=50):
+    """Menghitung estimasi waktu zip berdasarkan ukuran folder."""
+    total_size_bytes = get_folder_size_bytes(folder_path)
+    total_size_mb = total_size_bytes / (1024 * 1024)
+    
+    # Hitung estimasi waktu dalam detik
+    estimated_seconds = total_size_mb / compression_speed_mb_per_sec
+    estimated_double = estimated_seconds * 2
+    
+    return format_time(estimated_double)
+
+def estimate_upload_time(file_path, upload_speed_mbps=10):
+    """
+    Menghitung estimasi waktu upload file.
+    
+    :param file_path: path file yang akan diupload
+    :param upload_speed_mbps: kecepatan upload dalam megabit per detik (Mbps)
+    """
+    if not os.path.isfile(file_path):
+        return "File tidak ditemukan."
+    
+    file_size_bytes = os.path.getsize(file_path)
+    
+    # 1 byte = 8 bit, 1 Mbps = 1.000.000 bit per detik
+    upload_speed_bps = upload_speed_mbps * 1_000_000
+    estimated_seconds = (file_size_bytes * 8) / upload_speed_bps
+    
+    return f"Proses ini mungkin memerlukan sekitar {format_time(estimated_seconds)}"
+
+# folder_path = "/home/kangatang/git/filegator/repository/spark/jamrud.zip"
+# print(estimate_upload_time(folder_path))

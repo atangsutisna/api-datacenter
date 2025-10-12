@@ -44,7 +44,7 @@ class ActionZip(Action):
         if search_results:
             user_files = json.loads(search_results)
             selected_path = user_files.get(file_no)
-            dispatcher.utter_message(text="Mohon ditunggu, mungkin ini memerlukan waktu beberapa menit")
+            dispatcher.utter_message(text="Baik, mohon ditunggu")
             
             metadata = tracker.latest_message.get("metadata")
             chat_id = metadata.get("chat_id")

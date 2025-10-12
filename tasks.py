@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 import asyncio
 import logging
-from myutils import compress_folder,compress_file,upload_to_filebin,shorten_url
+from myutils import compress_folder,compress_file,upload_to_filebin,shorten_url,is_folder_less_than_1gb,is_folder_larger_than_2mb,estimate_upload_time
 
 load_dotenv()
 app = Celery("hello", broker='redis://localhost:6379/0')
@@ -86,28 +86,48 @@ def do_zip(chat_id, base_path):
     logger.info("starting to run zip with params %s", base_path)
     # disini kita bisa mengirimkan pesan,estimasi waktu yang diperlukan
     # batasi besaran file, jangan sampai melebihi satu gb atau 500gb
-    is_file = os.path.isfile(base_path)
-    if is_file:
-        output_path = compress_file(base_path)
-        long_url = upload_to_filebin(output_path)
-        short_url = shorten_url(long_url)
-
-        loop.run_until_complete(
-            bot.send_message(
-                chat_id=chat_id, 
-                text=f"📎 Klik untuk mengunduh: [Download]({short_url})",
-                parse_mode="Markdown"
+    if is_folder_less_than_1gb(base_path):
+        if is_folder_larger_than_2mb(base_path):
+            # estimate_time = estimate_zip_time(base_path)
+            estimate_message = estimate_upload_time(base_path)
+            loop.run_until_complete(
+                bot.send_message(
+                    chat_id=chat_id, 
+                    text=estimate_message,
+                    parse_mode="Markdown"
+                )
             )
-        )
-    else:
-        output_path = compress_folder(base_path)
-        long_url = upload_to_filebin(output_path)
-        short_url = shorten_url(long_url)
 
+        is_file = os.path.isfile(base_path)
+        if is_file:
+            output_path = compress_file(base_path)
+            long_url = upload_to_filebin(output_path)
+            short_url = shorten_url(long_url)
+
+            loop.run_until_complete(
+                bot.send_message(
+                    chat_id=chat_id, 
+                    text=f"📎 Klik untuk mengunduh: [Download]({short_url})",
+                    parse_mode="Markdown"
+                )
+            )
+        else:
+            output_path = compress_folder(base_path)
+            long_url = upload_to_filebin(output_path)
+            short_url = shorten_url(long_url)
+
+            loop.run_until_complete(
+                bot.send_message(
+                    chat_id=chat_id, 
+                    text=f"📎 Klik untuk mengunduh: [Download]({short_url})",
+                    parse_mode="Markdown"
+                )
+            )
+    else:
         loop.run_until_complete(
             bot.send_message(
                 chat_id=chat_id, 
-                text=f"📎 Klik untuk mengunduh: [Download]({short_url})",
+                text="Maaf, saya tidak dapat memproses file atau folder di atas 1GB",
                 parse_mode="Markdown"
             )
         )
