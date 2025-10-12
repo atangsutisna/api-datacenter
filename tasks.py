@@ -85,7 +85,56 @@ def do_zip(chat_id, base_path):
     logger.info("starting to run zip with params %s", base_path)
     is_file = os.path.isfile(base_path)
     if is_file:
-        compress_file(base_path)
+        output_path = compress_file(base_path)
+        # loop.run_until_complete(bot.send_message(chat_id=chat_id, text="Proses kompresi sudah selesai. Silakan dicek dengan mengirimkan perintah menampilkan data."))
+        try:
+            success = loop.run_until_complete(
+                send_document_async(
+                    bot=bot,
+                    chat_id=chat_id,
+                    output_path=output_path,
+                    caption=f"📎 Klik untuk mengunduh"
+                )
+            )
+            if success:
+                logger.info("success: File %s berhasil dikirim melalui bot", output_path)
+            else:
+                 logger.error("Error: Gagal mengirimkan file ke Telegram (detail error ada di send_document_async)")
+        except Exception as e:
+            logger.error("Error: gagal menjalankan async task..")
     else:
-        compress_folder(base_path)
-    loop.run_until_complete(bot.send_message(chat_id=chat_id, text="Proses kompresi sudah selesai. Silakan dicek dengan mengirimkan perintah menampilkan data."))
+        output_path = compress_folder(base_path)
+        # loop.run_until_complete(bot.send_message(chat_id=chat_id, text="Proses kompresi sudah selesai. Silakan dicek dengan mengirimkan perintah menampilkan data."))
+        try:
+            success = loop.run_until_complete(
+                send_document_async(
+                    bot=bot,
+                    chat_id=chat_id,
+                    output_path=output_path,
+                    caption=f"📎 Klik untuk mengunduh"
+                )
+            )
+            if success:
+                logger.info("success: File %s berhasil dikirim melalui bot", output_path)
+            else:
+                 logger.error("Error: Gagal mengirimkan file ke Telegram (detail error ada di send_document_async)")
+        except Exception as e:
+            logger.error("Error: gagal menjalankan async task..")
+    
+async def send_document_async(bot: Bot, chat_id: int, output_path: str, caption: str):
+    """Fungsi pembantu async untuk mengirim dokumen."""
+    try:
+        with open(output_path, 'rb') as doc_file:
+            await bot.send_document(
+                chat_id=chat_id, 
+                document=doc_file,
+                caption=caption,
+                parse_mode="Markdown"
+            )
+        return True
+    except FileNotFoundError:
+        # Log error di sini
+        return False
+    except Exception as e:
+        # Log error Telegram/jaringan di sini
+        return False

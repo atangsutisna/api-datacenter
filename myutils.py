@@ -230,7 +230,6 @@ def to_be_list(slot_value: str):
 # for val in slot_value:
 #     print(to_be_list(val))
 def compress_folder(folder_path):
-    start_time = time.time()
     folder_name = os.path.basename(os.path.normpath(folder_path))
     parent_dir = os.path.dirname(os.path.normpath(folder_path))
     output_path = os.path.join(parent_dir, f"{folder_name}.zip")
@@ -243,12 +242,10 @@ def compress_folder(folder_path):
                 arcname = os.path.relpath(file_path, folder_path)
                 zipf.write(file_path, arcname)
     print(f"Folder '{folder_path}' berhasil dikompres menjadi '{output_path}'")
-    end_time = time.time()
-    return end_time - start_time
+    # end_time = time.time()
+    return output_path
 
 def compress_file(file_path):
-    start_time = time.time()
-
     file_name = os.path.splitext(os.path.basename(file_path))[0]
     parent_dir = os.path.dirname(os.path.normpath(file_path))
     output_path = os.path.join(parent_dir, f"{file_name}.zip")
@@ -256,8 +253,7 @@ def compress_file(file_path):
     with zipfile.ZipFile(output_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
         zipf.write(file_path, os.path.basename(file_path))
     print(f"File '{file_path}' berhasil dikompres menjadi '{output_path}'")
-    end_time = time.time()
-    return end_time - start_time
+    return output_path
 
 def estimate_time(total_size, speed_mb_per_s=50):
     # hitung estimasi (detik)
