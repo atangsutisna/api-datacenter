@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import requests
 import zipfile
 import time
+import uuid
 # Enable logging
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.DEBUG
@@ -180,7 +181,8 @@ def get_range_list(dictionary):
 # print("Link download:", link)
 def upload_to_filebin(filepath: str):
     file_name = os.path.basename(filepath)
-    url = "https://filebin.net/insi-datacenter/"+ file_name
+    bin_name = f"{uuid.uuid4().hex}"
+    url = "https://filebin.net/"+ bin_name + "/" + file_name
 
     with open(filepath, "rb") as f:
         files = {"file": f}
@@ -192,8 +194,8 @@ def upload_to_filebin(filepath: str):
     else:
         logger.info("Gagal upload: %s : %s", response.status_code, response.text)
         return None
-# link = upload_to_filebin("/home/kangatang/git/filegator/repository/dummy.pdf")
-# print("Link download:", link)
+link = upload_to_filebin("/home/kangatang/git/filegator/repository/dummy.pdf")
+print("Link download:", link)
 
 # contoh penggunaan
 # long_url = "https://filebin.net/xyz123/samplepptx.pptx"

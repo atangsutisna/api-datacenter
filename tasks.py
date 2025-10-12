@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 import asyncio
 import logging
-from myutils import compress_folder,compress_file
+from myutils import compress_folder,compress_file,upload_to_filebin,shorten_url
 
 load_dotenv()
 app = Celery("hello", broker='redis://localhost:6379/0')
@@ -86,55 +86,48 @@ def do_zip(chat_id, base_path):
     is_file = os.path.isfile(base_path)
     if is_file:
         output_path = compress_file(base_path)
-        # loop.run_until_complete(bot.send_message(chat_id=chat_id, text="Proses kompresi sudah selesai. Silakan dicek dengan mengirimkan perintah menampilkan data."))
-        try:
-            success = loop.run_until_complete(
-                send_document_async(
-                    bot=bot,
-                    chat_id=chat_id,
-                    output_path=output_path,
-                    caption=f"📎 Klik untuk mengunduh"
-                )
-            )
-            if success:
-                logger.info("success: File %s berhasil dikirim melalui bot", output_path)
-            else:
-                 logger.error("Error: Gagal mengirimkan file ke Telegram (detail error ada di send_document_async)")
-        except Exception as e:
-            logger.error("Error: gagal menjalankan async task..")
-    else:
-        output_path = compress_folder(base_path)
-        # loop.run_until_complete(bot.send_message(chat_id=chat_id, text="Proses kompresi sudah selesai. Silakan dicek dengan mengirimkan perintah menampilkan data."))
-        try:
-            success = loop.run_until_complete(
-                send_document_async(
-                    bot=bot,
-                    chat_id=chat_id,
-                    output_path=output_path,
-                    caption=f"📎 Klik untuk mengunduh"
-                )
-            )
-            if success:
-                logger.info("success: File %s berhasil dikirim melalui bot", output_path)
-            else:
-                 logger.error("Error: Gagal mengirimkan file ke Telegram (detail error ada di send_document_async)")
-        except Exception as e:
-            logger.error("Error: gagal menjalankan async task..")
-    
-async def send_document_async(bot: Bot, chat_id: int, output_path: str, caption: str):
-    """Fungsi pembantu async untuk mengirim dokumen."""
-    try:
-        with open(output_path, 'rb') as doc_file:
-            await bot.send_document(
+        long_url = upload_to_filebin(output_path)
+        short_url = shorten_url(long_url)
+
+        loop.run_until_complete(
+            bot.send_message(
                 chat_id=chat_id, 
-                document=doc_file,
-                caption=caption,
+                text=f"📎 Klik untuk mengunduh: [Download]({short_url})",
                 parse_mode="Markdown"
             )
-        return True
-    except FileNotFoundError:
-        # Log error di sini
-        return False
-    except Exception as e:
-        # Log error Telegram/jaringan di sini
-        return False
+        )
+    else:
+        output_path = compress_folder(base_path)
+        long_url = upload_to_filebin(output_path)
+        short_url = shorten_url(long_url)
+
+        loop.run_until_complete(
+            bot.send_message(
+                chat_id=chat_id, 
+                text=f"📎 Klik untuk mengunduh: [Download]({short_url})",
+                parse_mode="Markdown"
+            )
+        )    
+# async def send_document_async(bot: Bot, chat_id: int, output_path: str, caption: str):
+#     """Fungsi pembantu async untuk mengirim dokumen."""
+#     try:
+#         with open(output_path, 'rb') as doc_file:
+#             await bot.send_document(
+#                 chat_id=chat_id, 
+#                 document=doc_file,
+#                 caption=caption,
+#                 parse_mode="Markdown"
+#             )
+#         return True
+#     except FileNotFoundError:
+#         # Log error di sini
+#         return False
+#     except Exception as e:
+#         # Log error Telegram/jaringan di sini
+#         full_traceback = traceback.format_exc()
+#         logger.error(
+#             "Error: Gagal mengirim dokumen ke Telegram. Detail: %s\nStack Trace:\n%s", 
+#             e, 
+#             full_traceback
+#         )
+#         return False
