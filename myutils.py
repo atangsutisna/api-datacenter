@@ -7,6 +7,8 @@ import zipfile
 import time
 import uuid
 import math
+from spire.xls import *
+from spire.xls.common import *
 
 # Enable logging
 logging.basicConfig(
