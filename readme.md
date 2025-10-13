@@ -27,7 +27,7 @@ Untuk menjalankan proses yang perlu waktu lama, service ini menggunakan redis da
 ```
 celery -A tasks worker --loglevel=INFO
 atau
-nohup celery -A celery_app worker --loglevel=INFO > celery-tasks.log &
+nohup celery -A tasks worker --loglevel=INFO > tasks.log &
 ```
 Menjalankan redis-server
 ```
@@ -38,3 +38,8 @@ Cek service redis-server
 redis-cli ping
 ```
 Sebagai contoh, jalankan trigger_task.py. Task yang dijalankan, ada di file tasks.py
+
+install spire untuk convert excel to excel
+```
+pip install Spire.XLS
+```
