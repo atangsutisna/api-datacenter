@@ -66,16 +66,29 @@ rules:
     - intent: ask_upload
     - action: utter_upload_command
 # search a file with keyword
-- rule: User want to search a file or data
+# - rule: User want to search a file or data
+#   steps:
+#     - intent: request_search_file
+#     - slot_was_set:
+#       - search_query: not null
+#     - action: action_perform_search
+# - rule: setelah bot menyelesaikan pencarian
+#   steps:
+#     - action: action_perform_search
+#     - action: action_listen
+- rule: User want to search a file
   steps:
-    - intent: ask_search_file
-    - slot_was_set:
-      - search_query: not null
-    - action: action_perform_search
-- rule: setelah bot menyelesaikan pencarian
+    - intent: request_search_file
+    - action: search_form
+    - active_loop: search_form
+
+- rule: Submit search form
+  condition:
+    - active_loop: search_form
   steps:
+    - action: search_form
+    - active_loop: null
     - action: action_perform_search
-    - action: action_listen
 
 - rule: User meminta untuk menampilkan data yang ada di workspacenya
   steps:

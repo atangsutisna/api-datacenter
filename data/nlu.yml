@@ -83,38 +83,50 @@ nlu:
     - Tolong unduh yang angka [11](file_no) itu
     - Saya perlu download nomor [27](file_no)
     - Download [4](file_no) ke perangkat saya
-- intent: ask_search_file
+
+- intent: request_search_file
   examples: |
-    - cari [dokumen rapat](search_query)
-    - saya ingin mencari [file laporan penjualan](search_query)
-    - temukan [proyek baru](search_query)
-    - cari tahu tentang [cuaca hari ini di Bandung](search_query)
-    - [gambar kucing](search_query)
-    - cari [harga saham Google](search_query)
-    - saya mencari [berita terbaru tentang AI](search_query)
-    - bisakah kamu carikan [resep masakan](search_query)
-    - saya butuh informasi tentang [teknologi blockchain](search_query)
-    - tolong temukan [artikel tentang perubahan iklim](search_query)
-    - cari data mengenai [populasi dunia](search_query)
-    - dimana saya bisa menemukan [laporan keuangan perusahaan](search_query)
-    - tolong cari [film terbaru](search_query)
-    - saya ingin mencari [kursus bahasa Inggris](search_query)
-    - temukan informasi tentang [sejarah Indonesia](search_query)
-    - cari [tutorial python](search_query)
-    - butuh [berita olahraga](search_query)
-    - tolong cari [restoran terdekat](search_query)
-    - ada informasi tentang [event di Jakarta](search_query)
-    - saya mau cari [lowongan kerja IT](search_query)
-    - cariin [musik pop](search_query)
-    - tolong temuin [buku fiksi ilmiah](search_query)
-    - bisakah cari [hotel murah di Bali](search_query)
-    - saya mau nyari [gambar pemandangan alam](search_query)
-    - carikan [aplikasi edit foto](search_query)
-    - saya mencari [tips kesehatan](search_query)
-    - temukan [jadwal kereta api](search_query)
-    - tolong carikan [lirik lagu](search_query)
-    - saya butuh info [tentang universitas](search_query)
-    - dimana saya bisa mencari [hasil penelitian](search_query)
+    - tolong bantu saya cari file
+    - saya mau cari file
+    - bisa bantu saya mencari file?
+    - saya ingin mencari dokumen
+    - bantu saya temukan file saya
+    - saya mau mencari berkas
+    - tolong carikan dokumen saya
+
+# - intent: request_search_file
+#   examples: |
+#     - cari [dokumen rapat](search_query)
+#     - saya ingin mencari [file laporan penjualan](search_query)
+#     - temukan [proyek baru](search_query)
+#     - cari tahu tentang [cuaca hari ini di Bandung](search_query)
+#     - [gambar kucing](search_query)
+#     - cari [harga saham Google](search_query)
+#     - saya mencari [berita terbaru tentang AI](search_query)
+#     - bisakah kamu carikan [resep masakan](search_query)
+#     - saya butuh informasi tentang [teknologi blockchain](search_query)
+#     - tolong temukan [artikel tentang perubahan iklim](search_query)
+#     - cari data mengenai [populasi dunia](search_query)
+#     - dimana saya bisa menemukan [laporan keuangan perusahaan](search_query)
+#     - tolong cari [film terbaru](search_query)
+#     - saya ingin mencari [kursus bahasa Inggris](search_query)
+#     - temukan informasi tentang [sejarah Indonesia](search_query)
+#     - cari [tutorial python](search_query)
+#     - butuh [berita olahraga](search_query)
+#     - tolong cari [restoran terdekat](search_query)
+#     - ada informasi tentang [event di Jakarta](search_query)
+#     - saya mau cari [lowongan kerja IT](search_query)
+#     - cariin [musik pop](search_query)
+#     - tolong temuin [buku fiksi ilmiah](search_query)
+#     - bisakah cari [hotel murah di Bali](search_query)
+#     - saya mau nyari [gambar pemandangan alam](search_query)
+#     - carikan [aplikasi edit foto](search_query)
+#     - saya mencari [tips kesehatan](search_query)
+#     - temukan [jadwal kereta api](search_query)
+#     - tolong carikan [lirik lagu](search_query)
+#     - saya butuh info [tentang universitas](search_query)
+#     - dimana saya bisa mencari [hasil penelitian](search_query)
+
 - intent: ask_to_show
   examples: |
     - tampilkan semua data saya

@@ -5,7 +5,7 @@ intents:
 - ask_admin_datacenter
 - ask_datacenter
 - ask_download
-- ask_search_file
+- request_search_file
 - ask_upload
 - bertegur_sapa
 - bot_challenge
@@ -82,6 +82,14 @@ slots:
     mappings:
       - type: from_entity
         entity: folder_name
+  search_query:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_text
+        conditions:
+          - active_loop: search_form
+            requested_slot: search_query
   creation_permitted:
     type: bool
     influence_conversation: true
@@ -121,12 +129,12 @@ slots:
   #   influence_conversation: true
   #   mappings:
   #   - type: custom
-  search_query:
-    type: text
-    influence_conversation: true
-    mappings:
-      - type: from_entity
-        entity: search_query
+  # search_query:
+  #   type: text
+  #   influence_conversation: true
+  #   mappings:
+  #     - type: from_entity
+  #       entity: search_query
 
 forms:
   file_selection_form:
@@ -135,7 +143,10 @@ forms:
   rename_form:
     required_slots:
     - file_no
-    - new_file_name    
+    - new_file_name 
+  search_form:
+    required_slots:
+    - search_query   
   # create_folder_form:
   #   required_slots:
   #   - folder_name
@@ -210,6 +221,12 @@ responses:
     - text: "Folder telah selesai dikompres/zip, silakan di-list lagi jika mau download"
   utter_no_zip_permission:
     - text: "Kamu tidak punya izin untuk zip."
+  utter_ask_search_query:
+    - text: "Baik, sebutkan nama file yang ingin kamu cari."
+    - text: "Tentu, bisa tolong beri tahu nama filenya?"
+    - text: "Baik, file apa yang ingin kamu cari?"
+    - text: "Silakan sebutkan nama file yang ingin saya cari."
+    - text: "Oke, nama filenya apa?"
 actions:
 - action_greeting
 - action_guessing_name
