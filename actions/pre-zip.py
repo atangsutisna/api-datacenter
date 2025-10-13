@@ -35,6 +35,7 @@ class ActionPrepareZip(Action):
         search_results = tracker.get_slot("search_results")
 
         user_files = json.loads(search_results)
+        logger.info("Got file no %s ", file_no)
         selected_path = user_files.get(file_no)
 
         has_permission = self.is_permitted(telegram_id, selected_path, "zip")
