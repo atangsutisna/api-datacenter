@@ -309,6 +309,11 @@ def is_folder_larger_than_2mb(folder_path):
     two_mb_in_bytes = 2 * 1024 * 1024  # 2 MB dalam byte
     return size_in_bytes > two_mb_in_bytes
 
+def is_file_smaller_than_100mb(folder_path):
+    size_in_bytes = get_file_size_bytes(folder_path)
+    hundred_mb_in_bytes = 100 * 1024 * 1024  # 100 MB dalam byte
+    return size_in_bytes < hundred_mb_in_bytes
+
 def format_time(seconds):
     """Ubah detik menjadi format menit/detik agar mudah dibaca."""
     minutes = math.floor(seconds / 60)
@@ -317,13 +322,12 @@ def format_time(seconds):
         return f"{minutes} menit {secs} detik"
     else:
         return f"{secs} detik"
-
 # Contoh penggunaan
-# folder_path = "/home/kangatang/git/filegator/repository/spark/jamrud"
-# if is_folder_less_than_1gb(folder_path):
-#     print("Ukuran folder kurang dari 1 GB.")
-# else:
-#     print("Ukuran folder sama dengan atau lebih dari 1 GB.")
+folder_path = "/home/kangatang/git/filegator/repository/atang/master-tabel.xlsx"
+if is_file_smaller_than_100mb(folder_path):
+    print("Ukuran folder kurang dari 100 MB.")
+else:
+    print("Ukuran folder sama dengan atau lebih dari 100 MB.")
 
 def estimate_zip_time(folder_path, compression_speed_mb_per_sec=50):
     """Menghitung estimasi waktu zip berdasarkan ukuran folder."""
