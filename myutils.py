@@ -323,11 +323,11 @@ def format_time(seconds):
     else:
         return f"{secs} detik"
 # Contoh penggunaan
-folder_path = "/home/kangatang/git/filegator/repository/atang/master-tabel.xlsx"
-if is_file_smaller_than_100mb(folder_path):
-    print("Ukuran folder kurang dari 100 MB.")
-else:
-    print("Ukuran folder sama dengan atau lebih dari 100 MB.")
+# folder_path = "/home/kangatang/git/filegator/repository/atang/master-tabel.xlsx"
+# if is_file_smaller_than_100mb(folder_path):
+#     print("Ukuran folder kurang dari 100 MB.")
+# else:
+#     print("Ukuran folder sama dengan atau lebih dari 100 MB.")
 
 def estimate_zip_time(folder_path, compression_speed_mb_per_sec=50):
     """Menghitung estimasi waktu zip berdasarkan ukuran folder."""
