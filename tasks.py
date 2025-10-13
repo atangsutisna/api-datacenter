@@ -151,11 +151,12 @@ def get_summarize(chat_id: str, selected_path: str):
             prompt=prompt
         )
         # dispatcher.utter_message(text=result)
+        logger.info("Got info summarize from openAI %s", result)
         loop.run_until_complete(
             bot.send_message(
                 chat_id=chat_id, 
                 text=result,
-                parse_mode="Markdown"
+                parse_mode="HTML"
             )
         )
     else:
@@ -168,11 +169,12 @@ def get_summarize(chat_id: str, selected_path: str):
             file_path=tmp_file_fullpath
         )
         # dispatcher.utter_message(text=result)
+        logger.info("Got info summarize from openAI %s", result)
         loop.run_until_complete(
             bot.send_message(
                 chat_id=chat_id, 
                 text=result,
-                parse_mode="Markdown"
+                parse_mode="HTML"
             )
         )
         os.remove(tmp_file_fullpath)
