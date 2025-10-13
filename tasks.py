@@ -5,12 +5,14 @@ from dotenv import load_dotenv
 import os
 import asyncio
 import logging
-from myutils import compress_folder,compress_file,upload_to_filebin,shorten_url,is_folder_less_than_1gb,is_folder_larger_than_2mb,estimate_upload_time
+from myutils import compress_folder,compress_file,upload_to_filebin,shorten_url,is_folder_less_than_1gb,is_folder_larger_than_2mb,estimate_upload_time,get_ext
+from assistant_file_reader import read_file_with_file_search
+from excelutils import export_to_pdf
 
 load_dotenv()
 app = Celery("hello", broker='redis://localhost:6379/0')
 RASA_API_URL = "http://localhost:5005"
-
+OPENAI_APIKEY = os.getenv('OPENAI_APIKEY')
 bot = Bot(token=os.getenv("TOKEN"))
 
 # Buat event loop global sekali saja
@@ -131,3 +133,46 @@ def do_zip(chat_id, base_path):
                 parse_mode="Markdown"
             )
         )
+
+@app.task
+def get_summarize(chat_id: str, selected_path: str):
+    ext = get_ext(selected_path)
+    supported_extension = {"pdf", "doc", "docx", "txt"}
+    
+    if ext in supported_extension:
+        logger.info("attempting to send request to openai")
+        prompt=(
+            "Tolong bacakan isi halaman 1 sampai 3 dari file ini."
+            "Jika tidak dapat dibaca, jelaskan penyebabnya secara singkat, tanpa mengajukan pertanyaan."
+        )
+        result = read_file_with_file_search(
+            api_key=OPENAI_APIKEY,
+            file_path=selected_path,
+            prompt=prompt
+        )
+        # dispatcher.utter_message(text=result)
+        loop.run_until_complete(
+            bot.send_message(
+                chat_id=chat_id, 
+                text=result,
+                parse_mode="Markdown"
+            )
+        )
+    else:
+        logger.info(f"attempting to convert {selected_path} to pdf")
+        tmp_file_fullpath = export_to_pdf(selected_path)
+        logger.info("attempting to ask to openai")
+        # perlu optimasi
+        result = read_file_with_file_search(
+            api_key=OPENAI_APIKEY,
+            file_path=tmp_file_fullpath
+        )
+        # dispatcher.utter_message(text=result)
+        loop.run_until_complete(
+            bot.send_message(
+                chat_id=chat_id, 
+                text=result,
+                parse_mode="Markdown"
+            )
+        )
+        os.remove(tmp_file_fullpath)

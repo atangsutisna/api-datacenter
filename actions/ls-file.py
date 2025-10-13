@@ -17,12 +17,14 @@ class ActionAccessData(Action):
         from fileconverter import convert_to_pdf
         from userloggedin import get_user_logged_in
         from myutils import simplified_path,get_ask_to_open_remove_or_download
+        from tasks import get_summarize
 
         self.get_user_logged_in = get_user_logged_in
         self.read_file_with_file_search = read_file_with_file_search
         self.convert_to_pdf = convert_to_pdf
         self.simplified_path = simplified_path
         self.get_ask_to_open_remove_or_download = get_ask_to_open_remove_or_download
+        self.get_summarize = get_summarize
 
     def name(self):
         return "action_to_open_data"
@@ -47,33 +49,39 @@ class ActionAccessData(Action):
                     # open the file using openai
                     # dispatcher.utter_message(text="Mohon ditunggu, saya sedang membuat rangkuman file tersebut")
                     # call open api
-                    ext = get_ext(selected_path)
-                    supported_extension = {"pdf", "doc", "docx", "txt"}
-                    OPENAI_APIKEY = os.getenv('OPENAI_APIKEY')
-                    if ext in supported_extension:
-                        logger.info("attempting to send request to openai")
-                        prompt=(
-                            "Tolong bacakan isi halaman 1 sampai 3 dari file ini."
-                            "Jika tidak dapat dibaca, jelaskan penyebabnya secara singkat, tanpa mengajukan pertanyaan."
-                        )
-                        result = self.read_file_with_file_search(
-                            api_key=OPENAI_APIKEY,
-                            file_path=selected_path,
-                            prompt=prompt
-                        )
-                        dispatcher.utter_message(text=result)
-                    else:
-                        # convert to pdf
-                        logger.info(f"attempting to convert {selected_path} to pdf")
-                        tmp_file_fullpath = self.convert_to_pdf(selected_path)
-                        logger.info("attempting to ask to openai")
-                        # perlu optimasi
-                        result = self.read_file_with_file_search(
-                            api_key=OPENAI_APIKEY,
-                            file_path=tmp_file_fullpath
-                        )
-                        dispatcher.utter_message(text=result)
-                        os.remove(tmp_file_fullpath)
+                    # ext = get_ext(selected_path)
+                    # supported_extension = {"pdf", "doc", "docx", "txt"}
+                    # OPENAI_APIKEY = os.getenv('OPENAI_APIKEY')
+                    # if ext in supported_extension:
+                    #     logger.info("attempting to send request to openai")
+                    #     prompt=(
+                    #         "Tolong bacakan isi halaman 1 sampai 3 dari file ini."
+                    #         "Jika tidak dapat dibaca, jelaskan penyebabnya secara singkat, tanpa mengajukan pertanyaan."
+                    #     )
+                    #     result = self.read_file_with_file_search(
+                    #         api_key=OPENAI_APIKEY,
+                    #         file_path=selected_path,
+                    #         prompt=prompt
+                    #     )
+                    #     dispatcher.utter_message(text=result)
+                    # else:
+                    #     # convert to pdf
+                    #     logger.info(f"attempting to convert {selected_path} to pdf")
+                    #     tmp_file_fullpath = self.convert_to_pdf(selected_path)
+                    #     logger.info("attempting to ask to openai")
+                    #     # perlu optimasi
+                    #     result = self.read_file_with_file_search(
+                    #         api_key=OPENAI_APIKEY,
+                    #         file_path=tmp_file_fullpath
+                    #     )
+                    #     dispatcher.utter_message(text=result)
+                    #     os.remove(tmp_file_fullpath)
+                    dispatcher.utter_message(text="Baik, mohon ditunggu")
+
+                    metadata = tracker.latest_message.get("metadata")
+                    chat_id = metadata.get("chat_id")
+                    logger.info("outsourcing summarize-process to task with param chat-id: %s", chat_id)
+                    self.get_summarize.delay(chat_id=chat_id,selected_path=selected_path)
                     return [
                         SlotSet("file_no", None),
                     ]

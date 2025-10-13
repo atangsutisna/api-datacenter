@@ -9,6 +9,7 @@ import uuid
 import math
 from spire.xls import *
 from spire.xls.common import *
+from pathlib import Path
 
 # Enable logging
 logging.basicConfig(
@@ -355,3 +356,6 @@ def estimate_upload_time(file_path, upload_speed_mbps=10):
 
 # folder_path = "/home/kangatang/git/filegator/repository/spark/jamrud.zip"
 # print(estimate_upload_time(folder_path))
+def get_ext(path: str) -> str:
+    fullpath = Path(path)
+    return fullpath.suffix.lstrip(".")
