@@ -89,19 +89,19 @@ def do_zip(chat_id, base_path):
     # disini kita bisa mengirimkan pesan,estimasi waktu yang diperlukan
     # batasi besaran file, jangan sampai melebihi satu gb atau 500gb
     if is_folder_less_than_1gb(base_path):
-        if is_folder_larger_than_2mb(base_path):
-            # estimate_time = estimate_zip_time(base_path)
-            estimate_message = estimate_upload_time(base_path)
-            loop.run_until_complete(
-                bot.send_message(
-                    chat_id=chat_id, 
-                    text=estimate_message,
-                    parse_mode="Markdown"
-                )
-            )
-
         is_file = os.path.isfile(base_path)
         if is_file:
+            if is_folder_larger_than_2mb(base_path): # harusnya bukan folder, tapi cek ukuran filenya
+                # estimate_time = estimate_zip_time(base_path)
+                estimate_message = estimate_upload_time(base_path)
+                loop.run_until_complete(
+                    bot.send_message(
+                        chat_id=chat_id, 
+                        text=estimate_message,
+                        parse_mode="Markdown"
+                    )
+                )
+
             output_path = compress_file(base_path)
             long_url = upload_to_filebin(output_path)
             short_url = shorten_url(long_url)
@@ -115,6 +115,16 @@ def do_zip(chat_id, base_path):
             )
         else:
             output_path = compress_folder(base_path)
+            if is_folder_larger_than_2mb(output_path): # harusnya bukan folder, tapi cek ukuran filenya
+                estimate_message = estimate_upload_time(output_path)
+                loop.run_until_complete(
+                    bot.send_message(
+                        chat_id=chat_id, 
+                        text=estimate_message,
+                        parse_mode="Markdown"
+                    )
+                )
+
             long_url = upload_to_filebin(output_path)
             short_url = shorten_url(long_url)
 
