@@ -85,13 +85,15 @@ def run_zip(sender_id):
 
 @app.task
 def do_zip(chat_id, base_path):
+    import time
+
     logger.info("starting to run zip with params %s", base_path)
     # disini kita bisa mengirimkan pesan,estimasi waktu yang diperlukan
     # batasi besaran file, jangan sampai melebihi satu gb atau 500gb
     if is_folder_less_than_1gb(base_path):
         is_file = os.path.isfile(base_path)
         if is_file:
-            if is_folder_larger_than_2mb(base_path): # harusnya bukan folder, tapi cek ukuran filenya
+            if not is_file_smaller_than_100mb(base_path): # harusnya bukan folder, tapi cek ukuran filenya
                 # estimate_time = estimate_zip_time(base_path)
                 estimate_message = estimate_upload_time(base_path)
                 loop.run_until_complete(
@@ -109,13 +111,15 @@ def do_zip(chat_id, base_path):
             loop.run_until_complete(
                 bot.send_message(
                     chat_id=chat_id, 
-                    text=f"📎 Klik untuk mengunduh: [Download]({short_url})",
+                    text=f"📎 Terima kasih atas kesabaran Anda. File ZIP siap, unduh sekarang di: [Download]({short_url})",
                     parse_mode="Markdown"
                 )
             )
         else:
+            # est_zip_time = estimate_zip_time(base_path)
             output_path = compress_folder(base_path)
-            if is_folder_larger_than_2mb(output_path): # harusnya bukan folder, tapi cek ukuran filenya
+            if not is_file_smaller_than_100mb(output_path): # harusnya bukan folder, tapi cek ukuran filenya
+                logger.info("attempting to calculate upload time estimation")
                 estimate_message = estimate_upload_time(output_path)
                 loop.run_until_complete(
                     bot.send_message(
@@ -124,6 +128,8 @@ def do_zip(chat_id, base_path):
                         parse_mode="Markdown"
                     )
                 )
+            else:
+                logger.info("Folder %s is less than 2mb", output_path)
 
             long_url = upload_to_filebin(output_path)
             short_url = shorten_url(long_url)
@@ -131,10 +137,16 @@ def do_zip(chat_id, base_path):
             loop.run_until_complete(
                 bot.send_message(
                     chat_id=chat_id, 
-                    text=f"📎 Klik untuk mengunduh: [Download]({short_url})",
+                    text=f"📎 Terima kasih atas kesabaran Anda. File ZIP siap, unduh sekarang di: [Download]({short_url})",
                     parse_mode="Markdown"
                 )
             )
+            
+            # just for testing
+            # duration = 10
+            # time.sleep(duration)
+            # loop.run_until_complete(bot.send_message(chat_id=chat_id, text="Selesai, bro.."))
+
     else:
         loop.run_until_complete(
             bot.send_message(

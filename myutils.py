@@ -309,8 +309,8 @@ def is_folder_larger_than_2mb(folder_path):
     two_mb_in_bytes = 2 * 1024 * 1024  # 2 MB dalam byte
     return size_in_bytes > two_mb_in_bytes
 
-def is_file_smaller_than_100mb(folder_path):
-    size_in_bytes = get_file_size_bytes(folder_path)
+def is_file_smaller_than_100mb(file_path: str):
+    size_in_bytes = get_file_size_bytes(file_path)
     hundred_mb_in_bytes = 100 * 1024 * 1024  # 100 MB dalam byte
     return size_in_bytes < hundred_mb_in_bytes
 
@@ -340,7 +340,7 @@ def estimate_zip_time(folder_path, compression_speed_mb_per_sec=50):
     
     return format_time(estimated_double)
 
-def estimate_upload_time(file_path, upload_speed_mbps=10):
+def estimate_upload_time(file_path, upload_speed_mbps=50):
     """
     Menghitung estimasi waktu upload file.
     
@@ -356,10 +356,12 @@ def estimate_upload_time(file_path, upload_speed_mbps=10):
     upload_speed_bps = upload_speed_mbps * 1_000_000
     estimated_seconds = (file_size_bytes * 8) / upload_speed_bps
     
-    return f"Proses ini mungkin memerlukan sekitar {format_time(estimated_seconds)}"
+    return f"Terima kasih sudah menunggu, saya sedang mempersiapkan file ZIP untuk diunduh. Mungkin perlu waktu sekitar {format_time(estimated_seconds)}"
+    # return f"Proses ini mungkin memerlukan sekitar {format_time(estimated_seconds)}"
 
 # folder_path = "/home/kangatang/git/filegator/repository/spark/jamrud.zip"
 # print(estimate_upload_time(folder_path))
+
 def get_ext(path: str) -> str:
     fullpath = Path(path)
     return fullpath.suffix.lstrip(".")
