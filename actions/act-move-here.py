@@ -40,10 +40,10 @@ class ActionMoveHere(Action):
             current_path = tracker.get_slot("current_path")
 
             logger.info("attempting to move %s to %s", source_path, current_path)
-
+            # move item use background process
             response = self.move_item(source_path, current_path)
             dispatcher.utter_message(response)
-            
+
             return [
                 SlotSet("source_path", None),
                 SlotSet("source_file_no", None)
