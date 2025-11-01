@@ -10,6 +10,7 @@ import math
 from spire.xls import *
 from spire.xls.common import *
 from pathlib import Path
+import shutil
 
 # Enable logging
 logging.basicConfig(
@@ -365,3 +366,34 @@ def estimate_upload_time(file_path, upload_speed_mbps=50):
 def get_ext(path: str) -> str:
     fullpath = Path(path)
     return fullpath.suffix.lstrip(".")
+
+def move_item(source_path: str, destination_path: str) -> str:
+    """
+    Moves a file or a directory (folder) from the source to the destination.
+
+    Args:
+        source_path (str): The full path to the file or folder to be moved.
+        destination_path (str): The full path to the destination directory or new path.
+
+    Returns:
+        str: A status message indicating success or failure.
+    """
+    # 1. Check if the source exists
+    if not os.path.exists(source_path):
+        return f"❌ Failure: Source `{source_path}` was not found."
+
+    # 2. Perform the move operation using shutil.move
+    try:
+        # shutil.move will move the item from source_path to destination_path.
+        shutil.move(source_path, destination_path)
+        
+        # 3. Determine the type of item moved for the confirmation message
+        # We check the destination path to see if it's a directory (folder)
+        item_type = "Folder" if os.path.isdir(destination_path) and os.path.basename(source_path) == os.path.basename(destination_path) else "File"
+        
+        return f"✅ Success: `{item_type}` `{os.path.basename(source_path)}` has been moved to `{destination_path}`."
+        
+    except shutil.Error as e:
+        return f"⚠️ Warning: A moving error occurred: {e}"
+    except Exception as e:
+        return f"❌ Failure: An unexpected error occurred: {e}"

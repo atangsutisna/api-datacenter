@@ -15,10 +15,11 @@ logger = logging.getLogger(__name__)
 class ActionMoveHere(Action):
     def __init__(self):
         from checkpermissions import is_permitted
-        from myutils import to_be_list
+        from myutils import to_be_list,move_item
         
         self.is_permitted = is_permitted
         self.to_be_list = to_be_list
+        self.move_item = move_item
 
     def name(self) -> Text:
         return "action_move_here"
@@ -39,7 +40,10 @@ class ActionMoveHere(Action):
             current_path = tracker.get_slot("current_path")
 
             logger.info("attempting to move %s to %s", source_path, current_path)
-            dispatcher.utter_message(text=f"File `{source_path}` sudah dipindahkan ke `{current_path}`")
+
+            response = self.move_item(source_path, current_path)
+            dispatcher.utter_message(response)
+            
             return [
                 SlotSet("source_path", None),
                 SlotSet("source_file_no", None)
