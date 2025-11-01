@@ -135,6 +135,11 @@ slots:
     - type: from_entity
       entity: source_file_no
       intent: user_want_to_move_a_file
+  source_path:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: custom
   dest_file_no:
     type: text
     influence_conversation: false

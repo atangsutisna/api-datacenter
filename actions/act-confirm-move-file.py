@@ -32,9 +32,9 @@ class ActionPrepareRemove(Action):
         telegram_id = metadata.get("telegram_id")
 
         file_no = tracker.get_slot("source_file_no")
-        # search_results = tracker.get_slot("search_results")
+        search_results = tracker.get_slot("search_results")
 
-        # user_files = json.loads(search_results)
+        user_files = json.loads(search_results)
         # has_permission = True
         # for file_no in delete_indexes:
         #     logger.info("attempting to get path on line %s", file_no)
@@ -51,6 +51,10 @@ class ActionPrepareRemove(Action):
         
         # logger.info("ok, user %s has permission to remove", telegram_id)
 
-        logger.info("attempting to move file with no %s", file_no)
+        selected_path = user_files.get(file_no)
+        logger.info("attempting to move file on path %s", selected_path)
         dispatcher.utter_message(text=f"Baik, saya akan pindahkan file ini: {file_no}")
-        return []
+        return [
+            SlotSet("source_path", selected_path),
+            SlotSet("source_file_no", None)
+        ]
