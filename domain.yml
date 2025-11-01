@@ -29,6 +29,7 @@ intents:
 - run_long_running_task
 - check_zip_status
 - user_want_to_move_a_file
+- simpan_di_lokasi_saat_ini
 entities:
 - file_no
 - folder_name
@@ -276,6 +277,7 @@ actions:
 - action_prepare_zip
 - action_long_run_task
 - action_confirm_move_file
+- action_move_here
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

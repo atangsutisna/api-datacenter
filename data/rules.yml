@@ -286,3 +286,8 @@ rules:
   steps:
     - intent: user_want_to_move_a_file
     - action: action_confirm_move_file
+
+- rule: User want save a moved file or folder to current path
+  steps:
+    - intent: simpan_di_lokasi_saat_ini
+    - action: action_move_here

@@ -355,6 +355,18 @@ nlu:
     - Pindahkan [15](source_file_no).
     - Mau pindahkan file nomor [3](source_file_no).
 
+- intent: simpan_di_lokasi_saat_ini
+  examples: |
+    - simpan di sini
+    - taruh di folder ini
+    - ya, pindahkan ke sini
+    - taruh di lokasi ini
+    - tolong simpan di direktori saat ini
+    - pindah ke folder sekarang
+    - ke sini saja
+    - pindah ke current path
+    - eksekusi di sini
+    - lakukan pemindahan sekarang
 # ini bermasalah ketika saya memberikan perintah rename dengan nama misal cerita-01.
 # string cerita-01,akan membuat file_no menjadi 01, atau cerita-03, maka file_no akan menjadi 3
 # pemilihan menjadi kacau
