@@ -39,7 +39,7 @@ class ActionMoveHere(Action):
             current_path = tracker.get_slot("current_path")
 
             logger.info("attempting to move %s to %s", source_path, current_path)
-            dispatcher.utter_message(text=f"File {source_path} sudah dipindahkan ke {current_path}")
+            dispatcher.utter_message(text=f"File `{source_path}` sudah dipindahkan ke `{current_path}`")
             return [
                 SlotSet("source_path", None),
                 SlotSet("source_file_no", None)
