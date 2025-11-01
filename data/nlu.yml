@@ -345,6 +345,16 @@ nlu:
     - tolong compress folder nomor [9](file_no)
     - zip folder [10](file_no) dong
 
+- intent: user_want_to_move_a_file
+  examples: |
+    - Tolong pindahkan file nomor [1](source_file_no).
+    - Pindahkan folder [7](source_file_no).
+    - File [6](source_file_no) mau dipindahkan.
+    - Saya mau memindahkan dokumen dengan ID [9](source_file_no).
+    - Saya ingin memindahkan [10](source_file_no).
+    - Pindahkan [15](source_file_no).
+    - Mau pindahkan file nomor [3](source_file_no).
+
 # ini bermasalah ketika saya memberikan perintah rename dengan nama misal cerita-01.
 # string cerita-01,akan membuat file_no menjadi 01, atau cerita-03, maka file_no akan menjadi 3
 # pemilihan menjadi kacau

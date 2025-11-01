@@ -28,6 +28,7 @@ intents:
 # just for testing
 - run_long_running_task
 - check_zip_status
+- user_want_to_move_a_file
 entities:
 - file_no
 - folder_name
@@ -35,6 +36,9 @@ entities:
 - file_no_to_be_removed
 - new_name
 - new_file_name
+- source_file_no
+- dest_file_no
+
 slots:
   file_no:
     type: text
@@ -124,6 +128,19 @@ slots:
     influence_conversation: true
     mappings:
       - type: custom
+  source_file_no:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: source_file_no
+      intent: user_want_to_move_a_file
+  dest_file_no:
+    type: text
+    influence_conversation: false
+    mappings:
+    - type: from_entity
+      entity: source_file_no
   # premium_account: # just for testing
   #   type: bool
   #   influence_conversation: true
@@ -253,6 +270,7 @@ actions:
 - action_zip
 - action_prepare_zip
 - action_long_run_task
+- action_confirm_move_file
 session_config:
   session_expiration_time: 60
   carry_over_slots_to_new_session: true

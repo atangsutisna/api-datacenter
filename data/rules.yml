@@ -280,3 +280,9 @@ rules:
   steps:
     - intent: check_zip_status
     - action: utter_zip_done
+
+# move a file or folder
+- rule: User want to move a file or folder
+  steps:
+    - intent: user_want_to_move_a_file
+    - action: action_confirm_move_file
