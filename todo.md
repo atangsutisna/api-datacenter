@@ -120,3 +120,6 @@ TypeError: expected str, bytes or os.PathLike object, not NoneType``
 ** tambahkan pesan untuk user jika harus menunggu lama. dan hitung berapa lama. 
 ** waktu yang diperlukan untuk zip. isi data maksimal. batas maksimal download.
 ** transisi bila percakapan ke hal lain.
+
+### Sabtu, 15 November 2025
+1. Command download tidak mengirimkan link download.
