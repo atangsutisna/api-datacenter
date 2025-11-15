@@ -36,7 +36,8 @@ rules:
     - intent: ask_about_insi
     - action: utter_ask_about_insi
 
-# User want to download
+# User want to download,
+#todo: refactor, outsource to celery
 - rule: User want download file
   steps:
     - intent: ask_download

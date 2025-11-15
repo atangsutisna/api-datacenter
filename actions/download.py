@@ -27,7 +27,8 @@ class ActionPerformDownload(Action):
         from userloggedin import get_user_logged_in
         from checkpermissions import is_permitted
         from myutils import get_root_path, list_dir, to_dict, build_response,simplified_path,upload_to_filebin,shorten_url
-
+        from tasks import do_zip
+        
         self.is_permitted = is_permitted
         self.get_root_path = get_root_path
         self.list_dir = list_dir
@@ -37,7 +38,8 @@ class ActionPerformDownload(Action):
         self.simplified_path = simplified_path
         self.upload_to_filebin = upload_to_filebin
         self.shorten_url = shorten_url
-
+        self.do_zip = do_zip
+    
     def name(self):
         return "action_perform_download"
 
