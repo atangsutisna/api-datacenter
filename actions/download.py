@@ -65,7 +65,7 @@ class ActionPerformDownload(Action):
                 return [
                     SlotSet("file_no", None)
                 ]
-
+            # do here
             is_file = os.path.isfile(selected_path)
             if is_file:
                 # preparing for download
@@ -81,14 +81,6 @@ class ActionPerformDownload(Action):
                     short_url = self.shorten_url(long_url)
                     dispatcher.utter_message(
                         text=f"📎 Klik untuk mengunduh: [Download]({short_url})",
-                        # attachment={
-                        #     "type": "file",
-                        #     "payload": {
-                        #         "url": short_url,
-                        #         "title": "Download",
-                        #         "name": file_name
-                        #     }
-                        # }
                     )
             else:
                 # create file attachment
