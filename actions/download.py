@@ -89,7 +89,7 @@ class ActionPerformDownload(Action):
                 self.generate_link_for_download.delay(chat_id=chat_id, selected_path=selected_path)
             else:
                 dispatcher.utter_message(text="Baik, mohon ditunggu")
-                self.do_zip.delay(chat_id=chat_id, selected_path=selected_path)
+                self.do_zip.delay(chat_id=chat_id, base_path=selected_path)
         else:
             dispatcher.utter_message(text="Saya tidak menemukan data tersebut")
 
