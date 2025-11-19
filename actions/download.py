@@ -27,7 +27,7 @@ class ActionPerformDownload(Action):
         from userloggedin import get_user_logged_in
         from checkpermissions import is_permitted
         from myutils import get_root_path, list_dir, to_dict, build_response,simplified_path,upload_to_filebin,shorten_url
-        from tasks import do_zip
+        from tasks import generate_link_for_download
         
         self.is_permitted = is_permitted
         self.get_root_path = get_root_path
@@ -38,12 +38,12 @@ class ActionPerformDownload(Action):
         self.simplified_path = simplified_path
         self.upload_to_filebin = upload_to_filebin
         self.shorten_url = shorten_url
-        self.do_zip = do_zip
+        self.generate_link_for_download = generate_link_for_download
     
     def name(self):
         return "action_perform_download"
 
-    async def run(self, dispatcher: CollectingDispatcher,
+    def run(self, dispatcher: CollectingDispatcher,
                   tracker: Tracker,
                   domain: dict):
         file_no = tracker.get_slot("file_no")
@@ -66,26 +66,29 @@ class ActionPerformDownload(Action):
                     SlotSet("file_no", None)
                 ]
             # do here
-            is_file = os.path.isfile(selected_path)
-            if is_file:
-                # preparing for download
-                # todo: create zip file or a link
-                simple_root_path = self.simplified_path(selected_path)
-                file_name = os.path.basename(selected_path)
+            # is_file = os.path.isfile(selected_path)
+            # if is_file:
+            #     simple_root_path = self.simplified_path(selected_path)
+            #     file_name = os.path.basename(selected_path)
 
-                logger.info("starting to upload %s to filebin to generate a link", selected_path)
-                long_url = self.upload_to_filebin(selected_path)
-                if long_url is None:
-                    dispatcher.utter_message(text="Mohon maaf, ada kendala saat menyipkan file. Silakan hubungi admin untuk mengetahui lebih lanjut. Terima kasih.")
-                else:
-                    short_url = self.shorten_url(long_url)
-                    dispatcher.utter_message(
-                        text=f"📎 Klik untuk mengunduh: [Download]({short_url})",
-                    )
-            else:
-                # create file attachment
-                # todo: create zip file for download
-                dispatcher.utter_message(text="Saya sedang menyiapkan file download untuk kamu")
+            #     logger.info("starting to upload %s to filebin to generate a link", selected_path)
+            #     long_url = self.upload_to_filebin(selected_path)
+            #     if long_url is None:
+            #         dispatcher.utter_message(text="Mohon maaf, ada kendala saat menyipkan file. Silakan hubungi admin untuk mengetahui lebih lanjut. Terima kasih.")
+            #     else:
+            #         short_url = self.shorten_url(long_url)
+            #         dispatcher.utter_message(
+            #             text=f"📎 Klik untuk mengunduh: [Download]({short_url})",
+            #         )
+            # else:
+            #     dispatcher.utter_message(text="Saya sedang menyiapkan file download untuk kamu")
+            
+            dispatcher.utter_message(text="Baik, mohon ditunggu")
+
+            metadata = tracker.latest_message.get("metadata")
+            chat_id = metadata.get("chat_id")
+            logger.info("outsourcing download-process with param chat-id: %s", chat_id)
+            self.generate_link_for_download.delay(chat_id=chat_id, selected_path=selected_path)
         else:
             dispatcher.utter_message(text="Saya tidak menemukan data tersebut")
 

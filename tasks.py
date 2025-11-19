@@ -214,21 +214,31 @@ def get_summarize(chat_id: str, selected_path: str):
 def generate_link_for_download(chat_id: str, selected_path: str):
     logger.info("preparing link download for file %s", selected_path)
     is_file = os.path.isfile(selected_path)
-    if is_file:
-        # preparing for download
-        simple_root_path = self.simplified_path(selected_path)
-        file_name = os.path.basename(selected_path)
+    short_url = "https://file-examples.com/wp-content/storage/2017/10/file-sample_150kB.pdf"
+    loop.run_until_complete(
+        bot.send_message(
+            chat_id=chat_id, 
+            text=f"📎 Terima kasih atas kesabaran Anda. File ZIP siap, unduh sekarang di: [Download]({short_url})",
+            parse_mode="Markdown"
+        )
+    )
 
-        logger.info("starting to upload %s to filebin to generate a link", selected_path)
-        long_url = self.upload_to_filebin(selected_path)
-        if long_url is None:
-            dispatcher.utter_message(text="Mohon maaf, ada kendala saat menyipkan file. Silakan hubungi admin untuk mengetahui lebih lanjut. Terima kasih.")
-        else:
-            short_url = self.shorten_url(long_url)
-            dispatcher.utter_message(
-                text=f"📎 Klik untuk mengunduh: [Download]({short_url})",
-            )
-    else:
-        logger.info("starting to zip the folder")
-        
+    # if is_file:
+    #     # preparing for download
+    #     simple_root_path = self.simplified_path(selected_path)
+    #     file_name = os.path.basename(selected_path)
 
+    #     logger.info("starting to upload %s to filebin to generate a link", selected_path)
+    #     long_url = self.upload_to_filebin(selected_path)
+    #     if long_url is None:
+    #         dispatcher.utter_message(text="Mohon maaf, ada kendala saat menyipkan file. Silakan hubungi admin untuk mengetahui lebih lanjut. Terima kasih.")
+    #     else:
+    #         short_url = self.shorten_url(long_url)
+    #         dispatcher.utter_message(
+    #             text=f"📎 Klik untuk mengunduh: [Download]({short_url})",
+    #         )
+    # else:
+    #     logger.info("starting to zip the folder")
+    #     dispatcher.utter_message(
+    #         text=f"📎 Klik untuk mengunduh: [Download]({short_url})",
+    #     )

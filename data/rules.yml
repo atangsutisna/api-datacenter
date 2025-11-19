@@ -37,7 +37,6 @@ rules:
     - action: utter_ask_about_insi
 
 # User want to download,
-#todo: refactor, outsource to celery
 - rule: User want download file
   steps:
     - intent: ask_download
@@ -47,10 +46,10 @@ rules:
       - has_download_permission: true
     - action: action_start_download
 
-- rule: Kirim link download setelah proses selesai
-  steps:
-    - action: action_perform_download
-    - action: utter_download_done
+# - rule: Kirim link download setelah proses selesai
+#   steps:
+#     - action: action_perform_download
+#     - action: utter_download_done
 
 - rule: User has no permission to download
   steps:
