@@ -107,8 +107,8 @@ class ActionBackToPrevious(Action):
             for dir in list_dir:
                 child_path = os.path.join(parent_path, dir)
 
-                mtime = os.path.getmtime(child_path)
-                user_workspaces.append((child_path, mtime))
+                # mtime = os.path.getmtime(child_path)
+                user_workspaces.append(child_path)
 
             simple_root_path = self.simplified_path(parent_path)
             opening_messages = [
@@ -119,8 +119,9 @@ class ActionBackToPrevious(Action):
 
             no = 1
             search_results = {}
-            sorted_paths = sorted(user_workspaces, key=lambda x: x[1], reverse=True)
-            for path, mtime in sorted_paths:
+            sorted_paths = sorted(user_workspaces, key=lambda x: x.lower())
+            # sorted_list = sorted(user_workspaces, key=lambda x: x.lower())
+            for path in sorted_paths:
                 file = os.path.isfile(path)
                 simple_path = self.simplified_path(path)
                 if not file:
