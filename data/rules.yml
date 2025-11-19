@@ -44,7 +44,7 @@ rules:
     - slot_was_set:
       - file_no: not null
       - has_download_permission: true
-    - action: action_start_download
+    - action: action_perform_download
 
 # - rule: Kirim link download setelah proses selesai
 #   steps:

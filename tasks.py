@@ -212,7 +212,10 @@ def get_summarize(chat_id: str, selected_path: str):
 
 @app.task
 def generate_link_for_download(chat_id: str, selected_path: str):
+    import time
+
     logger.info("preparing link download for file %s", selected_path)
+    time.sleep(10)
     is_file = os.path.isfile(selected_path)
     short_url = "https://file-examples.com/wp-content/storage/2017/10/file-sample_150kB.pdf"
     loop.run_until_complete(

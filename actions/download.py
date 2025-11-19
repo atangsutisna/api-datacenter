@@ -19,7 +19,7 @@ class ActionStartDowload(Action):
     async def run(self, dispatcher: CollectingDispatcher,
                   tracker: Tracker,
                   domain: dict):
-        dispatcher.utter_message(text="Baik, mungkin ini akan memerlukan waktu beberapa menit untuk menyiapkan file. Mohon ditunggu.")
+        # dispatcher.utter_message(text="Baik, mungkin ini akan memerlukan waktu beberapa menit untuk menyiapkan file. Mohon ditunggu.")
         return [FollowupAction("action_perform_download")]
 
 class ActionPerformDownload(Action):
