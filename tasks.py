@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 import asyncio
 import logging
-from myutils import compress_folder,compress_file,upload_to_filebin,shorten_url,is_folder_less_than_1gb,is_folder_larger_than_2mb,estimate_upload_time,get_ext,is_file_smaller_than_100mb
+from myutils import *
 from assistant_file_reader import read_file_with_file_search
 from excelutils import export_to_pdf
 
@@ -210,38 +210,38 @@ def get_summarize(chat_id: str, selected_path: str):
             )
         )
 
+# ini hanya untuk fiel download, tidak support untuk folder
 @app.task
 def generate_link_for_download(chat_id: str, selected_path: str):
-    import time
-
+    # import time
     logger.info("preparing link download for file %s", selected_path)
-    time.sleep(10)
-    is_file = os.path.isfile(selected_path)
-    short_url = "https://file-examples.com/wp-content/storage/2017/10/file-sample_150kB.pdf"
-    loop.run_until_complete(
-        bot.send_message(
-            chat_id=chat_id, 
-            text=f"📎 Terima kasih atas kesabaran Anda. File ZIP siap, unduh sekarang di: [Download]({short_url})",
-            parse_mode="Markdown"
-        )
-    )
-
-    # if is_file:
-    #     # preparing for download
-    #     simple_root_path = self.simplified_path(selected_path)
-    #     file_name = os.path.basename(selected_path)
-
-    #     logger.info("starting to upload %s to filebin to generate a link", selected_path)
-    #     long_url = self.upload_to_filebin(selected_path)
-    #     if long_url is None:
-    #         dispatcher.utter_message(text="Mohon maaf, ada kendala saat menyipkan file. Silakan hubungi admin untuk mengetahui lebih lanjut. Terima kasih.")
-    #     else:
-    #         short_url = self.shorten_url(long_url)
-    #         dispatcher.utter_message(
-    #             text=f"📎 Klik untuk mengunduh: [Download]({short_url})",
-    #         )
-    # else:
-    #     logger.info("starting to zip the folder")
-    #     dispatcher.utter_message(
-    #         text=f"📎 Klik untuk mengunduh: [Download]({short_url})",
+    # time.sleep(10)
+    # is_file = os.path.isfile(selected_path)
+    # short_url = "https://file-examples.com/wp-content/storage/2017/10/file-sample_150kB.pdf"
+    # loop.run_until_complete(
+    #     bot.send_message(
+    #         chat_id=chat_id, 
+    #         text=f"📎 Terima kasih atas kesabaran Anda. File ZIP siap, unduh sekarang di: [Download]({short_url})",
+    #         parse_mode="Markdown"
     #     )
+    # )
+    file_name = os.path.basename(selected_path)
+    logger.info("starting to upload %s to filebin to generate a link", selected_path)
+    long_url = upload_to_filebin(selected_path)
+    if long_url is None:
+        loop.run_until_complete(
+            bot.send_message(
+                chat_id=chat_id, 
+                text="Mohon maaf, gagal saat menyiapkan file. Silakan hubungi admin untuk mengetahui lebih lanjut. Terima kasih.",
+                parse_mode="Markdown"
+            )
+        )
+    else:
+        short_url = shorten_url(long_url)
+        loop.run_until_complete(
+            bot.send_message(
+                chat_id=chat_id, 
+                text=f"📎 Terima kasih sudah menunggu. Silakan unduh di: [Download]({short_url})",
+                parse_mode="Markdown"
+            )
+        )
