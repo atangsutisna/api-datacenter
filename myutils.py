@@ -397,3 +397,7 @@ def move_item(source_path: str, destination_path: str) -> str:
         return f"⚠️ Warning: A moving error occurred: {e}"
     except Exception as e:
         return f"❌ Failure: An unexpected error occurred: {e}"
+
+source_path = "/home/kangatang/git/filegator/repository/samplepptx.pptx"
+destination_path = "/home/kangatang/git/filegator/repository/test/"
+move_item(source_path, destination_path)
