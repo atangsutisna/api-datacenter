@@ -126,7 +126,7 @@ TypeError: expected str, bytes or os.PathLike object, not NoneType``
 2. Refactor download command. Delegate task to celery.
 
 ## Kamis, 20 Nov 2025
-** susunan beranda berubah
-** setelah pindah file masih ada
+** ~~susunan beranda berubah~~
+** ~~setelah pindah file masih ada~~
 ** nama filenya harusnya sesuai dengan upload
 ** setelah menerima perinta pencarian, berikan response, misal mohon ditunggu
