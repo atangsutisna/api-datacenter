@@ -124,3 +124,9 @@ TypeError: expected str, bytes or os.PathLike object, not NoneType``
 ### Sabtu, 15 November 2025
 1. Command download tidak mengirimkan link download. Ketika command download untuk file, response tidak ada masalah. Namun, ketika yang diminta adalah folder, maka yang muncul hanya teks tanpa link download.
 2. Refactor download command. Delegate task to celery.
+
+## Kamis, 20 Nov 2025
+** susunan beranda berubah
+** setelah pindah file masih ada
+** nama filenya harusnya sesuai dengan upload
+** setelah menerima perinta pencarian, berikan response, misal mohon ditunggu
