@@ -74,8 +74,7 @@ class ActionBackToPrevious(Action):
             message = random.choice(opening_messages)
             no = 1
             search_results = {}
-
-            sorted_paths = sorted(user_workspaces, key=lambda x: x[1], reverse=True)
+            sorted_paths = sorted(user_workspaces, key=lambda x: x.lower())
             for path in sorted_paths:
                 file = os.path.isfile(path)
                 simple_path = self.simplified_path(path)
