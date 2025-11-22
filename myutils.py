@@ -398,6 +398,6 @@ def move_item(source_path: str, destination_path: str) -> str:
     except Exception as e:
         return f"❌ Failure: An unexpected error occurred: {e}"
 
-source_path = "/home/kangatang/git/filegator/repository/samplepptx.pptx"
-destination_path = "/home/kangatang/git/filegator/repository/test/"
-move_item(source_path, destination_path)
+# source_path = "/home/kangatang/git/filegator/repository/samplepptx.pptx"
+# destination_path = "/home/kangatang/git/filegator/repository/test/"
+# move_item(source_path, destination_path)

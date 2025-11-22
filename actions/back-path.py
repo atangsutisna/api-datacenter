@@ -32,9 +32,7 @@ class ActionBackToPrevious(Action):
             for account in accounts:
                 homedir = account['homedir'].lstrip("/")
                 fullpath = os.path.join(root_path, homedir)
-
-                mtime = os.path.getmtime(fullpath)
-                user_workspaces.append((fullpath, mtime))
+                user_workspaces.append(fullpath)
         else:
             dirname = accounts[0]['homedir'].lstrip("/")
             logger.info("attempting to list all data in %s", dirname)
@@ -42,9 +40,7 @@ class ActionBackToPrevious(Action):
             list_dir = os.listdir(home_path)
             for dir in list_dir:
                 child_path = os.path.join(home_path, dir)
-
-                mtime = os.path.getmtime(child_path)
-                user_workspaces.append((child_path, mtime))
+                user_workspaces.append(child_path)
         
         return user_workspaces
 
@@ -80,7 +76,7 @@ class ActionBackToPrevious(Action):
             search_results = {}
 
             sorted_paths = sorted(user_workspaces, key=lambda x: x[1], reverse=True)
-            for path, mtime in sorted_paths:
+            for path in sorted_paths:
                 file = os.path.isfile(path)
                 simple_path = self.simplified_path(path)
                 if not file:
