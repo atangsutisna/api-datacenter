@@ -128,6 +128,6 @@ TypeError: expected str, bytes or os.PathLike object, not NoneType``
 ## Kamis, 20 Nov 2025
 ** ~~susunan beranda berubah~~
 ** ~~setelah pindah file masih ada~~
-** nama filenya harusnya sesuai dengan upload
+** ~~nama filenya harusnya sesuai dengan upload~~
 solusinya, buat nama file yang gampang dibaca. jangan terlalu panjang.
 ** setelah menerima perinta pencarian, berikan response, misal mohon ditunggu
