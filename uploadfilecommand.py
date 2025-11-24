@@ -89,6 +89,7 @@ async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.info('attempting to process photo with id %s', photo.file_id)
         file = await context.bot.get_file(photo.file_id)
     
+        # todo: fixme
         filename = f"photo_{photo.file_id}.jpg"
         file_path = os.path.join(current_path, filename)
         await file.download_to_drive(file_path)
