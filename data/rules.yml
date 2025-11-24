@@ -88,6 +88,7 @@ rules:
   steps:
     - action: search_form
     - active_loop: null
+    - action: utter_please_wait
     - action: action_perform_search
 
 - rule: User meminta untuk menampilkan data yang ada di workspacenya

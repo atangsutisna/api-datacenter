@@ -250,6 +250,8 @@ responses:
     - text: "Baik, file apa yang ingin kamu cari?"
     - text: "Silakan sebutkan nama file yang ingin saya cari."
     - text: "Oke, nama filenya apa?"
+  utter_please_wait:
+  - text: "Baik, mohon ditunggu"
 actions:
 - action_greeting
 - action_guessing_name
