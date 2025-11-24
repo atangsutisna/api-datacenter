@@ -90,7 +90,7 @@ async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
         file = await context.bot.get_file(photo.file_id)
     
         generated_filename = generate_photo_filename()
-        filename = f"photo_{generated_filename}.jpg"
+        filename = f"{generated_filename}.jpg"
         file_path = os.path.join(current_path, filename)
         await file.download_to_drive(file_path)
 
