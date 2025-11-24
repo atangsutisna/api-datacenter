@@ -131,3 +131,7 @@ TypeError: expected str, bytes or os.PathLike object, not NoneType``
 ** ~~nama filenya harusnya sesuai dengan upload~~
 solusinya, buat nama file yang gampang dibaca. jangan terlalu panjang.
 ** setelah menerima perinta pencarian, berikan response, misal mohon ditunggu
+
+
+## Selasa, 25 November 2025
+- Bug ketika mengirimkan perintah membuat folder diluar jangkauan
