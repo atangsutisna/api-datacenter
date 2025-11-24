@@ -4,7 +4,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
 from dotenv import load_dotenv
 from userloggedin import get_user_logged_in
-from myutils import simplified_path
+from myutils import simplified_path,generate_photo_filename
 
 load_dotenv()
 
@@ -89,8 +89,8 @@ async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.info('attempting to process photo with id %s', photo.file_id)
         file = await context.bot.get_file(photo.file_id)
     
-        # todo: fixme
-        filename = f"photo_{photo.file_id}.jpg"
+        generated_filename = generate_photo_filename()
+        filename = f"photo_{generated_filename}.jpg"
         file_path = os.path.join(current_path, filename)
         await file.download_to_drive(file_path)
 

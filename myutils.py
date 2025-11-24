@@ -11,6 +11,7 @@ from spire.xls import *
 from spire.xls.common import *
 from pathlib import Path
 import shutil
+import datetime
 
 # Enable logging
 logging.basicConfig(
@@ -402,3 +403,8 @@ def move_item(source_path: str, destination_path: str) -> str:
 # destination_path = "/home/kangatang/git/filegator/repository/test/"
 # move_item(source_path, destination_path)
 # accounts = []
+def generate_photo_filename():
+    now = datetime.datetime.now()
+    timestamp_str = now.strftime("%Y-%m-%d_%H%M%S")
+    return f"photo_{timestamp_str}"
+# print(generate_photo_filename())

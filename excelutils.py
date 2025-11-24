@@ -55,4 +55,4 @@ def export_to_pdf(input_excel_path, sheet_index=0):
 # excel_file = "/home/kangatang/git/filegator/repository/atang/file_example_XLS_5000.xls"
 # indeks_sheet = 0 # <-- Angka 0 selalu merujuk pada sheet pertama
 # Memanggil fungsi konversi
-# export_to_pdf(excel_file, indeks_sheet)
+# export_to_pdf(excel_file, indeks_sheet)    
