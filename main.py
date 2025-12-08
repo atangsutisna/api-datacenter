@@ -223,6 +223,16 @@ async def check_status_query_handler(update: Update, context: ContextTypes.DEFAU
 
     await query.message.reply_text("Cek status callback")
 
+async def unknown_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Menangani *command* yang tidak dikenal (fallback)."""
+    # Mengambil teks perintah yang dikirim pengguna (misalnya, '/perintahasing')
+    unknown_text = update.message.text
+    
+    # Memberi tahu pengguna bahwa perintah tidak dikenal
+    await update.message.reply_text(
+        f"Maaf, perintah **{unknown_text}** tidak saya kenali."
+    )
+
 if __name__ == '__main__':
     logger.info('Starting bot...')
     # logger.debug('ini debugg...')
@@ -274,6 +284,8 @@ if __name__ == '__main__':
 
     # list homedir handler
     app.add_handler(CommandHandler('list', ls_command))
+    # Handle unknown command
+    app.add_handler(MessageHandler(filters.COMMAND, unknown_command))
     # Message
     app.add_handler(MessageHandler(filters.TEXT, handle_message))
     # Error
