@@ -93,6 +93,7 @@ nlu:
     - bantu saya temukan file saya
     - saya mau mencari berkas
     - tolong carikan dokumen saya
+    - carikan data
 
 # - intent: request_search_file
 #   examples: |
