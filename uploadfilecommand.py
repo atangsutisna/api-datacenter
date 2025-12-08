@@ -90,7 +90,19 @@ async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
         file = await context.bot.get_file(photo.file_id)
     
         generated_filename = generate_photo_filename()
-        filename = f"{generated_filename}.jpg"
+        ext = '.jpg' # Nilai default (fallback)
+        if file.file_path:
+            # Mengambil bagian ekstensi setelah titik terakhir
+            path_parts = os.path.splitext(file.file_path)
+            if len(path_parts) > 1 and path_parts[1]:
+                ext = path_parts[1].lower() # Contoh: .jpg, .png, dll.
+            elif file.mime_type and 'image/' in file.mime_type:
+                 # Jika file_path tidak memberikan ekstensi, coba dari mime_type
+                 # Misalnya: image/jpeg -> .jpeg
+                 ext = '.' + file.mime_type.split('/')[1].lower().replace('jpeg', 'jpg')
+
+        filename = f"{generated_filename}{ext}"
+        logger.info("attempting to save file with name %s", filename)
         file_path = os.path.join(current_path, filename)
         await file.download_to_drive(file_path)
 
