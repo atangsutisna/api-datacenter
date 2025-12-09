@@ -189,18 +189,24 @@ def get_range_list(dictionary):
 def upload_to_filebin(filepath: str):
     file_name = os.path.basename(filepath)
     bin_name = f"{uuid.uuid4().hex}"
-    url = "https://filebin.net/"+ bin_name + "/" + file_name
+    # url = "https://filebin.net/"+ bin_name + "/" + file_name
+    url = "https://blake-uninflamed-drenchedly.ngrok-free.dev/upload"
 
     with open(filepath, "rb") as f:
         files = {"file": f}
         response = requests.post(url, files=files)
     
     if response.ok:
-        logger.info("Upload sukses: %s", response.url)
-        return response.url
+        response_data = response.json()
+        stored_filename = response_data.get("stored_filename")
+        logger.info("Upload sukses: %r", response_data)
+        # return response.url
+        return "https://blake-uninflamed-drenchedly.ngrok-free.dev/download/"+ stored_filename 
     else:
         logger.info("Gagal upload: %s : %s", response.status_code, response.text)
         return None
+# link = upload_to_filebin("/home/kangatang/git/filegator/repository/dummy.pdf")
+# print("Link download:", link)
 
 # contoh penggunaan
 # long_url = "https://filebin.net/xyz123/samplepptx.pptx"
