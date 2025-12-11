@@ -21,6 +21,7 @@ def is_child(parent, child):
         return False
 
 def is_permitted(telegram_id: str, target_path: str, action: str) -> bool:
+    logger.info("attempting to check permission for telegram id %s for action %s", telegram_id, action)
     current_user = get_user_logged_in(telegram_id)
     accounts = current_user['accounts']
     is_permitted = False
