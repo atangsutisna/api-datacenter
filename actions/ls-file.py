@@ -18,6 +18,7 @@ class ActionAccessData(Action):
         from userloggedin import get_user_logged_in
         from myutils import simplified_path,get_ask_to_open_remove_or_download
         from tasks import get_summarize
+        from checkpermissions import is_permitted
 
         self.get_user_logged_in = get_user_logged_in
         self.read_file_with_file_search = read_file_with_file_search
@@ -25,6 +26,7 @@ class ActionAccessData(Action):
         self.simplified_path = simplified_path
         self.get_ask_to_open_remove_or_download = get_ask_to_open_remove_or_download
         self.get_summarize = get_summarize
+        self.is_permitted = is_permitted
 
     def name(self):
         return "action_to_open_data"
@@ -46,15 +48,24 @@ class ActionAccessData(Action):
             if selected_path:
                 is_file = os.path.isfile(selected_path)
                 if is_file:
-                    dispatcher.utter_message(text="Baik, mohon ditunggu")
-
                     metadata = tracker.latest_message.get("metadata")
-                    chat_id = metadata.get("chat_id")
-                    logger.info("outsourcing summarize-process to task with param chat-id: %s", chat_id)
-                    self.get_summarize.delay(chat_id=chat_id,selected_path=selected_path)
-                    return [
-                        SlotSet("file_no", None),
-                    ]
+                    telegram_id = metadata.get("telegram_id")
+
+                    read_permitted = self.is_permitted(telegram_id, selected_path, "read")
+                    if read_permitted:
+                        dispatcher.utter_message(text="Baik, mohon ditunggu")
+
+                        chat_id = metadata.get("chat_id")
+                        logger.info("outsourcing summarize-process to task with param chat-id: %s", chat_id)
+                        self.get_summarize.delay(chat_id=chat_id,selected_path=selected_path)
+                        return [
+                            SlotSet("file_no", None),
+                        ]
+                    else:
+                        dispatcher.utter_message(text=f"Maaf, kamu nggak ada ijin membaca")
+                        return [
+                            SlotSet("file_no", None),
+                        ]
                 else:
                     # list all child of the path
                     user_workspaces = []
