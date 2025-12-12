@@ -27,6 +27,7 @@ class ActionPrepareRemove(Action):
             tracker: Tracker,
             domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
         logger.info("starting to prepare move action...")
+
         metadata = tracker.latest_message.get("metadata")
         fullname = metadata.get("fullname")
         telegram_id = metadata.get("telegram_id")
@@ -53,7 +54,17 @@ class ActionPrepareRemove(Action):
 
         selected_path = user_files.get(file_no)
         logger.info("attempting to move file on path %s", selected_path)
-        dispatcher.utter_message(text=f"Baik, saya akan pindahkan file ini: {file_no}")
+
+        write_permitted = self.is_permitted(telegram_id, selected_path, "write")
+        logger.info("Is telegram id %s has write permission: %s", telegram_id, write_permitted)
+        if write_permitted is False:
+            dispatcher.utter_message("Maaf, kamu tidak diijinkan untuk memindahkan file atau folder")
+            return [
+                SlotSet("source_path", None),
+                SlotSet("source_file_no", None)
+            ]            
+
+        dispatcher.utter_message(text=f"Baik, saya akan pindahkan file nomor ini: {file_no}")
         return [
             SlotSet("source_path", selected_path),
             SlotSet("source_file_no", None)
