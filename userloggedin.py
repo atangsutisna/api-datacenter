@@ -25,6 +25,9 @@ def get_user_logged_in(telegram_id: str):
             break
     
     logger.info("Got account %r", user)
+    if user is None:
+        logger.info("failed to find user with telegram id %s", telegram_id)
+        return user
     # todo: update the permissions
     logger.info("attempting to reload all users")
     with open(USER_REPOSITORY_PATH, 'r', encoding='utf-8') as file:
@@ -42,5 +45,5 @@ def get_user_logged_in(telegram_id: str):
                 account["permissions"] = origin_user["permissions"]
             
     return user
-# telegram_id = "7272740693"
+# telegram_id = "926678467"
 # get_user_logged_in(telegram_id)
