@@ -31,6 +31,8 @@ def get_user_logged_in(telegram_id: str):
         origin_users = json.load(file)
 
     # logger.info("Got origin accounts %r", origin_users)
+    # fixme: check setiap account, apakah masih ada di database utama?
+    # jika tidak ada, jangan ditampilkan
     for origin_user in origin_users.values():
         # logger.info("Origin user %r", origin_user)
         for account in user["accounts"]:

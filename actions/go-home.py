@@ -13,6 +13,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 class ActionGoHome(Action):
     def __init__(self):
+        #fixme: update account jika di filegator user sudah nggak ada
         from userloggedin import get_user_logged_in
         from myutils import simplified_path
 
