@@ -32,6 +32,7 @@ intents:
 - simpan_di_lokasi_saat_ini
 - say_thank_you
 - say_selesai
+- ask_for_help
 entities:
 - file_no
 - folder_name
@@ -262,6 +263,9 @@ responses:
   - text: "Tidak masalah, saya di sini 24/7 untuk melayani kamu"
   utter_resp_selesai:
   - text: "Mungkin yang kamu maksud /selesai"
+  utter_resp_ask_help:
+  - text: "Ya, apa yang bisa saya bantu?"
+
 actions:
 - action_greeting
 - action_guessing_name

@@ -397,3 +397,12 @@ nlu:
 - intent: say_selesai
   examples: |
     - Selesai
+
+- intent: ask_for_help
+  examples: |
+    - bantu saya
+    - tolong bantu saya
+    - tolong saya
+    - saya perlu bantuan
+    - saya mau minta tolong
+    - tolong saya dong

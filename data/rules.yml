@@ -302,3 +302,8 @@ rules:
   steps:
     - intent: say_selesai
     - action: utter_resp_selesai
+
+- rule: User ask for help
+  steps:
+    - intent: ask_for_help
+    - action: utter_resp_ask_help
