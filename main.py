@@ -123,7 +123,7 @@ def handle_response(update: Update, text: str) -> str:
         "message": processed, 
         "metadata": {
             "telegram_id": telegram_id,
-            "fullname": curr_user["fullname"],
+            "fullname": curr_user["fullname"] if curr_user is not None else "Guest",
             "chat_id": chat_id 
         }
     }
