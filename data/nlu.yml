@@ -385,3 +385,11 @@ nlu:
 - intent: check_zip_status
   examples: |
     - check zip status
+
+- intent: say_thank_you
+  examples: |
+    - Terimakasih
+    - Terima kasih
+    - Thanks
+    - Nuhun
+    - Terima kasih sudah merespon

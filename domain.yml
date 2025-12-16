@@ -30,6 +30,8 @@ intents:
 - check_zip_status
 - user_want_to_move_a_file
 - simpan_di_lokasi_saat_ini
+- say_thank_you
+
 entities:
 - file_no
 - folder_name
@@ -253,6 +255,11 @@ responses:
     - text: "Oke, nama filenya apa?"
   utter_please_wait:
   - text: "Baik, mohon ditunggu"
+  utter_thank_you:
+  - text: "Sama-sama! senang bisa membantu"
+  - text: "Terima kasih kembali! jangan ragu untuk menghubungi saya jika ada hal lain"
+  - text: "Tentu! itu memang tugas saya. Semoga hari kamu menyenangkan"
+  - text: "Tidak masalah, saya di sini 24/7 untuk melayani kamu"
 actions:
 - action_greeting
 - action_guessing_name
