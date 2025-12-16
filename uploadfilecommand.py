@@ -70,7 +70,7 @@ async def start_upload_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await update.message.reply_text("Mohon maaf, kamu tidak punya ijin untuk melakukan upload.")
                 return
 
-            await update.message.reply_text('Silakan kirim file satu per satu. Ketik /selesai jika sudah.')
+            await update.message.reply_text('Silakan kirim file satu per satu. Ketik /selesai jika sudah. Ketik /batal untuk membatalkannya.')
             context.user_data["uploaded_files"] = []
             return WAITING_FOR_FILE        
 
@@ -167,6 +167,24 @@ async def done_upload(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def cancel_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logger.info("File upload action is canceled")
+
+    # hapus semua file yang ada di foler temp upload
+    telegram_id = str(update.effective_user.id)
+    upload_path = os.path.join(os.getcwd(), "upload" + os.sep + telegram_id)
+    ls_files = glob.glob(os.path.join(upload_path, '*'))
+    for f in ls_files:
+        try:
+            if os.path.isfile(f) or os.path.islink(f):
+                # Hapus file tunggal
+                os.remove(f)
+                print(f"Menghapus file: {f}")
+            elif os.path.isdir(f):
+                # Jika itu sub-folder, hapus seluruh sub-folder beserta isinya
+                shutil.rmtree(f)
+                print(f"Menghapus sub-folder: {f}")
+        except OSError as e:
+            print(f"Gagal menghapus {f}: {e}")
+    
     await update.message.reply_text('Upload dibatalkan. Terima kasih.')
     return ConversationHandler.END
 
