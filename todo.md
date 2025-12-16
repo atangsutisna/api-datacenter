@@ -148,3 +148,4 @@ user: tamliho
 attempting to move /home/kangatang/git/filegator/repository/spark/excel_50.xls to /home/kangatang/git/filegator/repository/spark/sepeda
 ** ketika akses ke salah satu folder account, muncul account mungkin sudah dihapus --> done
 ** upload file tetap tersimpan walau tanpa diakhiri dengan /selesai --> done
+** ketika user mengeti "bantu saya", mapping keliru. Chatbot mengarahkan ke pencarian file --> done
