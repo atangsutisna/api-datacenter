@@ -43,7 +43,54 @@ def get_user_logged_in(telegram_id: str):
             if account["username"] == origin_user["username"]:
                 logger.info("attempting to update permission account %s from %s to be %s", account["username"], account["permissions"], origin_user["permissions"])
                 account["permissions"] = origin_user["permissions"]
+    
+    current_user = filter_user_accounts(user, origin_users)
+    logger.info("Got account after filter %r", user)
+    return current_user
+    # return user
+
+
+def filter_user_accounts(user_object, accounts_object):
+    """
+    Menghapus item account dari user_object['accounts'] jika username akun
+    tidak ditemukan di dalam properti username pada setiap item accounts_object.
+
+    Args:
+        user_object (dict): Objek user yang mengandung array 'accounts'.
+        accounts_object (dict): Objek accounts yang berisi daftar akun valid.
+
+    Returns:
+        dict: Objek user yang sudah dimodifikasi.
+    """
+    # 1. Ekstrak semua username yang valid dari accounts_object
+    # Kita mengambil nilai 'username' dari setiap item (yang merupakan nilai) dalam accounts_object.
+    valid_usernames = set()
+    for account_data in accounts_object.values():
+        if 'username' in account_data:
+            valid_usernames.add(account_data['username'])
             
-    return user
-# telegram_id = "926678467"
-# get_user_logged_in(telegram_id)
+    # print(f"Username yang valid ditemukan: {valid_usernames}")
+
+    # 2. Filter akun user
+    # Kita menggunakan list comprehension untuk membuat list baru
+    # yang hanya menyertakan akun user yang username-nya ada di valid_usernames.
+    
+    original_count = len(user_object.get('accounts', []))
+    
+    filtered_accounts = [
+        account
+        for account in user_object.get('accounts', [])
+        if account.get('username') in valid_usernames
+    ]
+
+    # 3. Ganti array accounts lama dengan yang sudah difilter
+    user_object['accounts'] = filtered_accounts
+    
+    filtered_count = len(user_object.get('accounts', []))
+    # print(f"Jumlah akun sebelum filter: {original_count}, setelah filter: {filtered_count}")
+
+    return user_object
+
+# telegram_id = "7272740693"
+# current_user = get_user_logged_in(telegram_id)
+# print(json.dumps(current_user))
