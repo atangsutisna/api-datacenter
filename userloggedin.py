@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import os, logging, json
+from pathlib import Path
 
 # Enable logging
 logging.basicConfig(
@@ -104,6 +105,12 @@ def check_username_by_homedir(target_homedir):
         bool: True jika homedir ditemukan, False jika tidak.
     """
     # accounts_object = 
+    target_path = Path(target_homedir)
+    # root_absolute = target_path.root
+    if len(target_path.parts) > 1:
+        target_homedir = os.sep + target_path.parts[1]
+
+    logger.info("attempting to find username by homedir %s", target_homedir)
     with open(USER_REPOSITORY_PATH, 'r', encoding='utf-8') as file:
         accounts_object = json.load(file)
     # Iterasi melalui semua nilai (objek akun) di dalam accounts_object
