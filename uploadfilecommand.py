@@ -83,9 +83,12 @@ async def receive_file(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return ConversationHandler.END
     
     telegram_id = str(update.effective_user.id)
-    req_result = get_current_path(telegram_id)
-    logger.info("get custom data %r", req_result)
-    current_path = req_result['full_current_path']
+    # req_result = get_current_path(telegram_id)
+    # logger.info("get custom data %r", req_result)
+    # current_path = req_result['full_current_path']
+    
+    upload_path = os.path.join(os.getcwd(), "upload")
+    current_path = os.path.join(upload_path, telegram_id)
     os.makedirs(current_path, exist_ok=True)
 
     saved_files = []
