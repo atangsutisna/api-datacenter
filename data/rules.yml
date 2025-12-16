@@ -293,7 +293,12 @@ rules:
     - intent: simpan_di_lokasi_saat_ini
     - action: action_move_here
 
-- rule: User want save a moved file or folder to current path
+- rule: User say thank you
   steps:
     - intent: say_thank_you
     - action: utter_thank_you
+
+- rule: User say Selesai
+  steps:
+    - intent: say_selesai
+    - action: utter_resp_selesai

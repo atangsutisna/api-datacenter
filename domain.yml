@@ -31,7 +31,7 @@ intents:
 - user_want_to_move_a_file
 - simpan_di_lokasi_saat_ini
 - say_thank_you
-
+- say_selesai
 entities:
 - file_no
 - folder_name
@@ -260,6 +260,8 @@ responses:
   - text: "Terima kasih kembali! jangan ragu untuk menghubungi saya jika ada hal lain"
   - text: "Tentu! itu memang tugas saya. Semoga hari kamu menyenangkan"
   - text: "Tidak masalah, saya di sini 24/7 untuk melayani kamu"
+  utter_resp_selesai:
+  - text: "Mungkin yang kamu maksud /selesai"
 actions:
 - action_greeting
 - action_guessing_name

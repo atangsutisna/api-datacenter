@@ -393,3 +393,7 @@ nlu:
     - Thanks
     - Nuhun
     - Terima kasih sudah merespon
+
+- intent: say_selesai
+  examples: |
+    - Selesai
