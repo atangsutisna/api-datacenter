@@ -38,8 +38,12 @@ def get_current_path(telegram_id: str):
     }
     response = requests.post(url, json=data)
     logger.info("sekarang saya di mana: %r", response.json())
-    response_json = response.json()
-    return response_json[1]['custom']['data']
+    try:
+        response_json = response.json()
+        return response_json[1]['custom']['data']
+    except IndexError:
+        logger.info("current path not selected yet")
+        return None
 
 async def start_upload_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     telegram_id = str(update.effective_user.id)
@@ -49,6 +53,9 @@ async def start_upload_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         # get current path from rasa
         req_result = get_current_path(telegram_id)
+        if req_result is None:
+            await update.message.reply_text('Silahkan tentukan dulu di folder mana kamu akan menyimpan filenya')
+            return
         logger.info("get custom data %r", req_result)
         current_path = req_result['full_current_path']
         if current_path is None:
