@@ -16,10 +16,7 @@ class ActionGuessingName(Action):
         telegram_id = metadata.get("telegram_id")
         if fullname == "user":
             # belum login
-            dispatcher.utter_message(text="""
-            Maaf, saya belum mengenal kamu.
-            Silahkan verifikasi nomor HP kamu dulu.
-            """)
+            dispatcher.utter_message(text="Maaf, saya belum mengenal kamu. Silahkan verifikasi nomor HP kamu dulu")
         else:
             dispatcher.utter_message(
                 text="😊 Tentu saja! ID kamu sudah terdaftar di dalam sistem.\nBaik, ada yang bisa saya bantu terkait data center?",

@@ -32,10 +32,7 @@ class ActionGoHome(Action):
 
         if fullname == "user":
             # belum login
-            dispatcher.utter_message(text="""
-            Maaf, saya belum mengenal kamu.
-            Silahkan verifikasi nomor HP kamu dulu.
-            """)
+            dispatcher.utter_message(text="Maaf, saya belum mengenal kamu. Silahkan verifikasi nomor HP kamu dulu")
 
             return []
         else:

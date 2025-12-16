@@ -20,10 +20,7 @@ class ActionGetCurrentPath(Action):
         telegram_id = metadata.get("telegram_id")
         if fullname == "user":
             # belum login
-            dispatcher.utter_message(text="""
-            Maaf, saya belum mengenal kamu.
-            Silahkan verifikasi nomor HP kamu dulu.
-            """)
+            dispatcher.utter_message(text="Maaf, saya belum mengenal kamu. Silahkan verifikasi nomor HP kamu dulu")
         else:
             current_path = tracker.get_slot("current_path")
             if current_path is None:
