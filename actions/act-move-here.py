@@ -38,6 +38,13 @@ class ActionMoveHere(Action):
             return []
         else:
             current_path = tracker.get_slot("current_path")
+            
+            # check dulu apakah di current path terdapat file yang sama atau tidak?
+            filename = os.path.basename(source_path)
+            dest_path = os.path.join(current_path, filename)
+            if os.path.exists(dest_path):
+                dispatcher.utter_message(text=f"⚠️ Proses pemindahan tidak dapat diselesaikan karena adanya konflik nama: `{filename}`")
+                return []
 
             logger.info("attempting to move %s to %s", source_path, current_path)
             # move item use background process

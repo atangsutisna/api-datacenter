@@ -401,6 +401,7 @@ def move_item(source_path: str, destination_path: str) -> str:
         return f"✅ Success: `{item_type}` `{os.path.basename(source_path)}` has been moved to `{destination_path}`."
         
     except shutil.Error as e:
+        # logger.info("Warning: A moving error occurred:  %s", e)
         return f"⚠️ Warning: A moving error occurred: {e}"
     except Exception as e:
         return f"❌ Failure: An unexpected error occurred: {e}"
