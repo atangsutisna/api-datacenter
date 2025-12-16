@@ -175,8 +175,9 @@ forms:
   #   - folder_name
 responses:
   utter_default:
-  - text: Maaf, saya tidak mengerti.
-  - text: Maaf, saya tidak mengerti maksud kamu. Bisa dijelaskan ulang?
+  - text: Mohon maaf, saya belum bisa melakukan itu. Saya adalah bot yang khusus bertugas mengelola berkas Anda. Apakah ada berkas yang perlu saya tampilkan, pindahkan, atau cari untuk Anda?
+  - text: Perintah itu di luar jangkauan kemampuan saya. Sebagai asisten pengelolaan berkas, saya hanya dapat menangani tugas-tugas terkait berkas (file management). Silakan berikan perintah tentang berkas.
+  - text: Saya mohon maaf, saat ini saya hanya diprogram untuk membantu Anda dalam pengelolaan berkas, seperti menampilkan, menghapus, memindahkan, atau mencari file. Perintah tersebut berada di luar fokus utama saya.
   utter_iamabot:
   - text: Saya Bot data center.
   utter_ask_datacenter:
