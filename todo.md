@@ -135,3 +135,16 @@ solusinya, buat nama file yang gampang dibaca. jangan terlalu panjang.
 
 ## Selasa, 25 November 2025
 - Bug ketika mengirimkan perintah membuat folder diluar jangkauan
+
+## Rabu, 17 Des 2024
+alur untuk membuat folder baru
+-------------------------------------------
+user: saya mau buat folder baru
+bot: baik, nama foldernya apa?
+user: tamliho
+
+** bila ada ucapan terima kasih, maka ucapkan terima kasih kembali --> done
+** pindah file atau folder error ketika bentrok dengan di folder lain. "already exists" --> done
+attempting to move /home/kangatang/git/filegator/repository/spark/excel_50.xls to /home/kangatang/git/filegator/repository/spark/sepeda
+** ketika akses ke salah satu folder account, muncul account mungkin sudah dihapus --> done
+** upload file tetap tersimpan walau tanpa diakhiri dengan /selesai --> done
