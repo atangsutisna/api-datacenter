@@ -1,4 +1,4 @@
-import logging, os, re, requests
+import logging, os, re, requests,shutil,glob
 from checkpermissions import is_permitted
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes, ConversationHandler
@@ -137,7 +137,27 @@ async def done_upload(update: Update, context: ContextTypes.DEFAULT_TYPE):
     current_dir = context.user_data['current_directory']
 
     logger.info(f"Got {len(uploaded)} on {current_dir}")
+
+    telegram_id = str(update.effective_user.id)
+    upload_path = os.path.join(os.getcwd(), "upload" + os.sep + telegram_id)
+    ls_files = glob.glob(os.path.join(upload_path, '*'))
+    # Iterasi (looping) melalui setiap file dan memindahkannya
+    dest_path = context.user_data['current_directory']
+    for file_path in ls_files:
+        filename = os.path.basename(file_path)
+        dest_file = os.path.join(dest_path, filename)
+        try:
+            # Pindahkan file dari sumber ke tujuan
+            shutil.move(file_path, dest_file)
+            print(f"Berhasil memindahkan: {filename}")
+        except shutil.Error as e:
+            print(f"Gagal memindahkan {filename}: {e}")
+        except Exception as e:
+            print(f"Terjadi kesalahan tak terduga: {e}")
+
     # simplified_current_dir = simplified_path(current_dir)
+    # move all uploaded file
+    # remove all uploaded file
     if uploaded:
         await update.message.reply_text(f"📂 {len(uploaded)} file berhasil diunggah ke folder `{current_dir}`", parse_mode="Markdown")
     else:
