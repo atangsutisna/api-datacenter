@@ -91,6 +91,35 @@ def filter_user_accounts(user_object, accounts_object):
 
     return user_object
 
+
+def check_username_by_homedir(target_homedir):
+    """
+    Mencari keberadaan username berdasarkan nilai 'homedir' di dalam objek accounts.
+
+    Args:
+        accounts_object (dict): Objek accounts yang berisi daftar akun.
+        target_homedir (str): Nilai homedir yang ingin dicari (misalnya, '/atang').
+
+    Returns:
+        bool: True jika homedir ditemukan, False jika tidak.
+    """
+    # accounts_object = 
+    with open(USER_REPOSITORY_PATH, 'r', encoding='utf-8') as file:
+        accounts_object = json.load(file)
+    # Iterasi melalui semua nilai (objek akun) di dalam accounts_object
+    for account_data in accounts_object.values():
+        # Pastikan kunci 'homedir' ada, meskipun seharusnya selalu ada berdasarkan data Anda
+        if 'homedir' in account_data:
+            # Cek apakah homedir akun saat ini cocok dengan homedir yang dicari
+            if account_data['homedir'] == target_homedir:
+                # Jika ditemukan, langsung kembalikan True dan hentikan fungsi
+                logger.info(f"Ditemukan! Username terkait: {account_data.get('username', 'N/A')}")
+                return True
+                
+    # Jika loop selesai tanpa mengembalikan True, berarti tidak ada yang cocok
+    return False
+
 # telegram_id = "7272740693"
 # current_user = get_user_logged_in(telegram_id)
 # print(json.dumps(current_user))
+# print(check_username_by_homedir("/atang"))

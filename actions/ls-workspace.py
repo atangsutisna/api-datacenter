@@ -13,12 +13,13 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 class ActionListWorkspace(Action):
     def __init__(self):
-        from userloggedin import get_user_logged_in
+        from userloggedin import get_user_logged_in,check_username_by_homedir
         from myutils import simplified_path,get_ask_to_open_remove_or_download
 
         self.get_user_logged_in = get_user_logged_in
         self.simplified_path = simplified_path
         self.get_ask_to_open_remove_or_download = get_ask_to_open_remove_or_download
+        self.check_username_by_homedir = check_username_by_homedir
 
     def name(self) -> Text:
         return "action_show_data"
@@ -117,6 +118,17 @@ class ActionListWorkspace(Action):
                     user_workspaces.append(child_path)
 
                 simplified_root_path = self.simplified_path(current_path)
+                is_present = self.check_username_by_homedir(simplified_root_path)
+                if not is_present:
+                    dispatcher.utter_message(text=f"Folder {simplified_root_path} sudah tidak bisa diakses. Mungkin akun sudah di-nonaktifkan atau dihapus.")
+                    dispatcher.utter_message(text=f"Silakan untuk kembali ke Beranda")
+                    return [
+                        # SlotSet("search_results", search_results_json), 
+                        SlotSet("file_no", None),
+                        SlotSet("current_path", None),
+                    ]
+
+                # todo: check apakah masih ada di db utama (filegator)
                 opening_messages = [
                     f"Baik, ini isi dari folder `{simplified_root_path}`:",
                     f"Kamu sekarang berada di dalam folder `{simplified_root_path}`. Ini semua yang ada di dalamnya:"
