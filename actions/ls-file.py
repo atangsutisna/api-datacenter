@@ -15,7 +15,7 @@ class ActionAccessData(Action):
     def __init__(self):
         from assistant_file_reader import read_file_with_file_search
         from fileconverter import convert_to_pdf
-        from userloggedin import get_user_logged_in
+        from userloggedin import get_user_logged_in,check_username_by_homedir
         from myutils import simplified_path,get_ask_to_open_remove_or_download
         from tasks import get_summarize
         from checkpermissions import is_permitted
@@ -27,6 +27,7 @@ class ActionAccessData(Action):
         self.get_ask_to_open_remove_or_download = get_ask_to_open_remove_or_download
         self.get_summarize = get_summarize
         self.is_permitted = is_permitted
+        self.check_username_by_homedir = check_username_by_homedir
 
     def name(self):
         return "action_to_open_data"
@@ -47,6 +48,16 @@ class ActionAccessData(Action):
 
             # todo: selected path ini harus segera dicek ke filegator, apakah file masih ada atau tidak?
             logger.info("attempting to open dir on path %s", selected_path)
+            simplified_root_path = self.simplified_path(selected_path)
+            is_present = self.check_username_by_homedir(simplified_root_path)
+            if not is_present:
+                dispatcher.utter_message(text=f"Folder {simplified_root_path} sudah tidak bisa diakses. Mungkin akun sudah di-nonaktifkan atau dihapus.")
+                dispatcher.utter_message(text=f"Silakan untuk kembali ke Beranda")
+                return [
+                    # SlotSet("search_results", search_results_json), 
+                    SlotSet("file_no", None),
+                ]
+
             if selected_path:
                 is_file = os.path.isfile(selected_path)
                 if is_file:

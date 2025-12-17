@@ -117,7 +117,7 @@ class ActionListWorkspace(Action):
                 simplified_root_path = self.simplified_path(current_path)
                 is_present = self.check_username_by_homedir(simplified_root_path)
                 if not is_present:
-                    dispatcher.utter_message(text=f"Folder {simplified_root_path} sudah tidak bisa diakses. Mungkin akun sudah di-nonaktifkan atau dihapus.")
+                    dispatcher.utter_message(text=f"Folder `{simplified_root_path}` sudah tidak bisa diakses. Mungkin akun sudah di-nonaktifkan atau dihapus.")
                     dispatcher.utter_message(text=f"Silakan untuk kembali ke Beranda")
                     return [
                         # SlotSet("search_results", search_results_json), 
