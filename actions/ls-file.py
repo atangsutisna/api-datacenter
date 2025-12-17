@@ -44,6 +44,8 @@ class ActionAccessData(Action):
             logger.info("attempting to load search results %s", search_results)
             user_files = json.loads(search_results)
             selected_path = user_files.get(file_no)
+
+            # todo: selected path ini harus segera dicek ke filegator, apakah file masih ada atau tidak?
             logger.info("attempting to open dir on path %s", selected_path)
             if selected_path:
                 is_file = os.path.isfile(selected_path)
