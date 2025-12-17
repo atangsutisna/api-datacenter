@@ -15,10 +15,11 @@ class ActionGoHome(Action):
     def __init__(self):
         #fixme: update account jika di filegator user sudah nggak ada
         from userloggedin import get_user_logged_in
-        from myutils import simplified_path
+        from myutils import simplified_path,get_ask_to_open_remove_or_download
 
         self.get_user_logged_in = get_user_logged_in
         self.simplified_path = simplified_path
+        self.get_ask_to_open_remove_or_download = get_ask_to_open_remove_or_download
 
     def name(self) -> Text:
         return "action_go_home"
@@ -89,7 +90,7 @@ class ActionGoHome(Action):
             if len(accounts) > 1:
                 additional_response = "Jika kamu ingin membuka salah satunya, cukup ketik angkanya."
             else:
-                additional_response = get_ask_to_open_remove_or_download()
+                additional_response = self.get_ask_to_open_remove_or_download()
             message += "\n"+ additional_response
 
             dispatcher.utter_message(
