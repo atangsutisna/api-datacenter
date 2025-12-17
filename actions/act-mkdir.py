@@ -41,8 +41,10 @@ class ActionCreateFolder(Action):
         # ]
 
         if current_path is None:
-            dispatcher.utter_message(text="Silahkan kamu pilih dulu lokasi folder-nya")
-            return []
+            dispatcher.utter_message(text="Maaf, saya tidak bisa melanjutkan. Silahkan kamu pilih dulu lokasi folder-nya")
+            return [
+                SlotSet("folder_name", None)
+            ]
 
         metadata = tracker.latest_message.get("metadata")
         fullname = metadata.get("fullname")

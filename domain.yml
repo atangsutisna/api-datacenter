@@ -88,8 +88,10 @@ slots:
     type: text
     influence_conversation: true
     mappings:
-      - type: from_entity
-        entity: folder_name
+      - type: from_text
+        conditions:
+          - active_loop: create_folder_form
+            requested_slot: folder_name
   search_query:
     type: text
     influence_conversation: true
@@ -173,9 +175,9 @@ forms:
   search_form:
     required_slots:
     - search_query   
-  # create_folder_form:
-  #   required_slots:
-  #   - folder_name
+  create_folder_form:
+    required_slots:
+    - folder_name
 responses:
   utter_default:
   - text: Mohon maaf, saya belum bisa melakukan itu. Saya adalah bot yang khusus bertugas mengelola berkas Anda. Apakah ada berkas yang perlu saya tampilkan, pindahkan, atau cari untuk Anda?
@@ -213,8 +215,6 @@ responses:
     - text: Hallo basic account
   utter_when_to_upgrade:
     - text: Kapan kamu akan upgrade account?
-  utter_ask_folder_name:
-    - text: Apa nama foldernya?
   utter_folder_exists:
     - text: "Maaf, folder dengan nama '{folder_name}' sudah ada di lokasi saat ini. Mohon berikan nama yang berbeda."
   utter_permission_denied_create_folder:
@@ -265,6 +265,10 @@ responses:
   - text: "Mungkin yang kamu maksud /selesai"
   utter_resp_ask_help:
   - text: "Ya, apa yang bisa saya bantu?"
+  utter_ask_folder_name:
+    - text: "Baik, silakan tulis nama folder yang kamu inginkan"
+    - text: "Baik, apa nama foldernya?"
+    - text: "Baik, silakan sebutkan namanya"
 
 actions:
 - action_greeting

@@ -80,26 +80,29 @@ class ValidateCreateFolderForm(FormValidationAction):
         """
         logger.info("attempting to validate folder name")
         current_path = tracker.get_slot("current_path")
-        
-        metadata = tracker.latest_message.get("metadata")
-        fullname = metadata.get("fullname")
-        telegram_id = metadata.get("telegram_id")
-        # telegram_id = "7272740693"
-        write_permitted = self.is_permitted(telegram_id, current_path, "write")
-        logger.info("Is telegram id %s has write permission: %s", telegram_id, write_permitted)
-        if write_permitted is False:
-            dispatcher.utter_message(response="utter_permission_denied_create_folder")
-            return {
-                "folder_name": None, 
-                "creation_permitted": False,
-                "requested_slot": None
-            }
+        if current_path is None:
+            return [
+                SlotSet("folder_name", None)
+            ]
+        # metadata = tracker.latest_message.get("metadata")
+        # fullname = metadata.get("fullname")
+        # telegram_id = metadata.get("telegram_id")
+        # # telegram_id = "7272740693"
+        # write_permitted = self.is_permitted(telegram_id, current_path, "write")
+        # logger.info("Is telegram id %s has write permission: %s", telegram_id, write_permitted)
+        # if write_permitted is False:
+        #     dispatcher.utter_message(response="utter_permission_denied_create_folder")
+        #     return {
+        #         "folder_name": None, 
+        #         "creation_permitted": False,
+        #         "requested_slot": None
+        #     }
 
-        proposed_folder_path = os.path.join(current_path, slot_value)
-        if os.path.exists(proposed_folder_path):
-            logger.info("Failed to create folder, %s exists", slot_value)
-            dispatcher.utter_message(response="utter_folder_exists")
-            return {"folder_name": None, "creation_permitted": True}
-        else:
-            logger.info("Folder name is valid")
-            return {"folder_name": slot_value, "creation_permitted": True}
+        # proposed_folder_path = os.path.join(current_path, slot_value)
+        # if os.path.exists(proposed_folder_path):
+        #     logger.info("Failed to create folder, %s exists", slot_value)
+        #     dispatcher.utter_message(response="utter_folder_exists")
+        #     return {"folder_name": None, "creation_permitted": True}
+        # else:
+        #     logger.info("Folder name is valid")
+        #     return {"folder_name": slot_value, "creation_permitted": True}
