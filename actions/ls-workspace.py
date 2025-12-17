@@ -47,6 +47,10 @@ class ActionListWorkspace(Action):
                 curr_user = self.get_user_logged_in(telegram_id)
                 # todo: check sudah konfirmasi nomor atau belum
                 accounts = curr_user['accounts']
+                if len(accounts) == 0:
+                    dispatcher.utter_message(text="Akses Anda ke layanan ini telah berakhir. Jika ini dirasa tidak sesuai, silakan menghubungi administrator")
+                    return []
+
                 user_workspaces = []
                 root_paths = []
                 REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
