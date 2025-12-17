@@ -148,6 +148,7 @@ rules:
   steps:
   - action: action_create_folder
   - action: action_listen
+  
 - rule: show all slot values
   steps:
   - intent: show_slots
