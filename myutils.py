@@ -34,6 +34,8 @@ def simplified_path(original_path: str) -> str:
     parent_path = os.path.dirname(repository_path)
     return os.path.join(parent_path, folder_name)
 
+# simple_root_path = simplified_path("/var/www/filegator/repository/sdd/tes2")
+
 def get_folder_size_bytes(folder_path):
     total_size = 0
     for dirpath, _, filenames in os.walk(folder_path):

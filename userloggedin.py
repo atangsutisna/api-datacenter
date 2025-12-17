@@ -107,10 +107,12 @@ def check_username_by_homedir(target_homedir):
     # accounts_object = 
     target_path = Path(target_homedir)
     # root_absolute = target_path.root
-    if len(target_path.parts) > 1:
-        target_homedir = os.sep + target_path.parts[1]
-
     logger.info("attempting to find username by homedir %s", target_homedir)
+    if len(target_path.parts) > 2:
+        target_homedir = os.sep + target_path.parts[1] + os.sep + target_path.parts[2]
+        logger.info("Extracting the root path %s", target_homedir)
+
+    
     with open(USER_REPOSITORY_PATH, 'r', encoding='utf-8') as file:
         accounts_object = json.load(file)
     # Iterasi melalui semua nilai (objek akun) di dalam accounts_object
@@ -130,3 +132,8 @@ def check_username_by_homedir(target_homedir):
 # current_user = get_user_logged_in(telegram_id)
 # print(json.dumps(current_user))
 # print(check_username_by_homedir("/atang"))
+
+# target_path = Path("/sdd/tes2/cangkilung")
+# if len(target_path.parts) > 2:
+#     target_homedir = os.sep + target_path.parts[1] + os.sep + target_path.parts[2]
+# print(target_homedir)
