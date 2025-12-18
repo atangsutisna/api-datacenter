@@ -75,7 +75,7 @@ class ActionAccessData(Action):
                     metadata = tracker.latest_message.get("metadata")
                     telegram_id = metadata.get("telegram_id")
 
-                    read_permitted = self.is_permitted(telegram_id, selected_path, "read")
+                    read_permitted = self.is_permitted(telegram_id, selected_path, "preview")
                     if read_permitted:
                         dispatcher.utter_message(text="Baik, mohon ditunggu")
 
