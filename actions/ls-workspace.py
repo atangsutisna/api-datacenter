@@ -13,13 +13,15 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 class ActionListWorkspace(Action):
     def __init__(self):
-        from userloggedin import get_user_logged_in,check_username_by_homedir
+        from userloggedin import get_user_logged_in,check_username_by_homedir,get_username_by_target_path,is_user_present
         from myutils import simplified_path,get_ask_to_open_remove_or_download
 
         self.get_user_logged_in = get_user_logged_in
         self.simplified_path = simplified_path
         self.get_ask_to_open_remove_or_download = get_ask_to_open_remove_or_download
         self.check_username_by_homedir = check_username_by_homedir
+        self.get_username_by_target_path = get_username_by_target_path
+        self.is_user_present = is_user_present
 
     def name(self) -> Text:
         return "action_show_data"
@@ -30,6 +32,10 @@ class ActionListWorkspace(Action):
         fullname = tracker.sender_id
         dispatcher.utter_message(text="Baik, mohon ditunggu...")
 
+        metadata = tracker.latest_message.get("metadata")
+        fullname = metadata.get("fullname")
+        telegram_id = metadata.get("telegram_id")
+
         if fullname == "user":
             # belum login
             dispatcher.utter_message(text="Maaf, saya belum mengenal kamu. Silahkan verifikasi nomor HP kamu dulu")
@@ -38,11 +44,7 @@ class ActionListWorkspace(Action):
         else:
             # get telegram id 7272740693
             current_path = tracker.get_slot("current_path")
-            if current_path is None:
-                metadata = tracker.latest_message.get("metadata")
-                fullname = metadata.get("fullname")
-                telegram_id = metadata.get("telegram_id")
-                
+            if current_path is None:                
                 # todo: jika user hanya punya satu folder, tampilkan saja langsung isinya
                 curr_user = self.get_user_logged_in(telegram_id)
                 # todo: check sudah konfirmasi nomor atau belum
@@ -119,8 +121,10 @@ class ActionListWorkspace(Action):
                     user_workspaces.append(child_path)
 
                 simplified_root_path = self.simplified_path(current_path)
-                is_present = self.check_username_by_homedir(simplified_root_path)
-                if not is_present:
+                curr_user = self.get_user_logged_in(telegram_id)
+                owner = self.get_username_by_target_path(curr_user["accounts"], current_path)
+                is_owner_present = self.is_user_present(owner)
+                if not is_owner_present:
                     dispatcher.utter_message(text=f"Folder `{simplified_root_path}` sudah tidak bisa diakses. Mungkin akun sudah di-nonaktifkan atau dihapus.")
                     dispatcher.utter_message(text=f"Silakan untuk kembali ke Beranda")
                     return [

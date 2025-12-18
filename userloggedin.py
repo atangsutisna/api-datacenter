@@ -93,24 +93,27 @@ def filter_user_accounts(user_object, accounts_object):
     return user_object
 
 
-def check_username_by_homedir(target_homedir):
+def check_username_by_homedir(target_path):
     """
     Mencari keberadaan username berdasarkan nilai 'homedir' di dalam objek accounts.
 
     Args:
         accounts_object (dict): Objek accounts yang berisi daftar akun.
-        target_homedir (str): Nilai homedir yang ingin dicari (misalnya, '/atang').
+        target_path (str): Nilai homedir yang ingin dicari (misalnya, '/atang').
 
     Returns:
         bool: True jika homedir ditemukan, False jika tidak.
     """
     # accounts_object = 
-    target_path = Path(target_homedir)
+    """
+    Cari dulu di db local, setelah mendapatkan accountnya, barulah cari ke db filegator
+    """
+    target_path = Path(target_path)
     # root_absolute = target_path.root
-    logger.info("attempting to find username by homedir %s", target_homedir)
+    logger.info("attempting to find username by homedir %s", target_path)
     if len(target_path.parts) > 2:
-        target_homedir = os.sep + target_path.parts[1] + os.sep + target_path.parts[2]
-        logger.info("Extracting the root path %s", target_homedir)
+        target_path = os.sep + target_path.parts[1] + os.sep + target_path.parts[2]
+        logger.info("Extracting the root path %s", target_path)
 
     
     with open(USER_REPOSITORY_PATH, 'r', encoding='utf-8') as file:
@@ -120,7 +123,7 @@ def check_username_by_homedir(target_homedir):
         # Pastikan kunci 'homedir' ada, meskipun seharusnya selalu ada berdasarkan data Anda
         if 'homedir' in account_data:
             # Cek apakah homedir akun saat ini cocok dengan homedir yang dicari
-            if account_data['homedir'] == target_homedir:
+            if account_data['homedir'] == target_path:
                 # Jika ditemukan, langsung kembalikan True dan hentikan fungsi
                 logger.info(f"Ditemukan! Username terkait: {account_data.get('username', 'N/A')}")
                 return True
@@ -135,5 +138,44 @@ def check_username_by_homedir(target_homedir):
 
 # target_path = Path("/sdd/tes2/cangkilung")
 # if len(target_path.parts) > 2:
-#     target_homedir = os.sep + target_path.parts[1] + os.sep + target_path.parts[2]
-# print(target_homedir)
+#     target_path = os.sep + target_path.parts[1] + os.sep + target_path.parts[2]
+# print(target_path)
+def get_username_by_target_path(accounts, target_path):
+    for account in accounts:
+        parent = Path(account["parentdir"])
+        child = Path(target_path)
+        if child.is_relative_to(parent):
+            return account["username"]
+
+    return None
+
+def is_user_present(target_account):
+    with open(USER_REPOSITORY_PATH, 'r', encoding='utf-8') as file:
+        accounts = json.load(file)
+    
+    for account in accounts.values():
+        if account["username"] == target_account:
+            return True
+
+    return False
+# users = [
+#     {
+#         "username": "atang",
+#         "fullname": "Atang Sutisna",
+#         "homedir": "/atang",
+#         "parentdir": "/home/kangatang/git/filegator/repository/atang",
+#         "permissions": "read|chmod"
+#     },
+#     {
+#         "username": "spark",
+#         "fullname": "Spark",
+#         "homedir": "/spark",
+#         "parentdir": "/home/kangatang/git/filegator/repository/spark",
+#         "permissions": "read|write|upload|download|zip|chmod"
+#     }
+# ]
+# print(get_username_by_target_path(users, "/home/kangatang/git/filegator/repository/atang"))
+# print(get_username_by_target_path(users, "/home/kangatang/git/filegator/repository/atang/jamrud"))
+# print(is_user_present("atang"))
+# print(is_user_present("spark"))
+# print(is_user_present("jamrud"))
