@@ -170,5 +170,3 @@ conversation_handler = ConversationHandler(
 # todo: 
 # 1. map username to user and home dir
 # 2. add username to account
-
-print(username_exist())
