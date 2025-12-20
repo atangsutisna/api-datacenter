@@ -106,7 +106,7 @@ conversation_handler = ConversationHandler(
     fallbacks=[CommandHandler("batal", cancel)],
 )
 
-print(update_pin("7272740693", "1234"))
+# print(update_pin("7272740693", "1234"))
 # print(hash_pin("1234"))
 # cara membaca auth pin
 # input_user = "1234"
