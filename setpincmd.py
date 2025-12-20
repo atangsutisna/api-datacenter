@@ -6,6 +6,7 @@ import re
 from telegram.ext import CommandHandler, MessageHandler, filters, ConversationHandler
 from dotenv import load_dotenv
 import bcrypt
+from datetime import datetime, timedelta
 
 load_dotenv()
 REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
@@ -48,9 +49,12 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def update_pin(telegram_id, pin):
     users = read_db(DB_PATH)
     updated = False
+    menit=5
     for user in users:
         if user.get("telegram_id") == telegram_id:
             user["auth_pin"] = hash_pin(pin)
+            session_expiry = datetime.now() + timedelta(minutes=menit)
+            user["session_expiry"] = session_expiry.isoformat()
             updated = True
 
     logger.info("attempting to update pin user with telegram id %s", telegram_id)
@@ -80,6 +84,20 @@ def hash_pin(pin):
     hash_string = hash_bytes.decode('utf-8')
     return hash_string
 
+def has_expired(expiry_string):
+    """
+    Mengembalikan True jika login sudah expired, False jika masih berlaku
+    """
+    if not expiry_string:
+        return True
+    # Ubah kembali string dari JSON menjadi objek datetime
+    expiry_time = datetime.fromisoformat(expiry_string)
+    # Jika waktu sekarang sudah melewati waktu expiry
+    if datetime.now() > expiry_time:
+        return True  # Sudah Expired
+    else:
+        return False # Masih Valid
+
 conversation_handler = ConversationHandler(
     entry_points=[CommandHandler("setpin", start_cmd)],
     states={
@@ -97,3 +115,5 @@ conversation_handler = ConversationHandler(
 #     print("PIN Cocok!")
 # else:
 #     print("PIN Salah!")
+# session_expiry="2025-12-20T09:52:31.232300"
+# print(has_expired(session_expiry))

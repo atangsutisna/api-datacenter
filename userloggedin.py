@@ -179,3 +179,16 @@ def is_user_present(target_account):
 # print(is_user_present("atang"))
 # print(is_user_present("spark"))
 # print(is_user_present("jamrud"))
+def has_expired(expiry_string):
+    """
+    Mengembalikan True jika login sudah expired, False jika masih berlaku
+    """
+    if not expiry_string:
+        return True
+    # Ubah kembali string dari JSON menjadi objek datetime
+    expiry_time = datetime.fromisoformat(expiry_string)
+    # Jika waktu sekarang sudah melewati waktu expiry
+    if datetime.now() > expiry_time:
+        return True  # Sudah Expired
+    else:
+        return False # Masih Valid
