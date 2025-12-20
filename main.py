@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import requests, json, bcrypt, os, re, logging
 
 import logincommand, forgotpasscommand, findcommand, uploadfilecommand, regusercommand, addaccount, rmaccount, setpincmd
-from userloggedin import get_user_logged_in
+from userloggedin import get_user_logged_in,has_expired
 from mappinguser import verify_phone_number
 from myutils import hash_path,upload_to_filebin,shorten_url
 from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
@@ -165,6 +165,23 @@ def handle_response(update: Update, text: str) -> str:
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message_type: str = update.message.chat.type
     text: str = update.message.text
+    telegram_id = str(update.effective_user.id)
+    current_user = get_user_logged_in(telegram_id)
+    if current_user:
+        logger.info("attempting to check session expiry")
+        if "session_expiry" in current_user:
+            session_expiry = current_user["session_expiry"]
+            if has_expired(session_expiry):
+                logger.info("your session has expired")
+                await update.message.reply_text(
+                    "Sesi Anda telah berakhir. Silakan masukkan PIN kembali untuk verifikasi.",
+                    parse_mode="Markdown"
+                )
+                return
+
+    # get telegram id
+    # check session expiry
+    # jika tidak ada session expiry, abaikan
 
     logger.info(f'User ({update.message.chat.id}) in {message_type}: "{text}"')
     if message_type == 'group':
