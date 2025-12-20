@@ -12,6 +12,7 @@ load_dotenv()
 REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
 USER_REPOSITORY_PATH = os.getenv('USER_REPOSITORY_PATH')
 DB_PATH = os.getenv('DB_PATH')
+EXPIRY_MINUTES = os.getenv('EXPIRY_MINUTES')
 
 # Enable logging
 logging.basicConfig(
@@ -49,11 +50,10 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
 def update_pin(telegram_id, pin):
     users = read_db(DB_PATH)
     updated = False
-    menit=5
     for user in users:
         if user.get("telegram_id") == telegram_id:
             user["auth_pin"] = hash_pin(pin)
-            session_expiry = datetime.now() + timedelta(minutes=menit)
+            session_expiry = datetime.now() + timedelta(minutes=EXPIRY_MINUTES)
             user["session_expiry"] = session_expiry.isoformat()
             updated = True
 
