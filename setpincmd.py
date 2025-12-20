@@ -36,7 +36,8 @@ async def set_pin(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if len(pin) == 4 and pin.isdigit():
         logger.info("attempting to save pin to db1")
         telegram_id = str(update.effective_user.id)
-
+        update_pin(telegram_id, pin)
+        
         await update.message.reply_text("PIN berhasil diperbarui. Keamanan akun Anda kini telah aktif menggunakan PIN baru Anda")
         return ConversationHandler.END
 
