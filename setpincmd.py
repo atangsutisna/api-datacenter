@@ -53,7 +53,7 @@ def update_pin(telegram_id, pin):
     for user in users:
         if user.get("telegram_id") == telegram_id:
             user["auth_pin"] = hash_pin(pin)
-            session_expiry = datetime.now() + timedelta(minutes=EXPIRY_MINUTES)
+            session_expiry = datetime.now() + timedelta(minutes=int(EXPIRY_MINUTES))
             user["session_expiry"] = session_expiry.isoformat()
             updated = True
 
@@ -106,7 +106,7 @@ conversation_handler = ConversationHandler(
     fallbacks=[CommandHandler("batal", cancel)],
 )
 
-# print(update_pin("7272740693", "1234"))
+print(update_pin("7272740693", "1234"))
 # print(hash_pin("1234"))
 # cara membaca auth pin
 # input_user = "1234"
