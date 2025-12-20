@@ -148,7 +148,7 @@ async def receive_usernames(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
     else:
         await update.message.reply_text(
-            f"❌ Gagal! Tidak ada satupun akun yang ditambahkan ke nomor Hp {phone_no}"
+            f"Sepertinya akun ini sudah terdaftar di sistem kami"
         )
     return ConversationHandler.END
 
@@ -170,3 +170,5 @@ conversation_handler = ConversationHandler(
 # todo: 
 # 1. map username to user and home dir
 # 2. add username to account
+
+print(username_exist())
