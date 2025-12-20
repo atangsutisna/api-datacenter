@@ -163,6 +163,7 @@ def handle_response(update: Update, text: str) -> str:
             }]
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    logger.info("handle message...")
     message_type: str = update.message.chat.type
     text: str = update.message.text
     telegram_id = str(update.effective_user.id)

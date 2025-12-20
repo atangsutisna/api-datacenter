@@ -7,6 +7,7 @@ from telegram.ext import CommandHandler, MessageHandler, filters, ConversationHa
 from dotenv import load_dotenv
 import bcrypt
 from datetime import datetime, timedelta
+from userloggedin import get_user_logged_in
 
 load_dotenv()
 REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
@@ -57,6 +58,7 @@ async def check_pin(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     # update session_expiry
                     updated = update_session_expiry(telegram_id)
                     if (updated):
+                        resp = go_home_cmd(update, "ke beranda")
                         await update.message.reply_text("Verifikasi berhasil. Silakan lanjutkan aktivitas Anda")
                     else:
                         await update.message.reply_text("Gagal saat mengupdate session expiry. Silahkan hubungi admin")
@@ -111,6 +113,58 @@ def get_current_user(telegram_id):
 
     return current_user
 
+def go_home_cmd(update: Update, text: str) -> str:
+    url = "http://localhost:5005/webhooks/rest/webhook"
+    processed: str = text.lower()
+
+    telegram_id = str(update.effective_user.id)
+    chat_id = update.effective_chat.id
+    curr_user = get_user_logged_in(telegram_id)
+    sender = curr_user["fullname"] if curr_user is not None else "user"
+
+    data = {
+        "sender": sender, 
+        "message": processed, 
+        "metadata": {
+            "telegram_id": telegram_id,
+            "fullname": curr_user["fullname"] if curr_user is not None else "Guest",
+            "chat_id": chat_id 
+        }
+    }
+    logger.info("attempting to reset go home %r", data)
+    # todo: jangan tambahkan jika request belum selesai, kasih flag. jangan sampai request numpuk
+    try:
+        response = requests.post(url, json=data)
+        return response.json()
+    except Timeout:
+        # request timeout
+        logger.info("request timeout...")
+        return [{
+            "recipient_id": curr_user["fullname"],
+            "text": "Mohon maaf, bot belum bisa melayani perintah. Bot sedang mengalami kendala saat mengakses sistem data center."
+        }]
+    except ConnectionError:
+        # connection error
+        logger.info("connection error...")
+        return [{
+            "recipient_id": curr_user["fullname"],
+            "text": "Mohon maaf, bot belum bisa melayani perintah. Bot sedang mengalami kendala saat mengakses sistem data center."
+        }]
+    except HTTPError as err:
+        if response.status_code == 503:
+            # service tidak tersedia
+            logger.info("service is not available...")
+            return [{
+                "recipient_id": curr_user["fullname"],
+                "text": "Mohon maaf, bot belum bisa menerima melayani perintah. Service bot mungkin sedang dimatikan atau dalam perbaikan."
+            }]
+        else:
+            # http error terjadi
+            logger.info("there something wrong...")
+            return [{
+                "recipient_id": curr_user["fullname"],
+                "text": "Mohon maaf, bot belum bisa menerima melayani perintah. Service bot sedang ada kendala teknis."
+            }]
 
 conversation_handler = ConversationHandler(
     entry_points=[CommandHandler("pin", start_cmd)],
