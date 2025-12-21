@@ -175,7 +175,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             if has_expired(session_expiry):
                 logger.info("your session has expired")
                 await update.message.reply_text(
-                    "Sesi Anda telah berakhir. Gunakan /pin untuk mulai sesi baru.",
+                    "Sesi Anda telah berakhir. Gunakan /pin untuk verifikasi dan mulai sesi baru.",
                     parse_mode="Markdown"
                 )
                 # await update.message.reply_text(
