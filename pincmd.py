@@ -59,7 +59,9 @@ async def check_pin(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     updated = update_session_expiry(telegram_id)
                     if (updated):
                         resp = go_home_cmd(update, "ke beranda")
-                        await update.message.reply_text("Verifikasi berhasil. Silakan lanjutkan aktivitas Anda")
+                        await update.message.reply_text("Verifikasi berhasil")
+                        await update.message.reply_text("*Pemberitahuan:* Sesi penanganan file telah berakhir karena reset sistem. Mohon akses kembali ke *Beranda* dan kirimkan instruksi Anda untuk memulihkan konteks dokumen")
+
                     else:
                         await update.message.reply_text("Gagal saat mengupdate session expiry. Silahkan hubungi admin")
                 else:
