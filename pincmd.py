@@ -65,7 +65,7 @@ async def check_pin(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     else:
                         await update.message.reply_text("Gagal saat mengupdate session expiry. Silahkan hubungi admin")
                 else:
-                    await update.message.reply_text("PIN salah!")
+                    await update.message.reply_text("PIN salah! Gunakan perintah /batal untuk membatalkan atau mengakhiri perintah.")
                     return ASK_PIN
             else:
                 await update.message.reply_text("Anda belum mengatur PIN keamanan. Silakan buat PIN terlebih dahulu untuk meningkatkan keamanan akun Anda")
@@ -73,7 +73,7 @@ async def check_pin(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text("Maaf, saya belum mengenal kamu")
         return ConversationHandler.END
 
-    await update.message.reply_text("Format salah. PIN hanya boleh terdiri dari angka (0-9)")
+    await update.message.reply_text("Format salah. PIN hanya boleh terdiri dari angka (0-9). Gunakan perintah /batal untuk membatalkan atau mengakhiri perintah.")
     return ASK_PIN
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
