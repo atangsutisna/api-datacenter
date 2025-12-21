@@ -160,7 +160,10 @@ def do_zip(chat_id, base_path):
 def get_summarize(chat_id: str, selected_path: str):
     ext = get_ext(selected_path)
     supported_extension = {"pdf", "doc", "docx", "txt"}
+    img_extensions = {"pdf", "doc", "docx", "txt"}
+    msoffice_extensions = {"pdf","xls","xlsx","ppt","pptx"}
     
+    logger.info(f"attempting to read file with ext {ext}")
     if is_file_smaller_than_100mb(selected_path):
         if ext in supported_extension:
             logger.info("attempting to send request to openai")
@@ -182,7 +185,7 @@ def get_summarize(chat_id: str, selected_path: str):
                     parse_mode="HTML"
                 )
             )
-        else:
+        elif ext in msoffice_extensions:
             logger.info(f"attempting to convert {selected_path} to pdf")
             tmp_file_fullpath = export_to_pdf(selected_path)
             logger.info("attempting to ask to openai")
@@ -200,7 +203,15 @@ def get_summarize(chat_id: str, selected_path: str):
                     parse_mode="HTML"
                 )
             )
-            os.remove(tmp_file_fullpath)
+            os.remove(tmp_file_fullpath)            
+        else:
+            loop.run_until_complete(
+                bot.send_message(
+                    chat_id=chat_id, 
+                    text="Mohon maaf, file ini tidak bisa saya baca karena formatnya bukan teks. Saya hanya menerima file dalam format teks.",
+                    parse_mode="HTML"
+                )
+            )
     else:
         loop.run_until_complete(
             bot.send_message(
