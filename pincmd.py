@@ -65,8 +65,9 @@ async def check_pin(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     else:
                         await update.message.reply_text("Gagal saat mengupdate session expiry. Silahkan hubungi admin")
                 else:
-                    await update.message.reply_text("PIN salah! Gunakan perintah /batal untuk membatalkan atau mengakhiri perintah.")
-                    return ASK_PIN
+                    await update.message.reply_text("PIN salah! Silahkan hubungi admin")
+                    # return ASK_PIN
+                    return ConversationHandler.END
             else:
                 await update.message.reply_text("Anda belum mengatur PIN keamanan. Silakan buat PIN terlebih dahulu untuk meningkatkan keamanan akun Anda")
         else:
