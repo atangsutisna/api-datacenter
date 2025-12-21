@@ -151,3 +151,7 @@ attempting to move /home/kangatang/git/filegator/repository/spark/excel_50.xls t
 ** ketika user mengeti "bantu saya", mapping keliru. Chatbot mengarahkan ke pencarian file --> done
 
 ** ketika reguser, cek dulu account tersebut exists atau tidak
+
+## Minggu, 21 Desember 2025
+** ketika reset pin, harusnya ditanya dulu pin sebelumnya
+** jika punya pin, maka langkah pertama itu abaikan
