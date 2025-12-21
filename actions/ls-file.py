@@ -16,7 +16,7 @@ class ActionAccessData(Action):
         from assistant_file_reader import read_file_with_file_search
         from fileconverter import convert_to_pdf
         from userloggedin import get_user_logged_in,check_username_by_homedir,get_username_by_target_path,is_user_present
-        from myutils import simplified_path,get_ask_to_open_remove_or_download
+        from myutils import simplified_path,get_ask_to_open_remove_or_download,get_ext
         from tasks import get_summarize
         from checkpermissions import is_permitted
 
@@ -30,6 +30,7 @@ class ActionAccessData(Action):
         self.check_username_by_homedir = check_username_by_homedir
         self.get_username_by_target_path = get_username_by_target_path
         self.is_user_present = is_user_present
+        self.get_ext = get_ext
 
 
     def name(self):
@@ -72,6 +73,15 @@ class ActionAccessData(Action):
             if selected_path:
                 is_file = os.path.isfile(selected_path)
                 if is_file:
+                    ext = self.get_ext(selected_path)
+                    supported_extension = {"pdf", "doc", "docx", "txt", "pdf","xls","xlsx","ppt","pptx"}
+                    if ext not in supported_extension:
+                        logger.info("Ext %s is not supported for summary fiture", )
+                        dispatcher.utter_message(text="Mohon maaf, file ini tidak bisa saya baca karena formatnya bukan teks. Saya hanya menerima file dalam format teks.")
+                        return [
+                            SlotSet("file_no", None),
+                        ]
+
                     metadata = tracker.latest_message.get("metadata")
                     telegram_id = metadata.get("telegram_id")
 
