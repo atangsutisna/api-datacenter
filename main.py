@@ -4,7 +4,7 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 from dotenv import load_dotenv
 import requests, json, bcrypt, os, re, logging
 
-import logincommand, forgotpasscommand, findcommand, uploadfilecommand, regusercommand, addaccount, rmaccount, setpincmd, pincmd
+import logincommand, forgotpasscommand, findcommand, uploadfilecommand, regusercommand, addaccount, rmaccount, setpincmd, pincmd,resetpincmd
 from userloggedin import get_user_logged_in,has_expired
 from mappinguser import verify_phone_number
 from myutils import hash_path,upload_to_filebin,shorten_url
@@ -302,6 +302,9 @@ if __name__ == '__main__':
 
     # pin
     app.add_handler(pincmd.conversation_handler)
+
+    # reset pin
+    app.add_handler(resetpincmd.conversation_handler)
 
     # help command
     app.add_handler(CommandHandler('bantuan', help_command))
