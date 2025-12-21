@@ -178,6 +178,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     "Sesi Anda telah berakhir. Silakan masukkan PIN kembali untuk verifikasi.",
                     parse_mode="Markdown"
                 )
+                await update.message.reply_text(
+                    "Gunakan /pin untuk mulai sesi baru",
+                    parse_mode="Markdown"
+                )
                 return
 
     # get telegram id

@@ -12,6 +12,7 @@ from spire.xls.common import *
 from pathlib import Path
 import shutil
 import datetime
+import bcrypt
 
 # Enable logging
 logging.basicConfig(
@@ -417,3 +418,13 @@ def generate_photo_filename():
     timestamp_str = now.strftime("%Y-%m-%d_%H%M%S")
     return f"photo_{timestamp_str}"
 # print(generate_photo_filename())
+
+def hash_pin(pin):
+    # Mengubah string PIN menjadi bytes
+    pin_bytes = pin.encode('utf-8')
+    # Membuat 'salt' (garam) otomatis untuk menambah keamanan
+    salt = bcrypt.gensalt()
+    # Melakukan hashing
+    hash_bytes = bcrypt.hashpw(pin_bytes, salt)
+    hash_string = hash_bytes.decode('utf-8')
+    return hash_string

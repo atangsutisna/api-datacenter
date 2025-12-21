@@ -8,13 +8,14 @@ from dotenv import load_dotenv
 import bcrypt
 from datetime import datetime, timedelta
 from userloggedin import get_user_logged_in
-from myutils import is_phone_exist, format_mphone_number, read_db
+from myutils import is_phone_exist, format_mphone_number, read_db, hash_pin
 
 load_dotenv()
 REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
 USER_REPOSITORY_PATH = os.getenv('USER_REPOSITORY_PATH')
 DB_PATH = os.getenv('DB_PATH')
 EXPIRY_MINUTES = os.getenv('EXPIRY_MINUTES')
+# DEFAULT_PIN = os.getenv('DEFAULT_PIN')
 
 # Enable logging
 logging.basicConfig(
@@ -46,12 +47,34 @@ async def reset_pin(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("Gunakan /batal untuk mengakhiri perintah.")
         return ASK_PHONE
 
-    await update.message.reply_text(f"PIN untuk nomor {phone} sudah direset")
+    updated = update_pin(phone, "8888")
+    if updated:
+        await update.message.reply_text(f"PIN untuk nomor {phone} sudah direset")
+    else:
+        await update.message.reply_text(f"PIN gagal direset. Hubungi admin.")
     return ConversationHandler.END
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Proses dibatalkan..")
     return ConversationHandler.END
+
+def update_pin(phone, pin):
+    phone = format_mphone_number(phone)
+    users = read_db(DB_PATH)
+    updated = False
+    for user in users:
+        logger.info("attempting to find user with phone %s", phone)
+        if user.get("phone") == phone:
+            user["auth_pin"] = hash_pin(pin)
+            session_expiry = datetime.now() + timedelta(minutes=int(EXPIRY_MINUTES))
+            user["session_expiry"] = session_expiry.isoformat()
+            updated = True
+
+    logger.info("attempting to update pin user with phone %s", phone)
+    with open(DB_PATH, "w") as f:
+        json.dump(users, f)
+
+    return updated
 
 conversation_handler = ConversationHandler(
     entry_points=[CommandHandler("resetpin", start_cmd)],
