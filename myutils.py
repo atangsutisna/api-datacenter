@@ -430,3 +430,30 @@ def hash_pin(pin):
     hash_bytes = bcrypt.hashpw(pin_bytes, salt)
     hash_string = hash_bytes.decode('utf-8')
     return hash_string
+
+def build_response2(opening_message: str, lspaths: list[str], ending_message):
+    message = opening_message + "\n"
+    formatted_lspaths = format_lspaths2(lspaths)
+    message += formatted_lspaths
+    message += "\n" + ending_message
+    return message
+
+def format_lspaths2(lspaths: list[str]) -> str:
+    """
+    Fungsi ini untuk menampilkan list_dir dalam format:
+    1. Dir 1
+    2. Dir 2
+    3. Dir 3
+    4. File 1
+    5. File 2
+    6. Dst
+    """
+    message: str = ""
+    for no, path in enumerate(lspaths, 1):
+        file = os.path.isfile(path)
+        # simple_path = simplified_path(path)
+        simple_path = os.path.basename(path)
+        size_func = get_file_size_bytes if os.path.isfile(path) else get_folder_size_bytes
+        dirname = os.path.dirname(path)
+        message += f"\n{no}. `{simple_path}`"
+    return message.strip()

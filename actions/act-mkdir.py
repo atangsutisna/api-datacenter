@@ -15,13 +15,13 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 class ActionCreateFolder(Action):
     def __init__(self):
         from checkpermissions import is_permitted
-        from myutils import get_root_path,list_dir,to_dict,build_response,get_ask_to_open_remove_or_download,simplified_path
+        from myutils import get_root_path,list_dir,to_dict,build_response2,get_ask_to_open_remove_or_download,simplified_path
 
         self.is_permitted = is_permitted
         self.get_root_path = get_root_path
         self.list_dir = list_dir
         self.to_dict = to_dict
-        self.build_response = build_response
+        self.build_response2 = build_response2
         self.get_ask_to_open_remove_or_download = get_ask_to_open_remove_or_download
         self.simplified_path = simplified_path
 
@@ -74,7 +74,7 @@ class ActionCreateFolder(Action):
                     os.makedirs(full_path)
 
                     lspaths = self.list_dir(current_path)
-                    response = self.build_response(
+                    response = self.build_response2(
                         opening_message=f"Folder baru dengan nama `{folder_name}` sudah dibuat",
                         ending_message=self.get_ask_to_open_remove_or_download(),
                         lspaths=lspaths
@@ -103,8 +103,9 @@ class ActionCreateFolder(Action):
                 os.makedirs(full_path)
 
                 lspaths = self.list_dir(current_path)
-                response = self.build_response(
-                    opening_message=f"Folder baru dengan nama `{folder_name}` sudah dibuat",
+                simple_path = self.simplified_path(current_path)
+                response = self.build_response2(
+                    opening_message=f"Folder baru dengan nama `{folder_name}` sudah dibuat di `{simple_path}`",
                     ending_message=self.get_ask_to_open_remove_or_download(),
                     lspaths=lspaths
                 )
