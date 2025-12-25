@@ -117,7 +117,6 @@ class ActionBackToPrevious(Action):
             search_results = {}
             sorted_paths = sorted(user_workspaces, key=lambda x: x.lower())
             # sorted_list = sorted(user_workspaces, key=lambda x: x.lower())
-            logger.info("Saya yakin masuk ke sini...")
             for path in sorted_paths:
                 file = os.path.isfile(path)
                 # simple_path = self.simplified_path(path)
