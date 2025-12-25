@@ -1,11 +1,18 @@
 from reguser import add_user_to_db
-import logging, os, re, requests
+import logging, os, re, requests,json
 from telegram.ext import ConversationHandler
 from telegram import Update
 from telegram.ext import ContextTypes
 import re
 from telegram.ext import CommandHandler, MessageHandler, filters, ConversationHandler
 from reguser import add_user_to_db
+from myutils import read_db
+from dotenv import load_dotenv
+
+load_dotenv()
+REPOSITORY_PATH = os.getenv('REPOSITORY_PATH')
+USER_REPOSITORY_PATH = os.getenv('USER_REPOSITORY_PATH')
+DB_PATH = os.getenv('DB_PATH')
 
 # Enable logging
 logging.basicConfig(
@@ -41,9 +48,22 @@ async def receive_phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def receive_usernames(update: Update, context: ContextTypes.DEFAULT_TYPE):
     username_input = update.message.text.strip()
     usernames = [u.strip() for u in username_input.split(",") if u.strip()]
-    
+    valid_unames = find_usernames()
+    for uname in usernames:
+        if uname not in valid_unames:
+            await update.message.reply_text(
+                f"username {uname} tidak dikenali, Mohon diperiksa kembali."
+            )
+            await update.message.reply_text(
+                "Untuk membatalkan proses registrasi, klik atau ketik /batal"
+            )
+            return ASK_USERNAMES
+
+
     context.user_data["usernames"] = usernames
     # validate usernames
+    # for username in usernames:
+        # che
     phone_no = context.user_data['phone']
     fullname = context.user_data['fullname']
     new_user = {
@@ -70,6 +90,15 @@ async def receive_fullname(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Masukan username yang bisa diakses (pisahkan dengan koma):")
     return ASK_USERNAMES
 
+def find_usernames():
+    with open(USER_REPOSITORY_PATH, 'r', encoding='utf-8') as file:
+        accounts = json.load(file)
+    ls_account = []
+    for account in accounts.values():
+        # logger.info("Got account %s", account)
+        ls_account.append(account["username"])
+    return ls_account
+
 conversation_handler = ConversationHandler(
     entry_points=[CommandHandler("reguser", start_cmd)],
     states={
@@ -79,3 +108,9 @@ conversation_handler = ConversationHandler(
     },
     fallbacks=[CommandHandler("cancel", cancel)],
 )
+
+# accounts = find_usernames()
+# if "atang" in accounts:
+#     print("valid")
+# else:
+#     print("invalid")
