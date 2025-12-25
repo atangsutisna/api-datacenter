@@ -132,7 +132,8 @@ class ActionAccessData(Action):
                     sorted_list = sorted(user_workspaces, key=lambda x: x.lower())
                     for path in sorted_list:
                         file = os.path.isfile(path)
-                        simple_path = self.simplified_path(path)
+                        # simple_path = self.simplified_path(path)
+                        simple_path = os.path.basename(path)
                         if not file:
                             message += f"\n{no}. `{simple_path}`"
                         else:
