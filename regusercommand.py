@@ -15,7 +15,7 @@ logging.basicConfig(
 logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
-ASK_PHONE, ASK_USERNAMES = range(2)
+ASK_PHONE, ASK_FULLNAME, ASK_USERNAMES = range(3)
 
 def format_nomor_hp(nomor: str):
     if nomor.startswith("0"):
@@ -35,19 +35,21 @@ async def receive_phone(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return ASK_PHONE
 
     context.user_data["phone"] = phone
-    await update.message.reply_text("Masukan username yang bisa diakses (pisahkan dengan koma):")
-    return ASK_USERNAMES
+    await update.message.reply_text("Masukan nama lengkap")
+    return ASK_FULLNAME
 
 async def receive_usernames(update: Update, context: ContextTypes.DEFAULT_TYPE):
     username_input = update.message.text.strip()
     usernames = [u.strip() for u in username_input.split(",") if u.strip()]
     
     context.user_data["usernames"] = usernames
-    
+    # validate usernames
     phone_no = context.user_data['phone']
+    fullname = context.user_data['fullname']
     new_user = {
         "phoneNumber": format_nomor_hp(phone_no),
-        "accounts": usernames
+        "accounts": usernames,
+        "fullname": fullname
     }
     db_user = "mappinguser.json"
     add_user_to_db(db_user, new_user)
@@ -62,10 +64,17 @@ async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Proses dibatalkan.")
     return ConversationHandler.END
 
+async def receive_fullname(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    fullname = update.message.text.strip()
+    context.user_data["fullname"] = fullname
+    await update.message.reply_text("Masukan username yang bisa diakses (pisahkan dengan koma):")
+    return ASK_USERNAMES
+
 conversation_handler = ConversationHandler(
     entry_points=[CommandHandler("reguser", start_cmd)],
     states={
         ASK_PHONE: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_phone)],
+        ASK_FULLNAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_fullname)],
         ASK_USERNAMES: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_usernames)],
     },
     fallbacks=[CommandHandler("cancel", cancel)],

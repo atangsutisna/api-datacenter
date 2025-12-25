@@ -1,6 +1,6 @@
 import json
 import os
-
+# todo: validate username
 def add_user_to_db(file_path, new_entry):
     # Buat file jika belum ada
     if not os.path.exists(file_path):
