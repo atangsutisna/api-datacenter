@@ -106,7 +106,7 @@ conversation_handler = ConversationHandler(
         ASK_FULLNAME: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_fullname)],
         ASK_USERNAMES: [MessageHandler(filters.TEXT & ~filters.COMMAND, receive_usernames)],
     },
-    fallbacks=[CommandHandler("cancel", cancel)],
+    fallbacks=[CommandHandler("batal", cancel)],
 )
 
 # accounts = find_usernames()

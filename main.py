@@ -6,7 +6,7 @@ import requests, json, bcrypt, os, re, logging
 
 import logincommand, forgotpasscommand, findcommand, uploadfilecommand, regusercommand, addaccount, rmaccount, setpincmd, pincmd,resetpincmd
 from userloggedin import get_user_logged_in,has_expired
-from mappinguser import verify_phone_number
+from mappinguser import verify_phone_number, get_name_by_phone
 from myutils import hash_path,upload_to_filebin,shorten_url
 from requests.exceptions import HTTPError, ConnectionError, Timeout, RequestException
 
@@ -37,8 +37,9 @@ async def share_contact(update: Update, context: ContextTypes.DEFAULT_TYPE):
         name = contact.first_name
         verified = verify_phone_number(telegram_id, phone_number)
         if verified:
+            fullname = get_name_by_phone(phone_number)
             await update.message.reply_text(
-                f"Terima kasih {name} atas kepercayaannya. \n" 
+                f"Terima kasih {fullname} atas kepercayaannya. \n" 
                 "Baik, ada yang bisa saya bantu?", 
                 reply_markup=ReplyKeyboardRemove())
         else:
